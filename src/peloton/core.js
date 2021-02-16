@@ -1,4 +1,4 @@
-console.log("pelobattle peloton api");
+console.log("rickybobby peloton api");
 
 const fetch = require('node-fetch');
 

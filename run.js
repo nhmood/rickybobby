@@ -1,18 +1,18 @@
 #!/usr/bin/env node
 
-const pelobattle = require("./src/core.js");
+const RickyBobby = require("./src/core.js");
 
 
 // TODO - replace with YAML/TOML
-const pb = new pelobattle({
+const rb = new RickyBobby({
   database: {
-    path: process.env.PB_DB,
+    path: process.env.RB_DB,
   },
   peloton_api: {
-    username:  process.env.PB_PTON_USER,
+    username:  process.env.RB_PTON_USER,
   }
 })
-console.log(pb);
+console.log(rb);
 
 
 

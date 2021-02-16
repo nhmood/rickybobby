@@ -1,4 +1,4 @@
-console.log("pelobattle database");
+console.log("rickybobby database");
 
 const fs     = require('fs');
 const sqlite = require('better-sqlite3');
@@ -28,7 +28,7 @@ class Database {
 
   setup(path){
     if (path == undefined || path.length == 0){
-      console.error("pelobattle db path not specified");
+      console.error("rickybobby db path not specified");
       process.exit(1);
     }
 
@@ -53,7 +53,6 @@ class Database {
     return db;
   }
 }
-
 
 
 module.exports = Database;

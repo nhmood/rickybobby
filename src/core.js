@@ -1,10 +1,10 @@
-console.log("pelobattle core");
+console.log("rickybobby core");
 
 const db = require("./db/core.js");
 const peloton = require("./peloton/core.js");
 
 
-class pelobattle {
+class RickyBobby {
   db;
   peloton;
   constructor(config){
@@ -15,4 +15,4 @@ class pelobattle {
   }
 }
 
-module.exports = pelobattle;
+module.exports = RickyBobby;

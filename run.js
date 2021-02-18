@@ -18,6 +18,26 @@ console.log(rb);
 
 (async () => {
   switch(process.argv[2]){
+    case 'migrate':
+      rb.db.migrate(process.argv[3]);
+      break;
+
+    case 'authenticate':
+      await rb.authenticate(process.env.RB_PTON_USER, process.env.RB_PTON_PASS);
+      break;
+
+    case 'test':
+      rb.setup();
+      break;
+
+    case 'user':
+      rb.getUser(process.argv[3]);
+      break;
+
+    case 'workouts':
+      rb.getWorkouts(process.argv[3]);
+      break;
+
     default:
       console.log("Unknown argument");
       process.exit(1);

@@ -26,6 +26,64 @@ class PelotonAPI {
     this.#config = config;
   }
 
+  set sessionID(id){
+    this.session = id;
+  }
+
+  get username(){
+    return this.#config.username;
+  }
+
+
+  PELOTON_LOGIN = this.BASE_URL + '/auth/login';
+  async login(username, password){
+    console.log(`PelotonAPI:login(${username}, *******) -> ${this.PELOTON_LOGIN}`);
+    const payload = JSON.stringify({username_or_email: username, password: password});
+
+    const data = await this.post({
+      url: this.PELOTON_LOGIN,
+      data: JSON.stringify({
+        username_or_email: username,
+        password: password
+      })
+    });
+
+    // Format the login response accordingly
+    // TODO - should probably type this out into its own LoginResponse class
+    const loginResponse = {
+      user: data.data.user_data,
+      session: {
+        session_id: data.data.session_id,
+        user_id:    data.data.user_id,
+        username:   username
+      },
+      raw: data
+    }
+
+    return loginResponse;
+  }
+
+
+  PELOTON_USER = this.BASE_URL + '/api/user/';
+  async getUser(user){
+    const url = this.PELOTON_USER + user;
+    console.log({url});
+
+    const data = await this.get({
+      url: url
+    });
+
+    // Format the user response accordingly
+    // TODO - should probably type this out into its own UserResponse class
+    const userResponse = {
+      user: data.data,
+      raw: data
+    }
+
+    return userResponse;
+  }
+
+
 
   async post(request){
     request.method = 'POST';

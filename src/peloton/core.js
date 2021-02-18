@@ -6,6 +6,21 @@ const fetch = require('node-fetch');
 class PelotonAPI {
   BASE_URL = "https://api.onepeloton.com"
   #config;
+  #session;
+
+  requestHeaders(){
+    let headers = {
+      'Content-Type': 'application/json',
+    };
+
+    // If the session is set on this Peloton client, add the cookie
+    // to the headers
+    if (this.#session){
+      headers['Cookie'] = `peloton_session_id=${this.#session};`;
+    }
+
+    return headers;
+  }
 
   constructor(config){
     this.#config = config;
@@ -29,7 +44,7 @@ class PelotonAPI {
     try {
       response = await fetch(request.url, {
         method: request.method,
-        headers: {'Content-Type': 'application/json'},
+        headers: this.requestHeaders(),
         body: request.data,
       });
       console.debug(response);

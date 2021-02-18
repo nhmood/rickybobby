@@ -23,7 +23,7 @@ class PelotonAPI {
   }
 
   async request(request){
-    console.log({request});
+    console.debug({request});
     let response;
     let data;
     try {
@@ -32,15 +32,23 @@ class PelotonAPI {
         headers: {'Content-Type': 'application/json'},
         body: request.data,
       });
+      console.debug(response);
 
       data = await response.json();
-      return data;
+      return {
+        status: response.status,
+        data: data,
+        http: {
+          request: request,
+          response: response
+        }
+      }
     } catch(err) {
       console.error(`Failed to request ${request.url}`);
       console.error(err)
-      console.log(request);
-      console.log(response);
-      console.log(data);
+      console.debug(request);
+      console.debug(response);
+      console.debug(data);
       return;
     }
   }

@@ -2,12 +2,24 @@ console.log("rickybobby database");
 
 const fs     = require('fs');
 const sqlite = require('better-sqlite3');
+const models = {
+  Session:  require('./session.js'),
+  User:     require('./user.js')
+};
 
 
 class Database {
   #config;
   #dbPath;
   #db;
+
+
+  constructor(config){
+    this.#config = config;
+    this.setup(this.#config.path);
+    this.setupModels();
+  }
+
 
   migrate(migrationPath){
     let migration;
@@ -21,10 +33,6 @@ class Database {
     this.#db.exec(migration);
   }
 
-  constructor(config){
-    this.#config = config;
-    this.setup(this.#config.path);
-  }
 
   setup(path){
     if (path == undefined || path.length == 0){
@@ -35,6 +43,7 @@ class Database {
     this.#dbPath = path;
     this.#db = this.connect(this.#dbPath);
   }
+
 
   connect(path){
     let db;
@@ -52,7 +61,12 @@ class Database {
 
     return db;
   }
-}
 
+
+  setupModels(){
+    this.Session = models.Session.setup(this.#db);
+    this.User    = models.User.setup(this.#db);
+  }
+}
 
 module.exports = Database;

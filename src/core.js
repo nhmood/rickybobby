@@ -45,8 +45,7 @@ class RickyBobby {
     }
 
     console.log({session});
-    let sessionData = JSON.parse(session.data);
-    this.peloton.sessionID = sessionData.session_id;
+    this.peloton.sessionID = session.data.session_id;
     console.log(this.peloton);
   }
 
@@ -73,7 +72,7 @@ class RickyBobby {
     this.db.User.upsert({
       id: userData.user.id,
       username: userData.user.username,
-      data: JSON.stringify(userData.user)
+      data: userData.user
     })
 
   }

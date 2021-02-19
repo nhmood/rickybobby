@@ -138,7 +138,17 @@ class Model {
     // and separate out the associated values
     let fields        = Object.keys(data);
     let fieldBindings = Object.keys(data).map(f => {return `@${f}`});
-    let values        = Object.values(data);
+
+
+    // Translate any JSON fields
+    fields.forEach(f => {
+      //  If the field is a specified JSON field, parse it
+      //  and replace the stored value as an object
+      if (this.jsonFields.includes( f )){
+        data[f] = JSON.stringify(data[f]);
+      }
+    });
+    let values = Object.values(data);
 
 
     const stmt = this.db.prepare(`INSERT INTO ${this.tableName} (${fields.join(", ")}) VALUES (${fieldBindings.join(", ")})`);

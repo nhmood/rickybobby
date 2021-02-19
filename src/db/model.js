@@ -231,6 +231,15 @@ class Model {
       this[f] = data[f];
     })
 
+    // Save the model to the backend database
+    this.save();
+
+    return true;
+  }
+
+
+  // Write the model representation to the backend database
+  save(){
     // Get the "entry", which is the database representation of field=>value
     // that match the schema of the model
     // Then push the entry to the static model update call

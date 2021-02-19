@@ -52,6 +52,19 @@ class RickyBobby {
 
 
   async getUser(username){
+    let user = this.db.User.first({
+      username: username
+    });
+    if (user == undefined){
+      console.warn(`No user found for ${username}`);
+      process.exit(1);
+    }
+
+    console.log({user});
+  }
+
+
+  async fetchUser(username){
     this.setup();
 
     const userData = await this.peloton.getUser(username);

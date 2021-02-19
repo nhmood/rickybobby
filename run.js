@@ -34,6 +34,10 @@ console.log(rb);
       rb.getUser(process.argv[3]);
       break;
 
+    case 'fetch':
+      rb.fetchUser(process.argv[3]);
+      break;
+
     case 'workouts':
       rb.getWorkouts(process.argv[3]);
       break;

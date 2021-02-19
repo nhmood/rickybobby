@@ -4,6 +4,7 @@ class Model {
   static db;
   static rawSchema;
   static schema = {};
+  static jsonFields = [];
 
   // Model setup to configure underlying Database instance
   // and table schema information
@@ -198,17 +199,27 @@ class Model {
   // Model record constructor that sets data parameters as object properties
   // and stores model references (self, schema, primaryKey)
   constructor(data){
-    let keys = Object.keys(data);
-    for (let i = 0; i < keys.length; i++){
-      let k = keys[i];
-      this[k] = data[k];
-    }
-
     // Store model properties so instance can perform validations and DB backed
     // (static) method operations
     this.model      = this.constructor;
     this.schema     = this.model.schema;
     this.primaryKey = this.model.primaryKey;
+
+
+    let keys = Object.keys(data);
+    for (let i = 0; i < keys.length; i++){
+      let k = keys[i];
+      let value = data[k];
+
+      //  If the field is a specified JSON field, parse it
+      //  and replace the stored value as an object
+      if (this.model.jsonFields.includes( k )){
+        value = JSON.parse(value);
+      }
+
+      // Set the field as a property of this object
+      this[k] = value;
+    }
   }
 
 
@@ -228,7 +239,16 @@ class Model {
     // For the provided fields, update the properties of the instance of model
     fields.forEach(f => {
       console.log(`${this.model.name}->updating ${f}:${data[f]}`);
-      this[f] = data[f];
+
+      let value = data[f];
+
+      // If the specified field is a JSON field, perform an object
+      // assign to merge the values
+      if (this.model.jsonFields.includes( f )){
+        value = Object.assign(this[f], value);
+      }
+
+      this[f] = value;
     })
 
     // Save the model to the backend database
@@ -268,7 +288,17 @@ class Model {
     const fields = Object.keys(this.schema);
 
     let entry = {};
-    fields.forEach(f => { entry[f] = this[f] });
+    fields.forEach(f => {
+      let value = this[f];
+
+      // If the specified field is a JSON field, stringify the
+      // field before storing the value
+      if (this.model.jsonFields.includes(f)){
+        value = JSON.stringify(value);
+      }
+
+      entry[f] = value;
+    });
 
     return entry;
   }

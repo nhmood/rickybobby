@@ -89,6 +89,41 @@ class Model {
   }
 
 
+  // Query specified model table with provided conditions
+  static where(conditions, limit){
+    // Grab the fields to be queried by from the conditions and format
+    // the named parameters for the SQL statement
+    let fields        = Object.keys(conditions);
+    let fieldBindings = Object.keys(conditions).map(f => { return `${f} = @${f}` });
+
+
+    // Format the initial SQL WHERE statement with the table and field bindings
+    let sql = `SELECT * FROM ${this.tableName} WHERE ${fieldBindings.join(" AND")}`
+
+    // If the limit parameter is present and a valid integer, append to the SQL statement
+    let limitInt = parseInt(limit);
+    if (limitInt){
+      sql = sql.concat(` LIMIT ${limitInt}`);
+    }
+
+
+    // Perform the SQL query then map the results into proper model instances
+    const stmt = this.db.prepare(sql);
+    const records = stmt.all(conditions);
+    const models = records.map(r => { return new this(r) });
+
+    console.log({models});
+    return models;
+  }
+
+
+  // Query the specified model table with provided conditions but
+  // return only the first result
+  static first(conditions){
+    return this.where(conditions, 1)[0];
+  }
+
+
   // Create a record of the specified model given the input parameters
   // Handles minor validations as well as created/updated_at timestamp setting
   static create(data){

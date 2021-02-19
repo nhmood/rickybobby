@@ -59,6 +59,7 @@ class RickyBobby {
 
     this.db.User.upsert({
       id: userData.user.id,
+      username: userData.user.username,
       data: JSON.stringify(userData.user)
     })
 

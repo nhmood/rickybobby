@@ -30,7 +30,9 @@ class Database {
       process.exit(1);
     }
 
-    this.#db.exec(migration);
+    console.log(`Executing Migration - ${migrationPath}`);
+    console.log(migration);
+    let result = this.#db.exec(migration);
   }
 
 

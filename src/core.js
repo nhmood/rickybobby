@@ -30,9 +30,10 @@ class RickyBobby {
     // Handle the session portion of the response
     this.db.Session.upsert({
       username: username,
-      data: JSON.stringify(loginData.session)
+      data: loginData.session
     })
   }
+
 
   setup(){
     // Attempt to lookup a session for the currently configured
@@ -60,6 +61,7 @@ class RickyBobby {
     }
 
     console.log({user});
+    return user;
   }
 
 

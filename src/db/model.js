@@ -78,7 +78,7 @@ class Model {
     const stmt = this.db.prepare(`SELECT * FROM ${this.tableName} WHERE ${this.primaryKey} = ?;`);
     const result = stmt.get(id);
     if (result == undefined){
-      console.info(`No ${this.tableName}:${id} found`);
+      console.info(`${this.tableName}:${id} not found`);
       return;
     }
 
@@ -128,6 +128,7 @@ class Model {
   // Create a record of the specified model given the input parameters
   // Handles minor validations as well as created/updated_at timestamp setting
   static create(data){
+    console.log({data});
     if (!this.getPK(data)){ return false; }
 
     // Add the created/updated_at fields unless already present in the data
@@ -195,12 +196,13 @@ class Model {
 
     let record = this.get(pk);
     if (record == undefined){
-      console.log(`No ${this.tableName}:${pk} found, creating`);
+      console.log(`${this.tableName}:${pk} not found, creating`);
       record = this.create(data);
     } else {
-      console.log({record});
+      console.log(`${this.tableName}:${pk} found, updating`);
       record.update(data);
     }
+    console.log({record});
 
     return record;
   }

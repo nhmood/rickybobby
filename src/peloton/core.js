@@ -36,7 +36,7 @@ class PelotonAPI {
   }
 
   set sessionID(id){
-    this.session = id;
+    this.#session = id;
   }
 
   get username(){
@@ -90,6 +90,25 @@ class PelotonAPI {
     return userResponse;
   }
 
+
+
+  async getWorkouts(userID, page = 0){
+    const url = this.pelotonURLS.workouts(userID, page);
+    console.log({url});
+
+    let resp = await this.get({
+      url: url
+    });
+
+    let data = resp.data;
+    console.log({data});
+
+    return {
+      workouts: data.data,
+      moreAvailable: (data.page + 1) < resp.data.page_count,
+      next: async () => { return this.getWorkouts(userID, data.page + 1); }
+    }
+  }
 
 
   async post(request){

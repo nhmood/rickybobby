@@ -8,6 +8,15 @@ class PelotonAPI {
   #config;
   #session;
 
+
+  // TODO - move to urls helper file
+  pelotonURLS = {
+    auth: () => { return `${this.BASE_URL}/auth/login`; },
+    user: (userID) => { return `${this.BASE_URL}/api/user/${userID}`; },
+    workouts: (userID, page = 0) => { return `${this.BASE_URL}/api/user/${userID}/workouts?joins=peloton.ride&page=${page}`;  }
+  }
+
+
   requestHeaders(){
     let headers = {
       'Content-Type': 'application/json',
@@ -35,13 +44,12 @@ class PelotonAPI {
   }
 
 
-  PELOTON_LOGIN = this.BASE_URL + '/auth/login';
   async login(username, password){
     console.log(`PelotonAPI:login(${username}, *******) -> ${this.PELOTON_LOGIN}`);
     const payload = JSON.stringify({username_or_email: username, password: password});
 
     const data = await this.post({
-      url: this.PELOTON_LOGIN,
+      url: this.pelotonURLS.auth(),
       data: JSON.stringify({
         username_or_email: username,
         password: password
@@ -64,9 +72,8 @@ class PelotonAPI {
   }
 
 
-  PELOTON_USER = this.BASE_URL + '/api/user/';
   async getUser(user){
-    const url = this.PELOTON_USER + user;
+    const url = this.pelotonURLS.user(user);
     console.log({url});
 
     const data = await this.get({

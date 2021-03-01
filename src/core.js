@@ -14,6 +14,11 @@ class RickyBobby {
     this.peloton  = new peloton(config.peloton_api);
   }
 
+  sleep(ms) {
+    return new Promise((resolve) => {
+      setTimeout(resolve, ms);
+    });
+  }
 
   async authenticate(username, password){
     console.log(`Authenticating Peloton API with ${username}`);

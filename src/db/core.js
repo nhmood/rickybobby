@@ -61,6 +61,7 @@ class Database {
     console.log(`Opened sqlite DB @ ${path}`);
     process.on('SIGINT', () => {
       db.close();
+      process.exit(1);
     });
 
     return db;

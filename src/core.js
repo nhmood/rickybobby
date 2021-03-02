@@ -264,6 +264,56 @@ class RickyBobby {
     workout.update({performance: performance});
     return workout;
   }
+
+
+  async commonWorkouts(usernameA, usernameB){
+    let userA = await this.getUser(usernameA);
+    let userB = await this.getUser(usernameB);
+
+    console.log(userA);
+    console.log(userB);
+
+    // Get all the common workouts between the two users
+    let commonWorkouts = this.db.Workout.commonWorkouts(userA, userB);
+
+
+    // Format the payload as an object where the keys are ride_id,
+    // the value is another object that has ride info, latest taken workout,
+    // and a list of the associated workouts
+    // {
+    //   "ride_id": {
+    //     "ride_info": {},
+    //     "last_taken_workout": DateTime,
+    //     "workouts": []
+    //   }...
+    // }
+
+    let rides = {};
+    for (let i = 0; i < commonWorkouts.length; i++){
+      let workout = commonWorkouts[i];
+      let rideID = workout.ride_id;
+
+      // If the Ride record hasn't been pulled yet, pull it
+      // from the database
+      if (rides[rideID] == undefined){
+        let ride = await this.db.Ride.get(rideID)
+        rides[rideID] = {
+          ride: ride,
+          last_taken_workout: 0,
+          workouts: []
+        }
+      }
+
+
+      rides[rideID].workouts.push(workout);
+      if (rides[rideID].last_taken_workout < workout.created_at){
+        rides[rideID].last_taken_workout = workout.created_at;
+      }
+    }
+
+    console.log({rides});
+    return rides;
+  }
 }
 
 module.exports = RickyBobby;

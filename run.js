@@ -79,6 +79,10 @@ console.log(rb);
       }
       break;
 
+    case 'common':
+      rb.commonWorkouts(process.argv[3], process.argv[4]);
+      break;
+
     default:
       console.log("Unknown argument");
       process.exit(1);

@@ -76,11 +76,13 @@ class RickyBobby {
     const userData = await this.peloton.getUser(username);
     console.log({userData});
 
-    this.db.User.upsert({
-      id: userData.user.id,
+    let user = this.db.User.upsert({
+      id:       userData.user.id,
       username: userData.user.username,
-      data: userData.user
-    })
+      data:     userData.user
+    });
+
+    return user;
   }
 
 
@@ -101,14 +103,13 @@ class RickyBobby {
 
     const rideData = await this.peloton.getRide(rideID);
     console.log({rideData});
-    return;
 
-    this.db.Ride.upsert({
-      id: rideData.ride.id,
-      username: userData.user.username,
-      data: userData.user
-    })
-
+    let ride = this.db.Ride.upsert({
+      id:   rideData.ride.id,
+      data: rideData.ride
+    });
+    console.log({ride});
+    return ride;
   }
 
 

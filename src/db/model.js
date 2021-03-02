@@ -257,7 +257,7 @@ class Model {
       // If the specified field is a JSON field, perform an object
       // assign to merge the values
       if (this.model.jsonFields.includes( f )){
-        value = Object.assign(this[f], value);
+        value = Object.assign(this[f] || {}, value);
       }
 
       this[f] = value;

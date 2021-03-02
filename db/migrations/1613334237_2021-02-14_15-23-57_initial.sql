@@ -11,6 +11,7 @@ CREATE TABLE IF NOT EXISTS users (
   username TEXT,
   created_at INTEGER,
   updated_at INTEGER,
+
   data BLOB
 );
 
@@ -27,7 +28,8 @@ CREATE TABLE IF NOT EXISTS workouts (
   id TEXT PRIMARY KEY,
   created_at INTEGER,
   updated_at INTEGER,
-  data BLOG,
+  data BLOB,
+  performance BLOB,
 
 
   user_id STRING,

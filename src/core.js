@@ -81,7 +81,33 @@ class RickyBobby {
       username: userData.user.username,
       data: userData.user
     })
+  }
 
+
+  async getRide(rideID){
+    let ride = this.db.Ride.get(rideID);
+    if (ride == undefined){
+      console.warn(`No ride found for ${rideID}`);
+      process.exit(1);
+    }
+
+    console.log({ride});
+    return ride;
+  }
+
+
+  async fetchRide(rideID){
+    this.setup();
+
+    const rideData = await this.peloton.getRide(rideID);
+    console.log({rideData});
+    return;
+
+    this.db.Ride.upsert({
+      id: rideData.ride.id,
+      username: userData.user.username,
+      data: userData.user
+    })
   }
 }
 

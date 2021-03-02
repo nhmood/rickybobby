@@ -33,6 +33,6 @@ CREATE TABLE IF NOT EXISTS workouts (
   performance BLOB,
 
 
-  user_id STRING,
-  ride_id STRING
+  user_id TEXT,
+  ride_id TEXT
 );

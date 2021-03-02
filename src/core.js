@@ -151,6 +151,12 @@ class RickyBobby {
       data: workoutData.workout
     });
     console.log({workout});
+
+    const performanceGraphData = await this.peloton.getPerformanceGraph(workoutID);
+    console.log({performanceGraphData});
+    const performance = performanceGraphData.performance;
+
+    workout.update({performance: performance});
     return workout;
   }
 
@@ -216,6 +222,14 @@ class RickyBobby {
           ride_id: ride.id
         });
         console.log({workoutRecord});
+
+        // Grab the associated performance graph data which has the comparison
+        // metrics we need
+        let performanceGraphData = await this.peloton.getPerformanceGraph(workout.id);
+        console.log({performanceGraphData});
+        let performance = performanceGraphData.performance;
+
+        workoutRecord.update({performance: performance});
       }
 
       // Break if there is no more new data available to process
@@ -225,6 +239,28 @@ class RickyBobby {
       }
       await this.sleep(2000);
     }
+  }
+
+
+  // Fetch the performance information associated with a specified workout
+  async fetchPerformanceGraph(workoutID){
+    this.setup();
+
+    // First attempt to lookup a the db backed workout by ID
+    // If the record is not found, perform the fetch then return immediately as
+    // the workout fetch will automatically pull the performanceGraph information
+    let workout = this.db.Workout.get(workoutID);
+    if (workoutRecord == undefined){
+      console.log(`${this.db.Workout.tableName}:${workoutID} not found, fetching`);
+      return this.fetchWorkout(workoutID);
+    }
+
+    const performanceGraphData = await this.peloton.getPerformanceGraph(workoutID);
+    console.log({performanceGraphData});
+    const performance = performanceGraphData.performance;
+
+    workout.update({performance: performance});
+    return workout;
   }
 }
 

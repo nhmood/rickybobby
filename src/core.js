@@ -140,6 +140,21 @@ class RickyBobby {
   }
 
 
+  async fetchWorkout(workoutID){
+    this.setup();
+
+    const workoutData = await this.peloton.getWorkout(workoutID);
+    console.log({workoutData});
+
+    let workout = this.db.Workout.upsert({
+      id:   workoutData.workout.id,
+      data: workoutData.workout
+    });
+    console.log({workout});
+    return workout;
+  }
+
+
   async fetchWorkouts(username, forceFetch = false){
     this.setup();
 

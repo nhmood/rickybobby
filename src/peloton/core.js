@@ -13,6 +13,7 @@ class PelotonAPI {
   pelotonURLS = {
     auth: () => { return `${this.BASE_URL}/auth/login`; },
     user: (userID) => { return `${this.BASE_URL}/api/user/${userID}`; },
+    workout: (workoutID) => { return `${this.BASE_URL}/api/workout/${workoutID}`; },
     workouts: (userID, page = 0) => { return `${this.BASE_URL}/api/user/${userID}/workouts?joins=peloton.ride&page=${page}`;  },
     ride: (rideID) => { return `${this.BASE_URL}/api/ride/${rideID}`; }
   }
@@ -107,6 +108,25 @@ class PelotonAPI {
     }
 
     return rideResponse;
+  }
+
+
+  async getWorkout(workoutID){
+    const url = this.pelotonURLS.workout(workoutID);
+    console.log({url});
+
+    const data = await this.get({
+      url: url
+    });
+
+    // Format the user response accordingly
+    // TODO - should probably type this out into its own WorkoutResponse class
+    const workoutResponse = {
+      workout: data.data,
+      raw: data
+    }
+
+    return workoutResponse;
   }
 
 

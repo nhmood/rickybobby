@@ -15,7 +15,8 @@ class PelotonAPI {
     user: (userID) => { return `${this.BASE_URL}/api/user/${userID}`; },
     workout: (workoutID) => { return `${this.BASE_URL}/api/workout/${workoutID}`; },
     workouts: (userID, page = 0) => { return `${this.BASE_URL}/api/user/${userID}/workouts?joins=peloton.ride&page=${page}`;  },
-    ride: (rideID) => { return `${this.BASE_URL}/api/ride/${rideID}`; }
+    ride: (rideID) => { return `${this.BASE_URL}/api/ride/${rideID}`; },
+    performance: (workoutID) => { return `${this.BASE_URL}/api/workout/${workoutID}/performance_graph`; }
   }
 
 
@@ -154,6 +155,25 @@ class PelotonAPI {
       moreAvailable: (data.page + 1) < resp.data.page_count,
       next: async () => { return this.getWorkouts(userID, data.page + 1); }
     }
+  }
+
+
+  async getPerformanceGraph(workoutID){
+    const url = this.pelotonURLS.performance(workoutID);
+    console.log({url});
+
+    const data = await this.get({
+      url: url
+    });
+
+    // Format the user response accordingly
+    // TODO - should probably type this out into its own RideResponse class
+    const performanceGraphResponse = {
+      performance: data.data,
+      raw: data
+    }
+
+    return performanceGraphResponse;
   }
 
 

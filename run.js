@@ -30,16 +30,53 @@ console.log(rb);
       rb.setup();
       break;
 
-    case 'user':
-      rb.getUser(process.argv[3]);
-      break;
-
     case 'fetch':
-      rb.fetchUser(process.argv[3]);
+      switch(process.argv[3]){
+        case 'user':
+          rb.fetchUser(process.argv[4]);
+          break;
+
+        case 'ride':
+          rb.fetchRide(process.argv[4]);
+          break;
+
+        case 'workout':
+          rb.fetchWorkout(process.argv[4]);
+          break;
+
+        case 'workouts':
+          rb.fetchWorkouts(process.argv[4], process.argv[5]);
+          break;
+
+        default:
+          console.warn("Unrecognized fetch target");
+          process.exit(1);
+      }
       break;
 
-    case 'workouts':
-      rb.getWorkouts(process.argv[3]);
+
+    case 'get':
+      switch(process.argv[3]){
+        case 'user':
+          rb.getUser(process.argv[4]);
+          break;
+
+        case 'ride':
+          rb.getRide(process.argv[4]);
+          break;
+
+        case 'workout':
+          rb.getWorkout(process.argv[4]);
+          break;
+
+        case 'workouts':
+          rb.getWorkouts(process.argv[4]);
+          break;
+
+        default:
+          console.warn("Unrecognized get target");
+          process.exit(1);
+      }
       break;
 
     default:

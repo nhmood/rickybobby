@@ -108,6 +108,107 @@ class RickyBobby {
       username: userData.user.username,
       data: userData.user
     })
+
+  }
+
+
+  async getWorkout(workoutID){
+    let workout = this.db.Workout.get(workoutID);
+    if (workout == undefined){
+      console.warn(`No workout found for ${workoutID}`);
+      process.exit(1);
+    }
+
+    console.log({workout});
+    return workout;
+  }
+
+
+  async getWorkouts(username){
+    let user = await this.getUser(username);
+    console.log({user});
+
+    let workouts = this.db.Workout.where({user_id: user.id});
+    if (workouts == undefined){
+      console.warn(`No workouts found for ${username}`);
+      process.exit(1);
+    }
+
+    console.log({workouts});
+    return workouts;
+  }
+
+
+  async fetchWorkouts(username, forceFetch = false){
+    this.setup();
+
+    let user = await this.getUser(username);
+    console.log({user});
+
+    console.log("Initializing workoutCursor");
+    let workoutCursor = this.peloton.workoutCursor(user.id);
+    while(true){
+      workoutCursor = await workoutCursor.next();
+      console.log({workoutCursor});
+
+      // Walk through the workout set returned from the API
+      // This data is returned by newest first (reverse chronological)
+      // While walking through the data, if the matching record already
+      // exists in the database, then we can safely stop processing data
+      console.log("Processing workouts for cursor");
+      for (let i = 0; i < workoutCursor.workouts.length; i++){
+        let workout = workoutCursor.workouts[i];
+        console.log(`Processing workout:${workout.id} from API`);
+        console.log({workout});
+
+
+        // The workout data is joined with the associated ride information
+        // Pull out the ride to be stored separately, and reinsert the ride_id
+        // into the workout object
+
+        let ride = workout.peloton.ride;
+        delete workout.peloton;
+        workout.ride_id = ride.id;
+        console.debug({workout});
+        console.debug({ride});
+
+        // TODO - figure out whether we want to upsert, first/create, or first OR create
+        console.log(`Upserting Ride:${ride.id}`);
+        let rideRecord = this.db.Ride.upsert({
+          id: ride.id,
+          data: ride
+        })
+        console.log({rideRecord});
+
+        // If we find a workout that already exists for this user, we can
+        // stop processing since results are returned chronologically
+        let workoutRecord = this.db.Workout.get(workout.id);
+        if (workoutRecord != undefined){
+          console.log(`${this.db.Workout.tableName}:${workout.id} already exists, workouts up to date`);
+          // TODO - not sure how I feel about storing the earlyExit flag in workoutCursor
+          //        break from here seems to apply to the for loop and not the parent while
+          workoutCursor.earlyExit = true;
+          break;
+        }
+
+        console.log(`${this.db.Workout.tableName}:${workout.id} not found, creating`);
+        workoutRecord = this.db.Workout.create({
+          id: workout.id,
+          data: workout,
+
+          user_id: user.id,
+          ride_id: ride.id
+        });
+        console.log({workoutRecord});
+      }
+
+      // Break if there is no more new data available to process
+      if (!workoutCursor.moreAvailable || (!forceFetch && workoutCursor.earlyExit)){
+        console.log(`No more data for ${user.id}:${user.username}`);
+        break;
+      }
+      await this.sleep(2000);
+    }
   }
 }
 

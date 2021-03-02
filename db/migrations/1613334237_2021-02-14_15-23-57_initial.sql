@@ -28,6 +28,7 @@ CREATE TABLE IF NOT EXISTS workouts (
   id TEXT PRIMARY KEY,
   created_at INTEGER,
   updated_at INTEGER,
+  fitness_discipline TEXT,
   data BLOB,
   performance BLOB,
 

@@ -148,7 +148,8 @@ class RickyBobby {
 
     let workout = this.db.Workout.upsert({
       id:   workoutData.workout.id,
-      data: workoutData.workout
+      data: workoutData.workout,
+      fitness_discipline: workoutData.workout.fitness_discipline,
     });
     console.log({workout});
 
@@ -217,6 +218,7 @@ class RickyBobby {
         workoutRecord = this.db.Workout.create({
           id: workout.id,
           data: workout,
+          fitness_discipline: workout.fitness_discipline,
 
           user_id: user.id,
           ride_id: ride.id

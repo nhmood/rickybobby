@@ -91,6 +91,10 @@ console.log(rb);
       rb.commonWorkouts(process.argv[3], process.argv[4]);
       break;
 
+    case 'web':
+      rb.web.start();
+      break;
+
     default:
       console.log("Unknown argument");
       process.exit(1);

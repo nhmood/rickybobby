@@ -1,0 +1,116 @@
+@import url('https://rsms.me/inter/inter.css');
+html { font-family: 'Inter', sans-serif; }
+@supports (font-variation-settings: normal) {
+  html { font-family: 'Inter var', sans-serif; }
+}
+
+:root {
+  --c1: #EDE7E3;
+  --c2: #489FB5;
+  --c3: #82C0CC;
+  --c4: #990D35;
+}
+
+body {
+	font-family: 'Inter var', sans-serif;
+  margin-top: 5%;
+}
+
+hr {
+  margin-top: 0px;
+}
+
+#header {
+  text-align: center;
+  font-weight: 300;
+  margin-bottom: 40px;
+}
+
+#header .title {
+  font-size: 50px;
+  text-transform: uppercase;
+}
+
+#header .title h1 {
+  margin-bottom: 0px;
+}
+
+#header .title h5 {
+  font-size: 15px;
+}
+
+#header .nav{
+  text-align: right;
+  text-transform: uppercase;
+}
+
+#main .search {
+  text-align: center;
+}
+
+#header > * input {
+  padding: 0px 30px;
+  width: 80%;
+  border: 0px;
+  border-bottom: 2px solid #cfcfcf;
+}
+
+mark {
+  background-color: transparent;
+}
+mark.em {
+  font-weight: 600;
+}
+mark.i {
+  font-style: oblique;
+}
+
+.hide {
+  display: none;
+}
+
+.info {
+}
+
+.info img {
+  width: 50px;
+  border-radius: 3px;
+}
+
+.info .username {
+  font-weight: 800;
+  font-size: 30px;
+}
+
+
+
+
+.material-icons {
+  font-family: 'Material Icons';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;  /* Preferred icon size */
+  display: inline-block;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+
+  /* Support for all WebKit browsers. */
+  -webkit-font-smoothing: antialiased;
+  /* Support for Safari and Chrome. */
+  text-rendering: optimizeLegibility;
+
+  /* Support for Firefox. */
+  -moz-osx-font-smoothing: grayscale;
+
+  /* Support for IE. */
+  font-feature-settings: 'liga';
+}
+
+.material-icons.md-18 { font-size: 18px; }
+.material-icons.md-24 { font-size: 24px; }
+.material-icons.md-36 { font-size: 36px; }
+.material-icons.md-48 { font-size: 48px; }

@@ -199,6 +199,7 @@ class RickyBobby {
     console.log("Initializing workoutCursor");
     let workoutCursor = this.peloton.workoutCursor(user.id);
     while(true){
+      this.sleep(500);
       workoutCursor = await workoutCursor.next();
       console.log({workoutCursor});
 
@@ -208,6 +209,7 @@ class RickyBobby {
       // exists in the database, then we can safely stop processing data
       console.log("Processing workouts for cursor");
       for (let i = 0; i < workoutCursor.workouts.length; i++){
+        this.sleep(500);
         let workout = workoutCursor.workouts[i];
         console.log(`Processing workout:${workout.id} from API`);
         console.log({workout});
@@ -273,6 +275,7 @@ class RickyBobby {
         let performanceGraphData = await this.peloton.getPerformanceGraph(workout.id);
         console.log({performanceGraphData});
         let performance = performanceGraphData.performance;
+        console.log({workoutRecord});
 
         workoutRecord.update({performance: performance});
       }

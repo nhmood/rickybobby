@@ -2,6 +2,7 @@ console.log("rickybobby core");
 
 const db = require("./db/core.js");
 const peloton = require("./peloton/core.js");
+const web = require("./web/core.js");
 
 
 class RickyBobby {
@@ -12,6 +13,7 @@ class RickyBobby {
 
     this.db       = new db(config.database);
     this.peloton  = new peloton(config.peloton_api);
+    this.web      = new web(config.web, this.db);
   }
 
   sleep(ms) {

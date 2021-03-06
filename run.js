@@ -40,6 +40,10 @@ console.log(rb);
           rb.fetchRide(process.argv[4]);
           break;
 
+        case 'instructor':
+          rb.fetchInstructor(process.argv[4]);
+          break;
+
         case 'workout':
           rb.fetchWorkout(process.argv[4]);
           break;
@@ -63,6 +67,10 @@ console.log(rb);
 
         case 'ride':
           rb.getRide(process.argv[4]);
+          break;
+
+        case 'instructor':
+          rb.getInstructor(process.argv[4]);
           break;
 
         case 'workout':

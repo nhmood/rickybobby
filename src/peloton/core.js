@@ -16,6 +16,7 @@ class PelotonAPI {
     workout: (workoutID) => { return `${this.BASE_URL}/api/workout/${workoutID}`; },
     workouts: (userID, page = 0) => { return `${this.BASE_URL}/api/user/${userID}/workouts?joins=peloton.ride&page=${page}`;  },
     ride: (rideID) => { return `${this.BASE_URL}/api/ride/${rideID}`; },
+    instructor: (instructorID) => { return `${this.BASE_URL}/api/instructor/${instructorID}`; },
     performance: (workoutID) => { return `${this.BASE_URL}/api/workout/${workoutID}/performance_graph`; }
   }
 
@@ -109,6 +110,23 @@ class PelotonAPI {
     }
 
     return rideResponse;
+  }
+
+
+  async getInstructor(instructorID){
+    const url = this.pelotonURLS.instructor(instructorID);
+    console.log({url});
+
+    const data = await this.get({
+      url: url
+    });
+
+    const instructorResponse = {
+      instructor: data.data,
+      raw: data
+    };
+
+    return instructorResponse;
   }
 
 

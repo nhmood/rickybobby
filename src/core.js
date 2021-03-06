@@ -113,6 +113,34 @@ class RickyBobby {
   }
 
 
+  async getInstructor(instructorID){
+    let instructor = this.db.Instructor.get(instructorID);
+    if (instructor == undefined){
+      console.warn(`No instructor found for ${instructorID}`);
+      process.exit(1);
+    }
+
+    console.log({instructor});
+    return instructor;
+  }
+
+
+  async fetchInstructor(instructorID){
+    this.setup();
+
+    const instructorData = await this.peloton.getInstructor(instructorID);
+    console.log({instructorData});
+
+    let instructor = this.db.Instructor.upsert({
+      id:   instructorData.instructor.id,
+      data: instructorData.instructor
+    });
+    console.log({instructor});
+    return instructor;
+  }
+
+
+
   async getWorkout(workoutID){
     let workout = this.db.Workout.get(workoutID);
     if (workout == undefined){
@@ -202,6 +230,21 @@ class RickyBobby {
           data: ride
         })
         console.log({rideRecord});
+
+        let instructorRecord = this.db.Instructor.get(ride.instructor_id);
+        if (instructorRecord == undefined){
+          console.log(`${this.db.Instructor.tableName}:${ride.instructor_id} not found, fetching`);
+          let instructorData = await this.peloton.getInstructor(ride.instructor_id);
+          console.log({instructorData});
+
+          // Insert record into database
+          instructorRecord = this.db.Instructor.create({
+            id:   instructorData.instructor.id,
+            data: instructorData.instructor
+          })
+          console.log({instructorRecord});
+        }
+
 
         // If we find a workout that already exists for this user, we can
         // stop processing since results are returned chronologically

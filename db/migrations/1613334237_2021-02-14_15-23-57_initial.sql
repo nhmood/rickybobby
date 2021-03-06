@@ -24,6 +24,16 @@ CREATE TABLE IF NOT EXISTS rides (
   data BLOB
 );
 
+
+CREATE TABLE IF NOT EXISTS instructors (
+  id TEXT PRIMARY KEY,
+  created_at INTEGER,
+  updated_at INTEGER,
+
+  data BLOB
+);
+
+
 CREATE TABLE IF NOT EXISTS workouts (
   id TEXT PRIMARY KEY,
   created_at INTEGER,

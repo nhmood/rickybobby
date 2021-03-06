@@ -91,7 +91,7 @@ class Model {
 
 
   // Query specified model table with provided conditions
-  static where(conditions, limit){
+  static where(conditions, limit, page = 0){
     // Grab the fields to be queried by from the conditions and format
     // the named parameters for the SQL statement
     let fields        = Object.keys(conditions);
@@ -104,7 +104,7 @@ class Model {
     // If the limit parameter is present and a valid integer, append to the SQL statement
     let limitInt = parseInt(limit);
     if (limitInt){
-      sql = sql.concat(` LIMIT ${limitInt}`);
+      sql = sql.concat(` LIMIT ${limitInt} OFFSET ${ limit * page }`);
     }
 
 
@@ -115,6 +115,24 @@ class Model {
 
     console.log({models});
     return models;
+  }
+
+
+  // Count specified model table with provided conditions
+  static count(conditions){
+    // Grab the fields to be queried by from the conditions and format
+    // the named parameters for the SQL statement
+    let fields        = Object.keys(conditions);
+    let fieldBindings = Object.keys(conditions).map(f => { return `${f} = @${f}` });
+
+
+    // Format the initial SQL WHERE statement with the table and field bindings
+    let sql = `SELECT COUNT(*) as count FROM ${this.tableName} WHERE ${fieldBindings.join(" AND")}`
+
+    // Perform the SQL query then map the results into proper model instances
+    const stmt = this.db.prepare(sql);
+    const result = stmt.get(conditions);
+    return result.count;
   }
 
 
@@ -129,7 +147,8 @@ class Model {
   // Handles minor validations as well as created/updated_at timestamp setting
   static create(data){
     console.log({data});
-    if (!this.getPK(data)){ return false; }
+    const pk = this.getPK(data);
+    if (!pk){ return false; }
 
     // Add the created/updated_at fields unless already present in the data
     data.created_at = data.created_at || (new Date()).getTime();
@@ -156,16 +175,16 @@ class Model {
     const result = stmt.run(data);
     console.log(result);
 
-
-    // TODO - look at result to figure out what to return here
-    return result;
+    const record = this.get(pk);
+    return record;
   }
 
 
   // Update a record of the specified model with the specified data
   // This is a static method of the model that is called from an instance of the record
   static update(data){
-    if (!this.getPK(data)){ return false; }
+    const pk = this.getPK(data);
+    if (!pk){ return false; };
 
     // Add the updated_at field unless already present in teh data
     data.updated_at = data.updated_at || (new Date()).getTime();
@@ -181,9 +200,8 @@ class Model {
     const result = stmt.run(data);
     console.log(result);
 
-
-    // TODO - look at result to figure out what to return here
-    return result;
+    const record = this.get(pk);
+    return record;
   }
 
 

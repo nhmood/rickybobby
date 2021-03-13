@@ -91,15 +91,24 @@ class Model {
 
 
   // Query specified model table with provided conditions
-  static where(conditions, limit, page = 0){
-    // Grab the fields to be queried by from the conditions and format
-    // the named parameters for the SQL statement
-    let fields        = Object.keys(conditions);
-    let fieldBindings = Object.keys(conditions).map(f => { return `${f} = @${f}` });
-
+  static where(conditions = {}, limit, page = 0, count = false){
+    // Set the selector condition based on whether we want to count or retrieve
+    // TODO - probably want to add a fields specifier here
+    let selector = count ? "COUNT(*) as count" : "*";
 
     // Format the initial SQL WHERE statement with the table and field bindings
-    let sql = `SELECT * FROM ${this.tableName} WHERE ${fieldBindings.join(" AND")}`
+    let sql = `SELECT ${selector} FROM ${this.tableName}`;
+
+    // If there are conditions provided for the query, then properly format
+    // the field bindings and apply them to the SQL statement
+    if (Object.keys(conditions).length > 0 ){
+      // Grab the fields to be queried by from the conditions and format
+      // the named parameters for the SQL statement
+      let fields        = Object.keys(conditions);
+      let fieldBindings = Object.keys(conditions).map(f => { return `${f} = @${f}` });
+
+      sql = sql.concat(` WHERE ${fieldBindings.join(" AND")}`);
+    }
 
     // If the limit parameter is present and a valid integer, append to the SQL statement
     let limitInt = parseInt(limit);
@@ -110,6 +119,15 @@ class Model {
 
     // Perform the SQL query then map the results into proper model instances
     const stmt = this.db.prepare(sql);
+
+    // If we are just counting, no need to format the results
+    // into the corresponding model, just return the count
+    if (count){
+      const record = stmt.get(conditions);
+      return record.count;
+    }
+
+    // Get the records and map to the model
     const records = stmt.all(conditions);
     const models = records.map(r => { return new this(r) });
 
@@ -119,20 +137,9 @@ class Model {
 
 
   // Count specified model table with provided conditions
-  static count(conditions){
-    // Grab the fields to be queried by from the conditions and format
-    // the named parameters for the SQL statement
-    let fields        = Object.keys(conditions);
-    let fieldBindings = Object.keys(conditions).map(f => { return `${f} = @${f}` });
-
-
-    // Format the initial SQL WHERE statement with the table and field bindings
-    let sql = `SELECT COUNT(*) as count FROM ${this.tableName} WHERE ${fieldBindings.join(" AND")}`
-
-    // Perform the SQL query then map the results into proper model instances
-    const stmt = this.db.prepare(sql);
-    const result = stmt.get(conditions);
-    return result.count;
+  static count(conditions = {}){
+    let result = this.where(conditions, 0, 0, true);
+    return result;
   }
 
 

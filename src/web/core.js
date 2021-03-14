@@ -56,39 +56,40 @@ class Web {
     });
 
 
+    // User search handler - mainly for form POST until we move to JS based
+    this.app.post('/users/search', (req, res) => {
+      let username = req.body.username;
+      res.redirect(301, `/users/${username}`);
+    });
 
+
+    // User lookup endpoint
     this.app.get('/users/:username', (req, res) => {
       let username = req.params.username;
-      console.log(`Attempting to lookup ${username}`);
       let user = this.db.User.first({username: username});
-      console.log({user});
 
-      // ERROR HERE IF NOT FOUND
+      // TODO - ERROR HERE IF NOT FOUND
 
-      let workoutCount = this.db.Workout.count({
-        user_id: user.id
-      });
-      console.log(workoutCount);
-
+      // Lookup the workout count and determine the page bounds
+      let workoutCount = this.db.Workout.count({user_id: user.id});
       let page = parseInt(req.query.p) || 1;
-      console.log({page});
       page = Math.max(...[1, page]);
       page = Math.min(...[page, Math.ceil(workoutCount / this.PAGE_LIMIT)]);
 
-      console.log({page});
-
+      // Lookup the associated workouts for the user with proper page/limits
       let workouts = this.db.Workout.where({
         user_id: user.id
       }, this.PAGE_LIMIT, page - 1);
-      console.log({workouts});
-
 
 
 
       /*
        * TODO - not sure if this is the most efficient, although SQLite is supposed
-       * to handle multiple small queries pretty well
+       *        to handle multiple small queries pretty well
+       * TODO - instructor and ride can technically both be cached
        *
+       * Can reduce the ride and instructor ids down to a single set and perform
+       * a single query to fetch all, then reassemble into objects
        * let rideIDs = workouts.reduce((result, workout) => { result[workout.ride_id] = true; return result }, {});
        * let rides = Object.keys(rideIDs).forEach((result, rideID) => {
        *   let ride = this.db.Ride.where({id: rideID});
@@ -96,7 +97,7 @@ class Web {
        * })
        *
       */
-
+      // For each workout, grab associated ride and instructor
       workouts.forEach(w => {
         let ride = this.db.Ride.get(w.ride_id);
         w.ride = ride;
@@ -106,6 +107,7 @@ class Web {
       });
 
 
+      // Generate pagination for workout data
       const pagination = {
         total: workoutCount,
         prev_page: page > 1 ? page - 1 : null,
@@ -113,6 +115,7 @@ class Web {
       }
 
 
+      // Render the users template with the associated data
       res.render('users', {
         user: {
           username: username,
@@ -131,16 +134,8 @@ class Web {
     });
 
 
-    this.app.post('/users/search', (req, res) => {
-      let username = req.body.username;
-      console.log(`Attempting to lookup ${username}`);
-      let user = this.db.User.first({
-        username: username
       });
-      console.log({user});
 
-      // ERROR IF NOT FOUND
-      res.redirect(301, `/users/${username}`);
     });
 
 

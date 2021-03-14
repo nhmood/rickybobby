@@ -6,13 +6,62 @@
 
     <div id="main" class="row">
       <div class="row search">
-        <form method="POST" action="/users/search">
-          <label for="username"></label>
-          <input type="text" id="searchUsername" name="username" placeholder="peloton username"></input>
-          <input type="submit" value="search"></input>
+        <form method="POST" action="/shakeandbake/">
+          <div class="row">
+            <div class="five columns user">
+              <label for="username"></label>
+              <input class="u-full-width" type="text" id="searchUsernameA" name="usernameA" placeholder="USERNAME"></input>
+            </div>
+
+            <div class="two columns vs">
+            VS
+            </div>
+
+            <div class="five columns user">
+              <label for="username"></label>
+              <input type="text" id="searchUsernameB" name="usernameB" placeholder="USERNAME"></input>
+            </div>
+          </div>
+
+          <br>
+          <div class="row">
+            <input class="shake" type="submit" value="🍗 SHAKE AND BAKE 🍗"></input>
+          </div>
         </form>
+      </div>
+
+
+
+      <div class="row recent">
+        <h1>Recent Activity</h1>
+        {{#workouts.data}}
+          <div class="row">
+            <div class="three columns">&nbsp;</div>
+            <div class="six columns">
+              <div class="one columns user_profile"><img class="u-full-width" src="{{user.data.image_url}}"></img></div>
+              <span> <mark class="em"><a href="/users/{{user.username}}">{{user.username}}</a></mark> / <mark class="i">{{ride.data.title}}</mark> / {{avg_output}} watts</span>
+            </div>
+            <div class="three columns">&nbsp;</div>
+          </div>
+        {{/workouts.data}}
       </div>
     </div><!-- main -->
   </div><!-- container -->
 </body>
+
+
+<pre class="hide" data-type="workouts">
+  {{ workouts.debug }}
+</pre>
+
+<script>
+  let debug = document.getElementsByTagName("pre");
+  let data = Array.from(debug).reduce((result, item) => {
+    let type =item.dataset.type;
+    result[type] = JSON.parse(item.innerHTML);
+    return result;
+  }, {})
+</script>
+
+
 {{> partials/_end }}

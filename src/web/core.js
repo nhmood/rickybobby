@@ -22,8 +22,37 @@ class Web {
     this.app.use(bodyParser.urlencoded({ extended: false }))
     this.app.use(bodyParser.json())
 
+
+    // Render main page including recent workout summaries
     this.app.get('/', (req, res) => {
-      res.render('index', {});
+      // Grab the latest workouts and map them to pull in
+      // the associated ride, instructor, and performance info
+      // TODO - might want to restructure workout model to normalize
+      //        required data or join to get all data at once
+      let recentWorkouts = this.db.Workout.recent(10);
+      recentWorkouts.forEach(w => {
+        let user = this.db.User.get(w.user_id);
+        w.user = user;
+
+        let ride = this.db.Ride.get(w.ride_id);
+        w.ride = ride;
+
+        let instructor = this.db.Instructor.get(ride.data.instructor_id);
+        w.instructor = instructor;
+
+        // Pull the average output metric for the workout
+        if (w.performance.average_summaries[0]){
+          w.avg_output = w.performance.average_summaries[0].value;
+        }
+      });
+
+      // Render the index template
+      res.render('index', {
+        workouts: {
+          data: recentWorkouts,
+          debug: JSON.stringify(recentWorkouts, null, 2)
+        }
+      });
     });
 
 

@@ -134,8 +134,37 @@ class Web {
     });
 
 
-      });
 
+    // Rider list endpoint
+    this.app.get('/riders', (req, res) => {
+      // Lookup the user count and determine the page bounds
+      let userCount = this.db.User.count();
+      let page = parseInt(req.query.p) || 1;
+      page = Math.max(...[1, page]);
+      page = Math.min(...[page, Math.ceil(userCount / this.PAGE_LIMIT)]);
+
+      // Look users with proper page/limit
+      let users = this.db.User.where({}, this.PAGE_LIMIT, page - 1);
+
+      // Generate pagination for workout data
+      const pagination = {
+        total: userCount,
+        prev_page: page > 1 ? page - 1 : null,
+        next_page: page < (userCount / this.PAGE_LIMIT) ? page + 1 : null
+      }
+
+
+      // Render riders template with associated data
+      res.render('riders', {
+        riders: {
+          data: users,
+          debug: JSON.stringify(users, null, 2)
+        },
+        pagination: {
+          data: pagination,
+          debug: JSON.stringify(pagination, null, 2)
+        }
+      });
     });
 
 

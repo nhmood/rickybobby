@@ -58,16 +58,11 @@ class RickyBobby {
   }
 
 
-  getResource(resource, id){
-    // Format the resource name and attempt to grab the model from this.db
-    const modelName = resource[0].toUpperCase() + resource.slice(1);
-    const model = this.db[modelName];
 
-    // If there is no associated model for this resource, print and error and return
-    if (model == undefined){
-      console.warn(`Unrecognized data model ${resource}/${modelName}`);
-      return false;
-    }
+
+  getResource(resource, id){
+    let model = this.db.resource(resource);
+    if (!model){ return false; };
 
     // Attempt to lookup the associated record by ID
     let record = model.get(id);
@@ -77,6 +72,19 @@ class RickyBobby {
     }
 
     return record;
+  }
+
+  storeResource(resource, data){
+    let model = this.db.resource(resource);
+    if (!model){ return false; };
+
+    let apiData = this.db.APIData.import(resource, data);
+    let record = model.import(apiData.data)
+
+    return {
+      apiData: apiData,
+      record: record
+    }
   }
 
 
@@ -138,7 +146,7 @@ class RickyBobby {
     let apiData = this.db.APIData.import('instructor', instructorData.instructor);
     let instructor = this.db.Instructor.import(apiData.data);
 
-    return instructor
+    return instructor;
   };
 
 

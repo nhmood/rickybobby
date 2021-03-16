@@ -78,6 +78,20 @@ class Database {
     this.Instructor = models.Instructor.setup(this.#db);
     this.Workout    = models.Workout.setup(this.#db);
   }
+
+  resource(name){
+    // Format the resource name and attempt to grab the model from this.db
+    const modelName = name[0].toUpperCase() + name.slice(1);
+    const model = this[modelName];
+
+    // If there is no associated model for this resource, print and error and return
+    if (model == undefined){
+      console.warn(`Unrecognized data model ${resource}/${modelName}`);
+      return false;
+    }
+
+    return model;
+  }
 }
 
 module.exports = Database;

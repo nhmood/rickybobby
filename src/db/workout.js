@@ -1,7 +1,44 @@
 const Model = require("./model.js");
 class Workout extends Model {
   static tableName = "workouts";
-  static jsonFields = ["data", "performance"];
+  static jsonFields = [];
+
+
+
+  static import(data){
+    // Form the base payload that applies to all workouts
+    let workoutRecord = {
+      id: data.id,
+      taken_at: data.created_at,
+      type: data.fitness_discipline,
+      duration: data.performance.duration,
+
+
+      ride_id: data.ride.id,
+      user_id: data.user_id
+    }
+
+
+    // If the workout is "cycling", conditionally add the necessary
+    // performance metrics before upserting
+    if (workoutRecord.type == "cycling"){
+      workoutRecord = Object.assign(workoutRecord, {
+        total_output:     data.performance.summaries[0].value,
+        max_output:       data.performance.metrics[0].max_value,
+        avg_output:       data.performance.metrics[0].average_value,
+        max_cadence:      data.performance.metrics[1].max_value,
+        avg_cadence:      data.performance.metrics[1].average_value,
+        max_resistance:   data.performance.metrics[2].max_value,
+        avg_resistance:   data.performance.metrics[2].average_value,
+        max_speed:        data.performance.metrics[3].max_value,
+        avg_speed:        data.performance.metrics[3].average_value,
+      });
+    }
+
+
+    let workout = this.upsert(workoutRecord)
+    return workout;
+  }
 
 
   static commonWorkouts(userA, userB){

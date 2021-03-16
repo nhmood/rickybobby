@@ -65,13 +65,25 @@ CREATE TABLE IF NOT EXISTS instructors (
 
 
 CREATE TABLE IF NOT EXISTS workouts (
-  id TEXT PRIMARY KEY,
-  created_at INTEGER,
-  updated_at INTEGER,
-  fitness_discipline TEXT,
-  data BLOB,
-  performance BLOB,
+  id            TEXT PRIMARY KEY,
+  created_at    INTEGER,
+  updated_at    INTEGER,
+  taken_at      INTEGER,
 
+
+  type      TEXT,
+  duration  INTEGER,
+
+
+  total_output    INTEGER,
+  max_output      INTEGER,
+  avg_output      INTEGER,
+  max_cadence     INTEGER,
+  avg_cadence     INTEGER,
+  max_resistance  INTEGER,
+  avg_resistance  INTEGER,
+  max_speed       INTEGER,
+  avg_speed       INTEGER,
 
   user_id TEXT,
   ride_id TEXT

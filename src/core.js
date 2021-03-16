@@ -188,21 +188,19 @@ class RickyBobby {
   async fetchWorkout(workoutID){
     this.setup();
 
+    // Fetch the data from the Peloton API, store the raw
+    // data into the APIData table, then populate a corresponding
+    // Workout record using the import helper
     const workoutData = await this.peloton.getWorkout(workoutID);
-    console.log({workoutData});
+    const performanceData = await this.peloton.getPerformanceGraph(workoutID);
 
-    let workout = this.db.Workout.upsert({
-      id:   workoutData.workout.id,
-      data: workoutData.workout,
-      fitness_discipline: workoutData.workout.fitness_discipline,
-    });
-    console.log({workout});
+    // Combine the workoutData and performanceData
+    const data = workoutData.workout;
+    data.performance = performanceData.performance;
 
-    const performanceGraphData = await this.peloton.getPerformanceGraph(workoutID);
-    console.log({performanceGraphData});
-    const performance = performanceGraphData.performance;
+    let apiData = this.db.APIData.import('workout', workoutData.workout);
+    let workout = this.db.Workout.import(apiData.data);
 
-    workout.update({performance: performance});
     return workout;
   }
 

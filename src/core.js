@@ -13,7 +13,7 @@ class RickyBobby {
 
     this.db       = new db(config.database);
     this.peloton  = new peloton(config.peloton_api);
-    this.web      = new web(config.web, this.db);
+    this.web      = new web(config.web, this.db, this);
   }
 
   sleep(ms) {
@@ -58,6 +58,7 @@ class RickyBobby {
   }
 
 
+  // TODO - remove async and references, only required for network fetch
   async getUser(username){
     let user = this.db.User.first({
       username: username
@@ -88,6 +89,7 @@ class RickyBobby {
   }
 
 
+  // TODO - remove async and references, only required for network fetch
   async getRide(rideID){
     let ride = this.db.Ride.get(rideID);
     if (ride == undefined){
@@ -115,6 +117,7 @@ class RickyBobby {
   }
 
 
+  // TODO - remove async and references, only required for network fetch
   async getInstructor(instructorID){
     let instructor = this.db.Instructor.get(instructorID);
     if (instructor == undefined){
@@ -143,6 +146,7 @@ class RickyBobby {
 
 
 
+  // TODO - remove async and references, only required for network fetch
   async getWorkout(workoutID){
     let workout = this.db.Workout.get(workoutID);
     if (workout == undefined){
@@ -314,30 +318,41 @@ class RickyBobby {
   }
 
 
+  // Handler for common workout finder
+  // Grabs common workouts (rides) between two users
+  // then formats the payloads to include necessary components
+  // NOTE - formatted payload is VERY GET /shakeandbake centric
+  //        this is mainly because mustache js templating is super rigid
+  //        if we move to handlebars or something maybe we can just push the
+  //        data and let the view handle pulling data components from various components
   async commonWorkouts(usernameA, usernameB){
     let userA = await this.getUser(usernameA);
     let userB = await this.getUser(usernameB);
 
-    console.log(userA);
-    console.log(userB);
-
-    // Get all the common workouts between the two users
+    // Get all the common workouts between the two users using the workout model
+    // helper method (performs specific SQL for joins)
     let commonWorkouts = this.db.Workout.commonWorkouts(userA, userB);
 
 
-    // Format the payload as an object where the keys are ride_id,
-    // the value is another object that has ride info, latest taken workout,
-    // and a list of the associated workouts
-    // {
-    //   "ride_id": {
-    //     "ride_info": {},
-    //     "last_taken_workout": DateTime,
-    //     "workouts": []
-    //   }...
-    // }
+    /*
+     *  Format the payload as an object where the keys are ride_id,
+     *  the value is another object that has ride info, latest taken workout,
+     *  and a list of the associated workouts
+     *  {
+     *    "ride_id": {
+     *      "ride_info": {},
+     *      "last_taken_workout": DateTime,
+     *      "workouts": []
+     *    }...
+     *  }
+     */
 
+    // Create a cache of rides between the common workouts
+    // TODO - can move this over to map/reduce once we get rid of
+    //        async resource calls, little messy otherwise
     let rides = {};
     for (let i = 0; i < commonWorkouts.length; i++){
+      // Grab the workout we are processing and the rideID
       let workout = commonWorkouts[i];
       let rideID = workout.ride_id;
 
@@ -350,16 +365,56 @@ class RickyBobby {
           last_taken_workout: 0,
           workouts: []
         }
+
+        // Pull the associated instructor for this ride as well
+        let instructor = await this.db.Instructor.get(ride.data.instructor_id);
+        ride.instructor = instructor;
       }
 
 
+      // Push the workout into the array of workouts for this ride
+      // and update the last_taken_workout parameter for the ride
+      // if applicable (used for sorting later)
       rides[rideID].workouts.push(workout);
       if (rides[rideID].last_taken_workout < workout.created_at){
         rides[rideID].last_taken_workout = workout.created_at;
       }
     }
 
-    console.log({rides});
+
+    // Walk through the rides/workouts and tally the wins
+    // for each user
+    let wins = {};
+    wins[userA.id] = 0
+    wins[userB.id] = 0
+
+
+    // Rides is a object thatt acts like a set (to dedup rides)
+    // so walk through the keys to proccess each ride
+    // TODO - this doesn't take into account a user taking the same
+    //        ride multiple times
+    for (let i = 0; i < Object.keys(rides).length; i++){
+      // Grab the ride object we are processing
+      // and pull out the workouts
+      let rideID = Object.keys(rides)[i];
+      let workouts = rides[ rideID ].workouts;
+
+
+      let outputA = workouts[0].performance.average_summaries[0].value;
+      let outputB = workouts[1].performance.average_summaries[0].value;
+
+      workouts[0].avg_output = outputA;
+      workouts[1].avg_output = outputB;
+
+      // Based on the output pick the winner (index)
+      let winner =  outputA > outputB ? 0 : 1;
+
+      wins[ workouts[winner].user_id ] += 1;
+      workouts[winner].winner = true;
+      rides[rideID].winner = workouts[winner].user_id
+    }
+
+    rides.wins = wins;
     return rides;
   }
 }

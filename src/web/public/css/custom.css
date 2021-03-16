@@ -16,6 +16,106 @@ body {
   margin-top: 5%;
 }
 
+#main h1 {
+  font-weight: 100;
+}
+
+#main h2 {
+  font-weight: 500;
+}
+
+
+.score {
+  font-size: 50px;
+}
+
+.user_info {
+  margin-bottom: 50px;
+}
+
+.feather-12 {
+  height: 12px;
+  width: 12px;
+}
+
+.feather-16 {
+  height: 16px;
+  width: 16px;
+}
+
+.feather-32 {
+  height: 32px;
+  width: 32px;
+}
+
+
+.ride-name {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.ride-instructor {
+  font-weight: 300;
+}
+
+.ride-image img {
+  border-radius: 50%;
+  border: 3px solid #efefef;
+  width: 20vh;
+}
+
+.component {
+  box-shadow: 0 30px 60px rgb(0 0 0 / 10%);
+  padding: 20px;
+  border-radius: 15px;
+  border: 1px solid #efefef;
+}
+
+.comparison {
+  margin: 50px 0px;
+}
+
+.profile {
+  border-radius: 80px;
+}
+
+.user_info .username {
+  font-weight: 700;
+}
+
+.user_info .location {
+}
+
+.user_info .userA > * {
+  text-align: right;
+}
+
+.user_info .userB > * {
+  text-align: left;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*  NOT VALIDATED */
+
+
+
+
+
 hr {
   margin-top: 0px;
 }
@@ -83,34 +183,56 @@ mark.i {
 }
 
 
-
-
-.material-icons {
-  font-family: 'Material Icons';
-  font-weight: normal;
-  font-style: normal;
-  font-size: 24px;  /* Preferred icon size */
-  display: inline-block;
-  line-height: 1;
-  text-transform: none;
-  letter-spacing: normal;
-  word-wrap: normal;
-  white-space: nowrap;
-  direction: ltr;
-
-  /* Support for all WebKit browsers. */
-  -webkit-font-smoothing: antialiased;
-  /* Support for Safari and Chrome. */
-  text-rendering: optimizeLegibility;
-
-  /* Support for Firefox. */
-  -moz-osx-font-smoothing: grayscale;
-
-  /* Support for IE. */
-  font-feature-settings: 'liga';
+.user > input {
+  font-size: 20px;
+  text-align: center;
+  border: 0px;
+  border-bottom: 1px solid #efefef;
 }
 
-.material-icons.md-18 { font-size: 18px; }
-.material-icons.md-24 { font-size: 24px; }
-.material-icons.md-36 { font-size: 36px; }
-.material-icons.md-48 { font-size: 48px; }
+.header {
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.wins {
+  text-align: center;
+  font-size: 40px;
+  font-weight: 800;
+}
+
+.compare-image {
+  height: 25vh;
+}
+
+.ride {
+}
+.ride_info {
+  text-align: left;
+}
+
+.left {
+  text-align: right;
+}
+
+.vs {
+  text-align: center;
+  font-size: 50px;
+  font-weight: 800;
+}
+
+.recent > h1 {
+  text-align: center;
+}
+
+.user_profile {
+  margin-right: 5px
+}
+
+input.shake {
+  font-size: 30px;
+  text-align: center;
+  border: 0px;
+  border-bottom: 1px solid #efefef;
+  font-weight: 400;
+}

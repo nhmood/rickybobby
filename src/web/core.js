@@ -7,7 +7,8 @@ class Web {
   port = process.env.PORT || 3000;
   PAGE_LIMIT = 10;
 
-  constructor(config, db){
+  constructor(config, db, glue){
+    this.glue = glue;
     this.db = db;
 
     this.app = express();
@@ -167,6 +168,59 @@ class Web {
       });
     });
 
+
+
+    // Shake and bake search handler - mainly for form POST until we move to JS based
+    this.app.post('/shakeandbake', (req, res) => {
+      let usernameA = req.body.usernameA;
+      let usernameB = req.body.usernameB
+      res.redirect(301, `/shakeandbake?users=${usernameA},${usernameB}`);
+    });
+
+
+    // User comparison endpoint
+    // TODO - once await is removed from getResource calls, we can remove the
+    //        async prefix and await usage in this endpoint
+    this.app.get('/shakeandbake', async(req, res) => {
+      let usersParam = req.query.users;
+      let usernames = usersParam.split(",");
+
+      let usernameA = usernames[0];
+      let usernameB = usernames[1];
+
+      let userA = this.db.User.first({username: usernameA});
+      let userB = this.db.User.first({username: usernameB});
+
+
+      if (userA == undefined || userB == undefined){
+        console.log(`Could not find users / ${usernameA} / ${usernameB}`);
+        res.redirect(301, '/');
+        return;
+      }
+
+      // Use the rickybobby "glue" handler to perform the commonWorkouts call
+      // for the two users then render the data
+      let commonWorkouts = await this.glue.commonWorkouts(usernameA, usernameB);
+      res.render('shakeandbake', {
+        title: `${userA.username} vs. ${userB.username}`,
+        userA: {
+          data: userA.data,
+          wins: commonWorkouts.wins[ userA.id ],
+          winner: commonWorkouts.wins[ userA.id ] > commonWorkouts.wins[ userB.id ],
+          debug: JSON.stringify({user: userA, wins: commonWorkouts.wins[ userA.id ]}, null, 2)
+        },
+        userB: {
+          data: userB.data,
+          winner: commonWorkouts.wins[ userA.id ] < commonWorkouts.wins[ userB.id ],
+          wins: commonWorkouts.wins[ userB.id ],
+          debug: JSON.stringify({user: userB, wins: commonWorkouts.wins[ userB.id ]}, null, 2)
+        },
+        workouts: {
+          data: Object.values(commonWorkouts),
+          debug: JSON.stringify(Object.values(commonWorkouts), null, 2)
+        }
+      });
+    })
 
   }
 

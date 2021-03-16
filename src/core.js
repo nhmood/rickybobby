@@ -100,53 +100,44 @@ class RickyBobby {
 
 
 
-  async fetchUser(username){
+  async fetchUser(identifier){
     this.setup();
 
-    // Fetch the data from the Peloton API, store the raw
-    // data into the APIData table, then populate a corresponding
-    // User record using the import helper
-    const userData = await this.peloton.getUser(username);
-    let apiData = this.db.APIData.import('user', userData.user);
-    let user = this.db.User.import(apiData.data);
+    // Fetch the data from the Peloton API then pass to the
+    // storeResource helper to store the raw API data + model
+    // NOTE - identifier can be username OR user_id
+    const userData = await this.peloton.getUser(identifier);
+    let storage = this.storeResource('user', userData.user);
 
-    // Update the tracked parameter to signal this is
-    // an explicit fetch and not a follower import
-    user.update({tracked: 1});
+    // Update the tracked parameter of the returned User record
+    // to signal this is an explicit fetch and not a follower import
+    storage.record.update({tracked: 1});
 
-    return user;
-  }
-
-
+    return storage.record;
   }
 
 
   async fetchRide(rideID){
     this.setup();
 
-    // Fetch the data from the Peloton API, store the raw
-    // data into the APIData table, then populate a corresponding
-    // Ride record using the import helper
+    // Fetch the data from the Peloton API then pass to the
+    // storeResource helper to store the raw API data + model
     const rideData = await this.peloton.getRide(rideID);
-    let apiData = this.db.APIData.import('ride', rideData.ride);
-    let ride = this.db.Ride.import(apiData.data);
+    let storage = this.storeResource('ride', rideData.ride);
 
-    return ride;
+    return storage.record;
   }
-
 
 
   async fetchInstructor(instructorID){
     this.setup();
 
-    // Fetch the data from the Peloton API, store the raw
-    // data into the APIData table, then populate a corresponding
-    // Instructor record using the import helper
+    // Fetch the data from the Peloton API then pass to the
+    // storeResource helper to store the raw API data + model
     const instructorData = await this.peloton.getInstructor(instructorID);
-    let apiData = this.db.APIData.import('instructor', instructorData.instructor);
-    let instructor = this.db.Instructor.import(apiData.data);
+    let storage = this.storeResource('instructor', instructorData.instructor);
 
-    return instructor;
+    return storage.record;
   };
 
 
@@ -168,9 +159,7 @@ class RickyBobby {
   async fetchWorkout(workoutID){
     this.setup();
 
-    // Fetch the data from the Peloton API, store the raw
-    // data into the APIData table, then populate a corresponding
-    // Workout record using the import helper
+    // Fetch the workout and performance graph data from the Peloton API
     const workoutData = await this.peloton.getWorkout(workoutID);
     const performanceData = await this.peloton.getPerformanceGraph(workoutID);
 
@@ -178,10 +167,10 @@ class RickyBobby {
     const data = workoutData.workout;
     data.performance = performanceData.performance;
 
-    let apiData = this.db.APIData.import('workout', workoutData.workout);
-    let workout = this.db.Workout.import(apiData.data);
+    // Pass the data to the storeResource helper to store the raw API data + model
+    let storage = this.storeResource('workout', data);
 
-    return workout;
+    return storage.record;
   }
 
 

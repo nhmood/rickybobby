@@ -119,14 +119,13 @@ class RickyBobby {
   async fetchRide(rideID){
     this.setup();
 
+    // Fetch the data from the Peloton API, store the raw
+    // data into the APIData table, then populate a corresponding
+    // Ride record using the import helper
     const rideData = await this.peloton.getRide(rideID);
-    console.log({rideData});
+    let apiData = this.db.APIData.import('ride', rideData.ride);
+    let ride = this.db.Ride.import(apiData.data);
 
-    let ride = this.db.Ride.upsert({
-      id:   rideData.ride.id,
-      data: rideData.ride
-    });
-    console.log({ride});
     return ride;
   }
 

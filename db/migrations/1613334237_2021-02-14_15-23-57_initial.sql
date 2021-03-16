@@ -38,7 +38,19 @@ CREATE TABLE IF NOT EXISTS rides (
   created_at INTEGER,
   updated_at INTEGER,
 
-  data BLOB
+  type TEXT,
+  duration_in_s INTEGER,
+
+  description TEXT,
+  difficulty_level TEXT,
+  difficulty_rating_avg REAL,
+  difficulty_rating_count INTEGER,
+
+  overall_rating_avg REAL,
+  overall_rating_count INTEGER,
+
+
+  instructor_id TEXT
 );
 
 

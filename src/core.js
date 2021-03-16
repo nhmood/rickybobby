@@ -88,14 +88,16 @@ class RickyBobby {
   async fetchUser(username){
     this.setup();
 
+    // Fetch the data from the Peloton API, store the raw
+    // data into the APIData table, then populate a corresponding
+    // User record using the import helper
     const userData = await this.peloton.getUser(username);
-    console.log({userData});
+    let apiData = this.db.APIData.import('user', userData.user);
+    let user = this.db.User.import(apiData.data);
 
-    let user = this.db.User.upsert({
-      id:       userData.user.id,
-      username: userData.user.username,
-      data:     userData.user
-    });
+    // Update the tracked parameter to signal this is
+    // an explicit fetch and not a follower import
+    user.update({tracked: 1});
 
     return user;
   }

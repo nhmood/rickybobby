@@ -23,8 +23,13 @@ CREATE TABLE IF NOT EXISTS users (
   username TEXT,
   created_at INTEGER,
   updated_at INTEGER,
+  tracked INTEGER,
 
-  data BLOB
+  image_url TEXT,
+  location TEXT,
+  cycling_workout_count INTEGER,
+  noncycling_workout_count INTEGER,
+  streaks TEXT
 );
 
 

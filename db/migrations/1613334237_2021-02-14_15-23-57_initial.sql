@@ -59,7 +59,8 @@ CREATE TABLE IF NOT EXISTS instructors (
   created_at INTEGER,
   updated_at INTEGER,
 
-  data BLOB
+  name TEXT,
+  image_url TEXT
 );
 
 

@@ -146,17 +146,15 @@ class RickyBobby {
   async fetchInstructor(instructorID){
     this.setup();
 
+    // Fetch the data from the Peloton API, store the raw
+    // data into the APIData table, then populate a corresponding
+    // Instructor record using the import helper
     const instructorData = await this.peloton.getInstructor(instructorID);
-    console.log({instructorData});
+    let apiData = this.db.APIData.import('instructor', instructorData.instructor);
+    let instructor = this.db.Instructor.import(apiData.data);
 
-    let instructor = this.db.Instructor.upsert({
-      id:   instructorData.instructor.id,
-      data: instructorData.instructor
-    });
-    console.log({instructor});
-    return instructor;
-  }
-
+    return instructor
+  };
 
 
   // TODO - remove async and references, only required for network fetch

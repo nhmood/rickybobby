@@ -58,31 +58,38 @@ class RickyBobby {
   }
 
 
-  getAPIData(id){
-    let apiData = this.db.APIData.get(id);
-    if (apiData == undefined){
-      console.warn(`No APIData found for ${id}`);
-      process.exit(1);
+  getResource(resource, id){
+    // Format the resource name and attempt to grab the model from this.db
+    const modelName = resource[0].toUpperCase() + resource.slice(1);
+    const model = this.db[modelName];
+
+    // If there is no associated model for this resource, print and error and return
+    if (model == undefined){
+      console.warn(`Unrecognized data model ${resource}/${modelName}`);
+      return false;
     }
 
-    console.log(apiData);
-    return apiData;
+    // Attempt to lookup the associated record by ID
+    let record = model.get(id);
+    if (record == undefined){
+      console.warn(`${resource}:${id} not found`);
+      return false;
+    }
+
+    return record;
   }
 
 
-  // TODO - remove async and references, only required for network fetch
-  async getUser(username){
-    let user = this.db.User.first({
-      username: username
-    });
+  getUsername(username){
+    let user = this.db.User.first({username: username});
     if (user == undefined){
       console.warn(`No user found for ${username}`);
       process.exit(1);
     }
 
-    console.log({user});
     return user;
   }
+
 
 
   async fetchUser(username){
@@ -103,16 +110,6 @@ class RickyBobby {
   }
 
 
-  // TODO - remove async and references, only required for network fetch
-  async getRide(rideID){
-    let ride = this.db.Ride.get(rideID);
-    if (ride == undefined){
-      console.warn(`No ride found for ${rideID}`);
-      process.exit(1);
-    }
-
-    console.log({ride});
-    return ride;
   }
 
 
@@ -130,18 +127,6 @@ class RickyBobby {
   }
 
 
-  // TODO - remove async and references, only required for network fetch
-  async getInstructor(instructorID){
-    let instructor = this.db.Instructor.get(instructorID);
-    if (instructor == undefined){
-      console.warn(`No instructor found for ${instructorID}`);
-      process.exit(1);
-    }
-
-    console.log({instructor});
-    return instructor;
-  }
-
 
   async fetchInstructor(instructorID){
     this.setup();
@@ -155,19 +140,6 @@ class RickyBobby {
 
     return instructor
   };
-
-
-  // TODO - remove async and references, only required for network fetch
-  async getWorkout(workoutID){
-    let workout = this.db.Workout.get(workoutID);
-    if (workout == undefined){
-      console.warn(`No workout found for ${workoutID}`);
-      process.exit(1);
-    }
-
-    console.log({workout});
-    return workout;
-  }
 
 
   async getWorkouts(username){

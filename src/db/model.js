@@ -339,6 +339,11 @@ class Model {
 
     return entry;
   }
+
+  json(){
+    let data = this.getEntry();
+    return JSON.stringify(data, null, 2);
+  }
 }
 
 

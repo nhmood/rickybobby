@@ -61,34 +61,19 @@ console.log(rb);
 
     case 'get':
       switch(process.argv[3]){
-        case 'api_data':
-          rb.getAPIData(process.argv[4]);
-          break;
+        case 'username':
+          let user = rb.getUsername(process.argv[4]);
+          if (!user){ process.exit(1) };
 
-        case 'user':
-          rb.getUser(process.argv[4]);
-          break;
-
-        case 'ride':
-          rb.getRide(process.argv[4]);
-          break;
-
-        case 'instructor':
-          rb.getInstructor(process.argv[4]);
-          break;
-
-        case 'workout':
-          rb.getWorkout(process.argv[4]);
-          break;
-
-        case 'workouts':
-          rb.getWorkouts(process.argv[4]);
-          break;
+          console.log(user.json());
+          break
 
         default:
-          console.warn("Unrecognized get target");
-          process.exit(1);
-      }
+          let record = rb.getResource(process.argv[3], process.argv[4]);
+          if (!record){ process.exit(1) };
+
+          console.log(record.json());
+      };
       break;
 
     case 'common':

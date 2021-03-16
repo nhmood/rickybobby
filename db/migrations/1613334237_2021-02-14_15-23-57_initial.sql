@@ -1,17 +1,18 @@
 CREATE TABLE IF NOT EXISTS sessions (
-  username TEXT PRIMARY KEY,
-  created_at INTEGER,
-  updated_at INTEGER,
+  username    TEXT PRIMARY KEY,
+  created_at  INTEGER,
+  updated_at  INTEGER,
+
   data BLOB
 );
 
 
 CREATE TABLE IF NOT EXISTS api_data (
-  id TEXT PRIMARY KEY,
-  created_at INTEGER,
-  updated_at INTEGER,
+  id          TEXT PRIMARY KEY,
+  created_at  INTEGER,
+  updated_at  INTEGER,
 
-  target TEXT,
+  target    TEXT,
   target_id TEXT,
 
   data BLOB
@@ -19,47 +20,48 @@ CREATE TABLE IF NOT EXISTS api_data (
 
 
 CREATE TABLE IF NOT EXISTS users (
-  id TEXT PRIMARY KEY,
-  username TEXT,
-  created_at INTEGER,
-  updated_at INTEGER,
-  tracked INTEGER,
+  id          TEXT PRIMARY KEY,
+  created_at  INTEGER,
+  updated_at  INTEGER,
+
+  username    TEXT,
+  tracked     INTEGER,
 
   image_url TEXT,
-  location TEXT,
-  cycling_workout_count INTEGER,
-  noncycling_workout_count INTEGER,
-  streaks TEXT
+  location  TEXT,
+  streaks   TEXT,
+
+  cycling_workout_count     INTEGER,
+  noncycling_workout_count  INTEGER
 );
 
 
 CREATE TABLE IF NOT EXISTS rides (
-  id TEXT PRIMARY KEY,
-  created_at INTEGER,
-  updated_at INTEGER,
+  id          TEXT PRIMARY KEY,
+  created_at  INTEGER,
+  updated_at  INTEGER,
 
-  type TEXT,
-  duration_in_s INTEGER,
+  type          TEXT,
+  description   TEXT,
+  duration      INTEGER,
 
-  description TEXT,
-  difficulty_level TEXT,
-  difficulty_rating_avg REAL,
+  difficulty_level        TEXT,
+  difficulty_rating_avg   REAL,
   difficulty_rating_count INTEGER,
 
-  overall_rating_avg REAL,
-  overall_rating_count INTEGER,
-
+  overall_rating_avg    REAL,
+  overall_rating_count  INTEGER,
 
   instructor_id TEXT
 );
 
 
 CREATE TABLE IF NOT EXISTS instructors (
-  id TEXT PRIMARY KEY,
-  created_at INTEGER,
-  updated_at INTEGER,
+  id          TEXT PRIMARY KEY,
+  created_at  INTEGER,
+  updated_at  INTEGER,
 
-  name TEXT,
+  name      TEXT,
   image_url TEXT
 );
 

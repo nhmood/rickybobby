@@ -12,6 +12,7 @@ class Ride  extends Model {
 
       type:         data.fitness_discipline,
       description:  data.description,
+      duration:     data.duration,
 
       difficulty_level:         data.difficulty_level,
       difficulty_rating_avg:    data.difficulty_rating_avg,

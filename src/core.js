@@ -58,6 +58,18 @@ class RickyBobby {
   }
 
 
+  getAPIData(id){
+    let apiData = this.db.APIData.get(id);
+    if (apiData == undefined){
+      console.warn(`No APIData found for ${id}`);
+      process.exit(1);
+    }
+
+    console.log(apiData);
+    return apiData;
+  }
+
+
   // TODO - remove async and references, only required for network fetch
   async getUser(username){
     let user = this.db.User.first({

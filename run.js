@@ -61,6 +61,10 @@ console.log(rb);
 
     case 'get':
       switch(process.argv[3]){
+        case 'api_data':
+          rb.getAPIData(process.argv[4]);
+          break;
+
         case 'user':
           rb.getUser(process.argv[4]);
           break;

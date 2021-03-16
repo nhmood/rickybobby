@@ -6,6 +6,18 @@ CREATE TABLE IF NOT EXISTS sessions (
 );
 
 
+CREATE TABLE IF NOT EXISTS api_data (
+  id TEXT PRIMARY KEY,
+  created_at INTEGER,
+  updated_at INTEGER,
+
+  target TEXT,
+  target_id TEXT,
+
+  data BLOB
+);
+
+
 CREATE TABLE IF NOT EXISTS users (
   id TEXT PRIMARY KEY,
   username TEXT,

@@ -1,7 +1,7 @@
 const Model = require("./model.js");
 class Ride  extends Model {
   static tableName = "rides";
-  static jsonFields = ["data"];
+  static jsonFields = [];
 
 
   // Helper to create a proper User record given

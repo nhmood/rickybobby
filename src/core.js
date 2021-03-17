@@ -188,13 +188,19 @@ class RickyBobby {
   }
 
 
+  // TODO - determine whether we want to fetch by username or user id
   async fetchWorkouts(username, forceFetch = false){
     this.setup();
 
-    let user = await this.getUser(username);
-    console.log({user});
+    // Validate that the user we want to fetch exists
+    let user = this.getUsername(username);
+    if (!user){
+      console.log(`User:${username} not found`);
+      return false;
+    }
 
-    console.log("Initializing workoutCursor");
+    // Walk through the workoutCursor until we run out of data to process
+    console.log(`Initializing workoutCursor for ${user.id}/${user.username}`);
     let workoutCursor = this.peloton.workoutCursor(user.id);
     while(true){
       this.sleep(500);
@@ -205,44 +211,35 @@ class RickyBobby {
       // This data is returned by newest first (reverse chronological)
       // While walking through the data, if the matching record already
       // exists in the database, then we can safely stop processing data
-      console.log("Processing workouts for cursor");
+      console.log(`Processing ${workoutCursor.workouts.length} workouts for cursor for ${user.id}/${user.username}`);
       for (let i = 0; i < workoutCursor.workouts.length; i++){
         this.sleep(500);
         let workout = workoutCursor.workouts[i];
-        console.log(`Processing workout:${workout.id} from API`);
-        console.log({workout});
+        console.log(`Processing workout:${workout.id} from API for ${user.id}/${user.username}`);
+        console.debug({workout});
 
-
-        // The workout data is joined with the associated ride information
-        // Pull out the ride to be stored separately, and reinsert the ride_id
-        // into the workout object
-
+        // The workout data is joined with the associated ride information (into .peloton.ride)
+        // Pull out the ride to be stored separately, and reinsert the ride object into the workout
         let ride = workout.peloton.ride;
-        delete workout.peloton;
-        workout.ride_id = ride.id;
+        workout.ride = ride;
         console.debug({workout});
         console.debug({ride});
 
-        // TODO - figure out whether we want to upsert, first/create, or first OR create
-        console.log(`Upserting Ride:${ride.id}`);
-        let rideRecord = this.db.Ride.upsert({
-          id: ride.id,
-          data: ride
-        })
-        console.log({rideRecord});
 
+        // Attempt to lookup the Ride (by ID) and store it if we don't
+        let rideRecord = this.db.Ride.get(ride.id);
+        if (rideRecord == undefined){
+          rideRecord = this.storeResource('ride', ride);
+          console.debug({rideRecord});
+        }
+
+
+        // Attempt to lookup the Instructor (by ID) and fetch it if we don't
+        // The fetch function will call out to the API and store the data accordingly
         let instructorRecord = this.db.Instructor.get(ride.instructor_id);
         if (instructorRecord == undefined){
-          console.log(`${this.db.Instructor.tableName}:${ride.instructor_id} not found, fetching`);
-          let instructorData = await this.peloton.getInstructor(ride.instructor_id);
-          console.log({instructorData});
-
-          // Insert record into database
-          instructorRecord = this.db.Instructor.create({
-            id:   instructorData.instructor.id,
-            data: instructorData.instructor
-          })
-          console.log({instructorRecord});
+          instructorRecord = await this.fetchInstructor(ride.instructor_id)
+          console.debug({instructorRecord});
         }
 
 
@@ -250,7 +247,7 @@ class RickyBobby {
         // stop processing since results are returned chronologically
         let workoutRecord = this.db.Workout.get(workout.id);
         if (workoutRecord != undefined){
-          console.log(`${this.db.Workout.tableName}:${workout.id} already exists, workouts up to date`);
+          console.log(`${this.db.Workout.tableName}:${workout.id} already exists, workouts up to date for ${user.id}/${user.username}`);
           // TODO - not sure how I feel about storing the earlyExit flag in workoutCursor
           //        break from here seems to apply to the for loop and not the parent while
           workoutCursor.earlyExit = true;
@@ -258,24 +255,15 @@ class RickyBobby {
         }
 
         console.log(`${this.db.Workout.tableName}:${workout.id} not found, creating`);
-        workoutRecord = this.db.Workout.create({
-          id: workout.id,
-          data: workout,
-          fitness_discipline: workout.fitness_discipline,
 
-          user_id: user.id,
-          ride_id: ride.id
-        });
+        // Fetch the performance graph data and merge it into the workout data
+        const performanceData = await this.peloton.getPerformanceGraph(workout.id);
+        workout.performance = performanceData.performance;
+
+        console.log({workout});
+
+        workoutRecord = this.storeResource('workout', workout);
         console.log({workoutRecord});
-
-        // Grab the associated performance graph data which has the comparison
-        // metrics we need
-        let performanceGraphData = await this.peloton.getPerformanceGraph(workout.id);
-        console.log({performanceGraphData});
-        let performance = performanceGraphData.performance;
-        console.log({workoutRecord});
-
-        workoutRecord.update({performance: performance});
       }
 
       // Break if there is no more new data available to process

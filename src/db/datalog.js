@@ -1,19 +1,19 @@
 const Model = require("./model.js");
-class APIData extends Model {
-  static tableName = "api_data";
+class Datalog extends Model {
+  static tableName = "datalogs";
   static jsonFields = ["data"];
 
 
   static import(target, data){
-    let apiData = this.upsert({
+    let datalog = this.upsert({
       id:         `${target}_${data.id}`,
       data:       data,
       target:     target,
       target_id:  data.id
     });
 
-    return apiData;
+    return datalog;
   }
 }
 
-module.exports = APIData;
+module.exports = Datalog;

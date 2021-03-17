@@ -78,11 +78,11 @@ class RickyBobby {
     let model = this.db.resource(resource);
     if (!model){ return false; };
 
-    let apiData = this.db.APIData.import(resource, data);
-    let record = model.import(apiData.data)
+    let datalog = this.db.Datalog.import(resource, data);
+    let record = model.import(datalog.data)
 
     return {
-      apiData: apiData,
+      datalog: datalog,
       record: record
     }
   }

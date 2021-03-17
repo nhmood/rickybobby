@@ -4,7 +4,7 @@ const fs     = require('fs');
 const sqlite = require('better-sqlite3');
 const models = {
   Session:    require('./session.js'),
-  APIData:    require('./api_data.js'),
+  Datalog:    require('./datalog.js'),
   User:       require('./user.js'),
   Ride:       require('./ride.js'),
   Instructor: require('./instructor.js'),
@@ -72,7 +72,7 @@ class Database {
 
   setupModels(){
     this.Session    = models.Session.setup(this.#db);
-    this.APIData    = models.APIData.setup(this.#db);
+    this.Datalog    = models.Datalog.setup(this.#db);
     this.User       = models.User.setup(this.#db);
     this.Ride       = models.Ride.setup(this.#db);
     this.Instructor = models.Instructor.setup(this.#db);

@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS sessions (
 );
 
 
-CREATE TABLE IF NOT EXISTS api_data (
+CREATE TABLE IF NOT EXISTS datalogs (
   id          TEXT PRIMARY KEY,
   created_at  INTEGER,
   updated_at  INTEGER,

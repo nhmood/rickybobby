@@ -86,7 +86,7 @@ class Database {
 
     // If there is no associated model for this resource, print and error and return
     if (model == undefined){
-      console.warn(`Unrecognized data model ${resource}/${modelName}`);
+      console.warn(`Unrecognized data model ${name}/${modelName}`);
       return false;
     }
 

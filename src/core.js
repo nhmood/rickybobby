@@ -276,28 +276,6 @@ class RickyBobby {
   }
 
 
-  // Fetch the performance information associated with a specified workout
-  async fetchPerformanceGraph(workoutID){
-    this.setup();
-
-    // First attempt to lookup a the db backed workout by ID
-    // If the record is not found, perform the fetch then return immediately as
-    // the workout fetch will automatically pull the performanceGraph information
-    let workout = this.db.Workout.get(workoutID);
-    if (workoutRecord == undefined){
-      console.log(`${this.db.Workout.tableName}:${workoutID} not found, fetching`);
-      return this.fetchWorkout(workoutID);
-    }
-
-    const performanceGraphData = await this.peloton.getPerformanceGraph(workoutID);
-    console.log({performanceGraphData});
-    const performance = performanceGraphData.performance;
-
-    workout.update({performance: performance});
-    return workout;
-  }
-
-
   // Handler for common workout finder
   // Grabs common workouts (rides) between two users
   // then formats the payloads to include necessary components

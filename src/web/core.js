@@ -44,6 +44,7 @@ class Web {
 
       // Render the index template
       res.render('index', {
+        title: "if you're not first, you're last",
         workouts: {
           data: recentWorkouts,
           debug: JSON.stringify(recentWorkouts, null, 2)
@@ -55,7 +56,7 @@ class Web {
     // User search handler - mainly for form POST until we move to JS based
     this.app.post('/users/search', (req, res) => {
       let username = req.body.username;
-      res.redirect(301, `/users/${username}`);
+      return res.redirect(301, `/users/${username}`);
     });
 
 
@@ -113,6 +114,7 @@ class Web {
 
       // Render the users template with the associated data
       res.render('users', {
+        title: `${user.username}`,
         user: {
           username: username,
           data: user.data,
@@ -152,6 +154,7 @@ class Web {
 
       // Render riders template with associated data
       res.render('riders', {
+        title: "Rider List",
         riders: {
           data: users,
           debug: JSON.stringify(users, null, 2)

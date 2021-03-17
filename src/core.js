@@ -220,26 +220,33 @@ class RickyBobby {
 
         // The workout data is joined with the associated ride information (into .peloton.ride)
         // Pull out the ride to be stored separately, and reinsert the ride object into the workout
-        let ride = workout.peloton.ride;
+        // NOTE - the ride data comes from a join and MAY be empty (free ride, etc)
+        //        check for the join data otherwise use an empty {} as the ride
+        let joinData = workout.peloton;
+        let ride = joinData ? joinData.ride : {};
         workout.ride = ride;
         console.debug({workout});
         console.debug({ride});
 
 
-        // Attempt to lookup the Ride (by ID) and store it if we don't
-        let rideRecord = this.db.Ride.get(ride.id);
-        if (rideRecord == undefined){
-          rideRecord = this.storeResource('ride', ride);
-          console.debug({rideRecord});
-        }
+        // If we have a valid ride from the join data, use it accordingly to fetch
+        // an actual Ride and Instructor record
+        if (ride.id){
+          // Attempt to lookup the Ride (by ID) and store it if we don't
+          let rideRecord = this.db.Ride.get(ride.id);
+          if (rideRecord == undefined){
+            rideRecord = this.storeResource('ride', ride);
+            console.debug({rideRecord});
+          }
 
 
-        // Attempt to lookup the Instructor (by ID) and fetch it if we don't
-        // The fetch function will call out to the API and store the data accordingly
-        let instructorRecord = this.db.Instructor.get(ride.instructor_id);
-        if (instructorRecord == undefined){
-          instructorRecord = await this.fetchInstructor(ride.instructor_id)
-          console.debug({instructorRecord});
+          // Attempt to lookup the Instructor (by ID) and fetch it if we don't
+          // The fetch function will call out to the API and store the data accordingly
+          let instructorRecord = this.db.Instructor.get(ride.instructor_id);
+          if (instructorRecord == undefined){
+            instructorRecord = await this.fetchInstructor(ride.instructor_id)
+            console.debug({instructorRecord});
+          }
         }
 
 

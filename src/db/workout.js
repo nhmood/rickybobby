@@ -21,7 +21,11 @@ class Workout extends Model {
 
     // If the workout is "cycling", conditionally add the necessary
     // performance metrics before upserting
-    if (workoutRecord.type == "cycling"){
+    if (workoutRecord.type == "cycling" &&
+        data.performance &&
+        data.performance.summaries.length > 0 &&
+        data.performance.metrics.length > 0
+      ){
       workoutRecord = Object.assign(workoutRecord, {
         total_output:     data.performance.summaries[0].value,
         max_output:       data.performance.metrics[0].max_value,
@@ -53,14 +57,15 @@ class Workout extends Model {
         workoutA.ride_id  = workoutB.ride_id AND
         workoutA.user_id != workoutB.user_id
       WHERE
-        workoutA.user_id IN (?, ?) AND
-        workoutA.fitness_discipline = 'cycling';
+        workoutA.user_id IN(?, ?) AND
+        workoutB.user_id IN(?, ?) AND
+        workoutA.type = 'cycling';
     `;
 
 
 
     const stmt = this.db.prepare(sql);
-    const records = stmt.all(userA.id, userB.id);
+    const records = stmt.all(userA.id, userB.id, userA.id, userB.id);
 
     const models = records.map(r => { return new this(r) });
 

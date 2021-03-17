@@ -290,9 +290,9 @@ class RickyBobby {
   //        this is mainly because mustache js templating is super rigid
   //        if we move to handlebars or something maybe we can just push the
   //        data and let the view handle pulling data components from various components
-  async commonWorkouts(usernameA, usernameB){
-    let userA = await this.getUser(usernameA);
-    let userB = await this.getUser(usernameB);
+  commonWorkouts(usernameA, usernameB){
+    let userA = this.getUsername(usernameA);
+    let userB = this.getUsername(usernameB);
 
     // Get all the common workouts between the two users using the workout model
     // helper method (performs specific SQL for joins)
@@ -324,7 +324,7 @@ class RickyBobby {
       // If the Ride record hasn't been pulled yet, pull it
       // from the database
       if (rides[rideID] == undefined){
-        let ride = await this.db.Ride.get(rideID)
+        let ride = this.db.Ride.get(rideID)
         rides[rideID] = {
           ride: ride,
           last_taken_workout: 0,
@@ -332,7 +332,7 @@ class RickyBobby {
         }
 
         // Pull the associated instructor for this ride as well
-        let instructor = await this.db.Instructor.get(ride.data.instructor_id);
+        let instructor = this.db.Instructor.get(ride.instructor_id);
         ride.instructor = instructor;
       }
 
@@ -341,8 +341,8 @@ class RickyBobby {
       // and update the last_taken_workout parameter for the ride
       // if applicable (used for sorting later)
       rides[rideID].workouts.push(workout);
-      if (rides[rideID].last_taken_workout < workout.created_at){
-        rides[rideID].last_taken_workout = workout.created_at;
+      if (rides[rideID].last_taken_workout < workout.taken_at){
+        rides[rideID].last_taken_workout = workout.taken_at
       }
     }
 
@@ -365,11 +365,8 @@ class RickyBobby {
       let workouts = rides[ rideID ].workouts;
 
 
-      let outputA = workouts[0].performance.average_summaries[0].value;
-      let outputB = workouts[1].performance.average_summaries[0].value;
-
-      workouts[0].avg_output = outputA;
-      workouts[1].avg_output = outputB;
+      let outputA = workouts[0].total_output;
+      let outputB = workouts[1].total_output;
 
       // Based on the output pick the winner (index)
       let winner =  outputA > outputB ? 0 : 1;

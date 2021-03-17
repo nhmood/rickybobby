@@ -42,6 +42,7 @@ CREATE TABLE IF NOT EXISTS rides (
   updated_at  INTEGER,
 
   type          TEXT,
+  title         TEXT,
   description   TEXT,
   duration      INTEGER,
 

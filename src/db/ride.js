@@ -11,6 +11,7 @@ class Ride  extends Model {
       id: data.id,
 
       type:         data.fitness_discipline,
+      title:        data.title,
       description:  data.description,
       duration:     data.duration,
 

@@ -99,6 +99,20 @@ class RickyBobby {
   }
 
 
+  rebuild(resource){
+    let model = this.db.resource(resource);
+    if (!model){ return false; };
+
+    // Get all the associated api_data records for the target
+    // then walk through and reimport the records to the model
+    let datalogs = this.db.Datalog.where({target: resource});
+    datalogs.forEach(datalog => {
+      console.log(`Rebuilding ${resource} from Datalog:${datalog.id}`);
+      model.import(datalog.data);
+    });
+  }
+
+
 
   async fetchUser(identifier){
     this.setup();

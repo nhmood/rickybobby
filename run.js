@@ -58,6 +58,9 @@ console.log(rb);
       }
       break;
 
+    case 'rebuild':
+      rb.rebuild(process.argv[3]);
+      break;
 
     case 'get':
       switch(process.argv[3]){

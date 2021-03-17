@@ -38,13 +38,8 @@ class Web {
         let ride = this.db.Ride.get(w.ride_id);
         w.ride = ride;
 
-        let instructor = this.db.Instructor.get(ride.data.instructor_id);
+        let instructor = this.db.Instructor.get(ride.instructor_id);
         w.instructor = instructor;
-
-        // Pull the average output metric for the workout
-        if (w.performance.average_summaries[0]){
-          w.avg_output = w.performance.average_summaries[0].value;
-        }
       });
 
       // Render the index template
@@ -103,7 +98,7 @@ class Web {
         let ride = this.db.Ride.get(w.ride_id);
         w.ride = ride;
 
-        let instructor = this.db.Instructor.get(ride.data.instructor_id);
+        let instructor = this.db.Instructor.get(ride.instructor_id);
         w.instructor = instructor;
       });
 
@@ -181,7 +176,7 @@ class Web {
     // User comparison endpoint
     // TODO - once await is removed from getResource calls, we can remove the
     //        async prefix and await usage in this endpoint
-    this.app.get('/shakeandbake', async(req, res) => {
+    this.app.get('/shakeandbake', (req, res) => {
       let usersParam = req.query.users;
       let usernames = usersParam.split(",");
 
@@ -200,17 +195,17 @@ class Web {
 
       // Use the rickybobby "glue" handler to perform the commonWorkouts call
       // for the two users then render the data
-      let commonWorkouts = await this.glue.commonWorkouts(usernameA, usernameB);
+      let commonWorkouts = this.glue.commonWorkouts(usernameA, usernameB);
       res.render('shakeandbake', {
         title: `${userA.username} vs. ${userB.username}`,
         userA: {
-          data: userA.data,
+          data: userA,
           wins: commonWorkouts.wins[ userA.id ],
           winner: commonWorkouts.wins[ userA.id ] > commonWorkouts.wins[ userB.id ],
           debug: JSON.stringify({user: userA, wins: commonWorkouts.wins[ userA.id ]}, null, 2)
         },
         userB: {
-          data: userB.data,
+          data: userB,
           winner: commonWorkouts.wins[ userA.id ] < commonWorkouts.wins[ userB.id ],
           wins: commonWorkouts.wins[ userB.id ],
           debug: JSON.stringify({user: userB, wins: commonWorkouts.wins[ userB.id ]}, null, 2)

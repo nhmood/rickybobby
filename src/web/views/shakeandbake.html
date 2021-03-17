@@ -68,11 +68,11 @@
             <div class="row comparison component">
               <div class="row ride-details">
                 <div class="row ride-image">
-                  <img class="u-full-width" src="{{ride.instructor.data.image_url}}"></img>
+                  <img class="u-full-width" src="{{ride.instructor.image_url}}"></img>
                 </div><!-- ride-image -->
 
-                <div class="row ride-name">{{ride.data.title}}</div>
-                <div class="row ride-instructor">{{ride.instructor.data.name}}</div>
+                <div class="row ride-name">{{ride.title}}</div>
+                <div class="row ride-instructor">{{ride.instructor.name}}</div>
               </div><!-- ride-details -->
 
 
@@ -81,7 +81,7 @@
                 {{#workouts}}
                   <div class="six columns">
                     <div class="row workout-output">Output: {{avg_output}}</div>
-                    <div class="row workout-taken">Taken: {{data.created_at}}</div>
+                    <div class="row workout-taken">Taken: {{taken_at}}</div>
 
                     <div class="workout-metrics">
                       {{#performance.metrics}}

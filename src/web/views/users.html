@@ -6,30 +6,30 @@
 
     <div id="main" class="row">
       <div class="info row">
-        <div class="one column"><img class="u-full-width" src="{{user.data.image_url}}"></img></div>
+        <div class="one column"><img class="u-full-width" src="{{user.image_url}}"></img></div>
         <div class="user ten columns">
           <div class="row username">{{user.username}}</div>
-          <div class="row">{{user.data.location}}</div>
+          <div class="row">{{user.location}}</div>
         </div>
       </div>
       <div class="streaks row">
         <span class="material-icons">
           event_available
         </span>
-        Current Weekly: {{user.data.streaks.current_weekly}}
+        Current Weekly: {{user.streaks.current_weekly}}
 
 
         <br>
         <span class="material-icons">
           emoji_events
         </span>
-        Best Weekly: {{user.data.streaks.best_weekly}}
+        Best Weekly: {{user.streaks.best_weekly}}
 
         <br>
         <span class="material-icons">
           directions_bike
         </span>
-        Rides: {{user.data.total_pedaling_metric_workouts}}
+        Rides: {{user.cycling_workout_count}}
       </div>
 
       <div class="workouts row">
@@ -59,21 +59,22 @@
         {{#workouts.data}}
         <div class="workout row">
           <div class="two columns instructor">
-            <img class="u-full-width" src="{{instructor.data.image_url}}"></img>
+            <img class="u-full-width" src="{{instructor.image_url}}"></img>
           </div>
           <div class="five columns ride_info">
-            <div class="row name">{{ride.data.title}} - {{instructor.data.name}}</div>
-            <div class="row duration">Duration:{{ride.data.duration}}</div>
-            <div class="row difficulty">Difficulty: {{ride.data.difficulty_estimate}} / {{ride.data.difficulty_level}}</div>
-            <div class="row rating">Rating: {{ride.data.overall_rating_avg}}</div>
+            <div class="row name">{{ride.title}} - {{instructor.name}}</div>
+            <div class="row duration">Duration:{{ride.duration}}</div>
+            <div class="row difficulty">Difficulty: {{ride.difficulty_rating_avg}} / {{ride.difficulty_level}}</div>
+            <div class="row rating">Rating: {{ride.overall_rating_avg}}</div>
             <div class="row peloton"><a href="https://members.onepeloton.com/classes/cycling?modal=classDetailsModal&classId={{ride.id}}" target="_blank">Peloton Link</a></div>
             <div class="row"></div>
             <div class="row"></div>
           </div>
           <div class="five columns performance">
-            {{#performance.average_summaries}}
-            <div class="row {{slug}}">{{display_name}}: {{value}}</div>
-            {{/performance.average_summaries}}
+            <div class="row total_output">Total Output: {{total_output}}</div>
+            <div class="row avg_cadence">Average Cadence: {{avg_cadence}}</div>
+            <div class="row avg_resistance">Average Resistance: {{avg_resistance}}</div>
+            <div class="row avg_speed">Average Speed: {{avg_speed}}</div>
           </div>
         </div>
         {{/workouts.data}}

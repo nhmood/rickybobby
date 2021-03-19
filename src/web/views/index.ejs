@@ -1,7 +1,7 @@
-{{> partials/_head }}
+<%- include('partials/_head'); %>
 <body>
   <div class="container">
-    {{> partials/_header }}
+    <%- include('partials/_header'); %>
 
 
     <div id="main" class="row">
@@ -34,16 +34,16 @@
 
       <div class="row recent">
         <h1>Recent Activity</h1>
-        {{#workouts.data}}
+        <% workouts.data.forEach(function(workout){ %>
           <div class="row">
             <div class="three columns">&nbsp;</div>
             <div class="six columns">
-              <div class="one columns user_profile"><img class="u-full-width" src="{{user.image_url}}"></img></div>
-              <span> <mark class="em"><a href="/users/{{user.username}}">{{user.username}}</a></mark> / <mark class="i">{{ride.title}}</mark> / {{avg_output}} watts</span>
+              <div class="one columns user_profile"><img class="u-full-width" src="<%= workout.user.image_url %>"></img></div>
+              <span> <mark class="em"><a href="/users/<%= workout.user.username %>"><%= workout.user.username %></a></mark> / <mark class="i"><%= workout.ride.title %></mark> / <%= workout.avg_output %> watts</span>
             </div>
             <div class="three columns">&nbsp;</div>
           </div>
-        {{/workouts.data}}
+        <% }); %>
       </div>
     </div><!-- main -->
   </div><!-- container -->
@@ -51,7 +51,7 @@
 
 
 <pre class="hide" data-type="workouts">
-  {{ workouts.debug }}
+  <%= workouts.debug %>
 </pre>
 
 <script>
@@ -64,4 +64,4 @@
 </script>
 
 
-{{> partials/_end }}
+<%- include('partials/_end'); %>

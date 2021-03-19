@@ -1,7 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const morgan  = require('morgan');
-const mustacheExpress = require('mustache-express');
 
 class Web {
   port = process.env.PORT || 3000;
@@ -14,8 +13,7 @@ class Web {
     this.app = express();
     this.app.use(morgan('combined'));
 
-    this.app.engine('html', mustacheExpress());
-    this.app.set('view engine', 'html');
+    this.app.set('view engine', 'ejs');
     this.app.set('views', `${__dirname}/views`);
     this.app.disable('view cache');
 
@@ -117,7 +115,7 @@ class Web {
         title: `${user.username}`,
         user: {
           username: username,
-          data: user.data,
+          data: user,
           debug: JSON.stringify(user, null, 2)
         },
         pagination: {
@@ -198,24 +196,24 @@ class Web {
 
       // Use the rickybobby "glue" handler to perform the commonWorkouts call
       // for the two users then render the data
-      let commonWorkouts = this.glue.commonWorkouts(usernameA, usernameB);
+      let comparison = this.glue.commonWorkouts(usernameA, usernameB);
       res.render('shakeandbake', {
         title: `${userA.username} vs. ${userB.username}`,
         userA: {
           data: userA,
-          wins: commonWorkouts.wins[ userA.id ],
-          winner: commonWorkouts.wins[ userA.id ] > commonWorkouts.wins[ userB.id ],
-          debug: JSON.stringify({user: userA, wins: commonWorkouts.wins[ userA.id ]}, null, 2)
+          debug: JSON.stringify(userA),
         },
         userB: {
           data: userB,
-          winner: commonWorkouts.wins[ userA.id ] < commonWorkouts.wins[ userB.id ],
-          wins: commonWorkouts.wins[ userB.id ],
-          debug: JSON.stringify({user: userB, wins: commonWorkouts.wins[ userB.id ]}, null, 2)
+          debug: JSON.stringify(userB),
         },
-        workouts: {
-          data: Object.values(commonWorkouts),
-          debug: JSON.stringify(Object.values(commonWorkouts), null, 2)
+        summary: {
+          data: comparison.summary,
+          debug: JSON.stringify(comparison.summary)
+        },
+        rides: {
+          data: comparison.rides,
+          debug: JSON.stringify(comparison.rides)
         }
       });
     })

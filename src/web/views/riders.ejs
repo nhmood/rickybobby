@@ -1,0 +1,52 @@
+<%- include('partials/_head'); %>
+<body>
+  <div class="container">
+    <%- include('partials/_header'); %>
+
+
+    <div id="main" class="row">
+      <div class="row nav">
+        <div class="six columns prev">
+          <% if (pagination.data.prev_page){ %>
+            <a href="/riders?p=<%= pagination.data.prev_page %>">Previous Riders</a>
+          <% } else { %>
+            &nbsp;
+          <% } %>
+        </div>
+
+        <div class="six columns next">
+          <% if (pagination.data.next_page){ %>
+            <a href="/riders?p=<%= pagination.data.next_page %>">Next Riders</a>
+          <% } else { %>
+            &nbsp;
+          <% } %>
+        </div>
+      </div>
+
+      <div class="row users">
+        <% riders.data.forEach(function(rider){ %>
+          <div class="row user">
+            <a href="/users/<%= rider.username %>"><%= rider.username %></a><br>
+          </div>
+        <% }); %>
+      </div>
+    </div><!-- main -->
+  </div><!-- container -->
+</body>
+
+
+<pre class="hide" data-type="riders">
+  <%= riders.debug %>
+</pre>
+
+<script>
+  let debug = document.getElementsByTagName("pre");
+  let data = Array.from(debug).reduce((result, item) => {
+    let type =item.dataset.type;
+    result[type] = JSON.parse(item.innerHTML);
+    return result;
+  }, {})
+</script>
+
+
+<%- include('partials/_end'); %>

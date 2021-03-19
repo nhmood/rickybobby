@@ -229,6 +229,12 @@ mark.i {
   margin-right: 5px
 }
 
+.comparison-profile {
+  width: 75px;
+  border-radius: 50px;
+  border: 1px solid #efefef;
+}
+
 input.shake {
   font-size: 30px;
   text-align: center;

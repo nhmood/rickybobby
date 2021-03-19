@@ -296,88 +296,127 @@ class RickyBobby {
 
     // Get all the common workouts between the two users using the workout model
     // helper method (performs specific SQL for joins)
-    let commonWorkouts = this.db.Workout.commonWorkouts(userA, userB);
+    // TODO - db.Workout.commonWorkouts should ideally be updated to provide a limited
+    //        list back and support pagination
+    let workouts = this.db.Workout.commonWorkouts(userA, userB);
 
 
-    /*
-     *  Format the payload as an object where the keys are ride_id,
-     *  the value is another object that has ride info, latest taken workout,
-     *  and a list of the associated workouts
-     *  {
-     *    "ride_id": {
-     *      "ride_info": {},
-     *      "last_taken_workout": DateTime,
-     *      "workouts": []
-     *    }...
-     *  }
-     */
+    // Create a summary container for total wins/rides
+    let summary = {
+      wins: {
+        [userA.id]: 0,
+        [userB.id]: 0
+      },
+      winner: {
+        [userA.id]: false,
+        [userB.id]: false
+      },
+      rideCount: 0
+    };
 
-    // Create a cache of rides between the common workouts
-    // TODO - can move this over to map/reduce once we get rid of
-    //        async resource calls, little messy otherwise
-    let rides = {};
-    for (let i = 0; i < commonWorkouts.length; i++){
-      // Grab the workout we are processing and the rideID
-      let workout = commonWorkouts[i];
-      let rideID = workout.ride_id;
 
-      // If the Ride record hasn't been pulled yet, pull it
-      // from the database
-      if (rides[rideID] == undefined){
-        let ride = this.db.Ride.get(rideID)
-        rides[rideID] = {
-          ride: ride,
-          last_taken_workout: 0,
-          workouts: []
+    // Grab the unique set of Ride IDs for the set of workouts
+    // and begin to build the container structure for the comparison
+    // TODO - update DB.where to support array -> IN (?,..)
+    let rideIDs = [...new Set( workouts.map(w => w.ride_id) )];
+    let comparison = rideIDs.reduce((reducer, ride_id) => {
+      // Grab the ride by id from the database, then the associated
+      // instructor for the ride (by id) and create the base container
+      // for all the related workout comparison data
+      let ride = this.db.Ride.get(ride_id);
+      let instructor = this.db.Instructor.get(ride.instructor_id);
+
+      // Format the payload for the specified ride as described above
+      reducer[ride_id] = {
+        ride: ride,
+        instructor: instructor,
+        last_taken_at: 0,
+        users: {
+          [userA.id]: {
+            id: userA.id,
+            winner: false,
+            workouts: []
+          },
+          [userB.id]: {
+            id: userB.id,
+            winner: false,
+            workouts: []
+          }
         }
-
-        // Pull the associated instructor for this ride as well
-        let instructor = this.db.Instructor.get(ride.instructor_id);
-        ride.instructor = instructor;
       }
 
 
-      // Push the workout into the array of workouts for this ride
-      // and update the last_taken_workout parameter for the ride
-      // if applicable (used for sorting later)
-      rides[rideID].workouts.push(workout);
-      if (rides[rideID].last_taken_workout < workout.taken_at){
-        rides[rideID].last_taken_workout = workout.taken_at
-      }
+      return reducer
+    }, {});
+
+
+    // Walk through the workouts and populate them into
+    // the associated ride->user->workouts array and set
+    // the last_taken_at field for the ride (so we can sort later)
+    workouts.forEach(w => {
+      let ride = comparison[ w.ride_id ];
+      ride.users[w.user_id].workouts.push(w);
+      ride.last_taken_at = Math.max(ride.last_taken_at, w.taken_at)
+    });
+
+
+    // For all the rides, walk through the individual users
+    // workouts (in case there are multiple) and sort by
+    // best output for the final userA <=> userB comparison
+    Object.values(comparison).forEach(ride => {
+      // TODO - if we only have one workout entry we may just
+      //        want to skip the sorting, not sure of perf hit
+      Object.values(ride.users).forEach(user => {
+        // Create a 2D array where each element is a pair of
+        // [total output, workout] so we can call Array.sort
+        // which (I think) sorts by the first entry
+        let outputList = user.workouts.map(workout => [workout.total_output, workout]);
+
+        // Sort the output then filter the sorted list to just pull out the
+        // actual workout (2nd entry) (in order)
+        // NOTE - the sort syntax is because default Array.sort behavior is to
+        //        convert the elements to strings and compare the utf-16 code units (??!?!!?)
+        user.workouts = outputList.sort((a, b) => a[0] - b[0]).map(output => output[1]).reverse();
+      })
+    });
+
+
+
+    // Now that we have our built out comparison structure, the final step is to
+    // just compare the best (index 0) workout for each ride between userA and userB
+    // to determine who has the better output and set the winner
+    // TODO - determine how we want to handle ties
+    Object.values(comparison).forEach(ride => {
+      let bestUserA = ride.users[userA.id].workouts[0];
+      let bestUserB = ride.users[userB.id].workouts[0];
+
+      // Compare the best output from userA and userB and set the winner user ID
+      // then key into the ride->users->userID to set the winner flat to true
+      let winnerUserID = bestUserA.total_output > bestUserB.total_output ? userA.id : userB.id;
+      ride.users[winnerUserID].winner = true;
+
+      // Increment the summary for the winning user
+      summary.wins[winnerUserID] += 1;
+    })
+
+    // The final step is converting the comparison list into an array
+    // that is sorted by the last_taken_at for each ride
+    let rideTaken = Object.values(comparison).map(ride => [ride.last_taken_at, ride]);
+    let rideSorted = rideTaken.sort((a, b) => a[0] - b[0]).reverse();
+    let rideList = rideSorted.map(ride => ride[1]);
+
+    // Set the total ride count in the summary and the winner
+    summary.rideCount = rideIDs.length;
+    let winnerUserID = summary.wins[userA.id] > summary.wins[userB.id] ? userA.id : userB.id;
+    summary.winner[winnerUserID] = true;
+
+
+    console.log(summary)
+
+    return {
+      summary: summary,
+      rides: rideList
     }
-
-
-    // Walk through the rides/workouts and tally the wins
-    // for each user
-    let wins = {};
-    wins[userA.id] = 0
-    wins[userB.id] = 0
-
-
-    // Rides is a object thatt acts like a set (to dedup rides)
-    // so walk through the keys to proccess each ride
-    // TODO - this doesn't take into account a user taking the same
-    //        ride multiple times
-    for (let i = 0; i < Object.keys(rides).length; i++){
-      // Grab the ride object we are processing
-      // and pull out the workouts
-      let rideID = Object.keys(rides)[i];
-      let workouts = rides[ rideID ].workouts;
-
-
-      let outputA = workouts[0].total_output;
-      let outputB = workouts[1].total_output;
-
-      // Based on the output pick the winner (index)
-      let winner =  outputA > outputB ? 0 : 1;
-
-      wins[ workouts[winner].user_id ] += 1;
-      workouts[winner].winner = true;
-      rides[rideID].winner = workouts[winner].user_id
-    }
-
-    rides.wins = wins;
-    return rides;
   }
 }
 

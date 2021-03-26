@@ -1,0 +1,29 @@
+<div class="row">
+  <div class="row workout-taken"><%= taken %></div>
+  <a href="/users/<%= username %>">
+    <img class="comparison-profile u-full-width" src="<%= image %>"></img>
+  </a>
+
+  <% if (winner){ %>
+    ✅
+  <% }; %>
+</div>
+
+<div class="row workout-output"><%= best.total_output %><mark class="lower">kj</mark></div>
+
+<div class="workout-metrics">
+  <div class="four columns workout-cadence">
+    <div class="row metric-icon"><i class="fas fa-tachometer-alt"></i></div>
+    <div class="row"><%= best.avg_cadence %><mark class="lower">rpm</mark></div>
+  </div>
+
+  <div class="four columns workout-resistance">
+    <div class="row metric-icon"><i class="fas fa-dumbbell"></i></div>
+    <div class="row"><%= best.avg_resistance %><mark class="lower">%</mark></div>
+  </div>
+
+  <div class="four columns workout-speed">
+    <div class="row metric-icon"><i class="fas fa-running"></i></div>
+    <div class="row"><%= best.avg_speed %><mark class="lower">mph</mark></div>
+  </div>
+</div>

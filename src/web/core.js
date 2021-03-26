@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const morgan  = require('morgan');
+const helpers = require('./helpers');
 
 class Web {
   port = process.env.PORT || 3000;
@@ -198,6 +199,7 @@ class Web {
       // for the two users then render the data
       let comparison = this.glue.commonWorkouts(usernameA, usernameB);
       res.render('shakeandbake', {
+        helpers: helpers,
         title: `${userA.username} vs. ${userB.username}`,
         userA: {
           data: userA,

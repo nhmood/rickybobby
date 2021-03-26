@@ -55,13 +55,18 @@ body {
 }
 
 .ride-instructor {
-  font-weight: 300;
+  font-weight: 200;
+  text-transform: uppercase;
 }
 
 .ride-image img {
   border-radius: 50%;
   border: 3px solid #efefef;
   width: 20vh;
+}
+
+.ride-link {
+  text-transform: uppercase;
 }
 
 .component {
@@ -96,13 +101,50 @@ body {
 
 
 
+.workout-output {
+  font-weight: 800;
+  font-size: 40px;
+  margin-bottom: 30px;
+}
+
+.lower {
+  font-size: 15px;
+  font-weight: 400;
+}
+
+.metric-icon {
+  border-bottom: 1px solid #efefef;
+}
+
+.workout-taken {
+  font-weight: 200;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #efefef;
+}
+
+.comparisons {
+  text-align: center;
+}
+
+.workout-metrics {
+  font-size: 25px;
+}
 
 
 
+.workout-max-output {
+}
+
+.workout-cadence {
+}
+
+.workout-resistance {
+}
 
 
-
-
+.workout-speed {
+}
 
 
 

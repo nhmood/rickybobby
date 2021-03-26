@@ -1,4 +1,9 @@
 <%- include('partials/_head'); %>
+
+<%- userAID = userA.id %>
+<%- userBID = userB.id %>
+
+
 <body>
   <div class="container">
     <%- include('partials/_header'); %>
@@ -63,74 +68,47 @@
       <div class="row workouts">
         <div class="row header">
           <h2>Workouts</h2>
+        </div>
 
+        <div class="row comparisons">
           <% rides.data.forEach(function(ride){ %>
-              <div class="row comparison component">
-              <div class="row ride-details">
-              <div class="row ride-image">
-                  <img class="u-full-width" src="<%= ride.instructor.image_url %>"></img>
-                </div><!-- ride-image -->
-
-                <div class="row ride-name"><%= ride.ride.title %></div>
-                <div class="row ride-instructor"><%= ride.instructor.name %></div>
-              </div><!-- ride-details -->
-
+            <div class="row comparison component">
               <div class="row workout-details">
-                <div class="six columns userA">
+
+                <div class="four columns userA">
                   <% best = ride.users[userA.data.id].workouts[0] %>
-                  <div class="row">
-                    <img class="comparison-profile u-full-width" src="<%= userA.data.image_url %>"></img>
-                    <% console.log(best) %>
-                    <% if (ride.users[userA.data.id].winner){ %>
-                      ✅
-                    <% }; %>
-                  </div>
-
-                    <div class="row workout-output">Output: <%= best.total_output %></div>
-                    <div class="row workout-taken">Taken: <%= new Date(best.taken_at * 1000) %></div>
-
-                    <div class="workout-metrics">
-                      <div class="row workout-max-output">Max Output: <%= best.max_output %></div>
-                      <div class="row workout-cadence">Cadence (avg/max): <%= best.avg_cadence %> / <%= best.max_cadence %></div>
-                      <div class="row workout-resistance">Resistance (avg/max): <%= best.avg_resistance %> / <%= best.max_resistance %></div>
-                      <div class="row workout-speed">Speed (avg/max): <%= best.avg_speed %> / <%= best.max_speed %></div>
-                    </div>
+                  <%- include('partials/shakeandbake/_workout_metrics', {
+                    username: userA.data.username,
+                    best: best,
+                    winner: ride.users[userA.data.id].winner,
+                    image: userA.data.image_url,
+                    taken: helpers.formatDate(ride.users[userA.data.id].workouts[0].taken_at)
+                  }); %>
                 </div>
 
+                <div class="four columns ride-details">
+                  <div class="row ride-image">
+                    <img class="u-full-width" src="<%= ride.instructor.image_url %>"></img>
+                  </div><!-- ride-image -->
 
-                <div class="six columns userB">
-                  <% best = ride.users[userB.data.id].workouts[0] %>
-                  <div class="row">
-                    <img class="comparison-profile u-full-width" src="<%= userB.data.image_url %>"></img>
-                    <% if (ride.users[userB.data.id].winner){ %>
-                      ✅
-                    <% }; %>
-                  </div>
+                  <div class="row ride-name"><%= ride.ride.title %></div>
+                  <div class="row ride-instructor"><%= ride.instructor.name %></div>
+                  <div class="row ride-link"><a href="https://members.onepeloton.com/classes/cycling?modal=classDetailsModal&classId=<%= ride.ride.id %>" target="_blank">View Class</a></div>
 
-                    <div class="row workout-output">Output: <%= best.total_output %></div>
-                    <div class="row workout-taken">Taken: <%= new Date(best.taken_at * 1000) %></div>
+                </div><!-- ride-details -->
 
-                    <div class="workout-metrics">
-                      <div class="row workout-max-output">Max Output: <%= best.max_output %></div>
-                      <div class="row workout-cadence">Cadence (avg/max): <%= best.avg_cadence %> / <%= best.max_cadence %></div>
-                      <div class="row workout-resistance">Resistance (avg/max): <%= best.avg_resistance %> / <%= best.max_resistance %></div>
-                      <div class="row workout-speed">Speed (avg/max): <%= best.avg_speed %> / <%= best.max_speed %></div>
-                    </div>
+
+                <div class="four columns userB">
+                  <%- include('partials/shakeandbake/_workout_metrics', {
+                    username: userB.data.username,
+                    best: ride.users[userB.data.id].workouts[0],
+                    winner: ride.users[userB.data.id].winner,
+                    image: userB.data.image_url,
+                    taken: helpers.formatDate(ride.users[userB.data.id].workouts[0].taken_at)
+                  }); %>
                 </div>
-
-
               </div><!-- workout-details -->
             </div><!-- comparison -->
-
-
-
-
-
-
-
-
-
-
           <% }); %>
         </div>
       </div><!-- workouts -->

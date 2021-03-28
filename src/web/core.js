@@ -150,6 +150,8 @@ class Web {
         next_page: page < (userCount / this.PAGE_LIMIT) ? page + 1 : null
       }
 
+      // Map users into groups of (6) for display purposes
+      users = helpers.chunk(users, 6);
 
       // Render riders template with associated data
       res.render('users', {

@@ -5,98 +5,35 @@
 
 
     <div id="main" class="row">
-      <div class="row component user">
-        <div class="six columns details">
-          <div class="four columns">
-            <img class="u-full-width profile" src="<%= user.data.image_url %>"></img>
-          </div>
+      <%- include('partials/_pagination', {
+        base: `/users`,
+        prev_page: pagination.data.prev_page,
+        next_page: pagination.data.next_page
+      }); %>
 
-          <div class="eight columns">
-            <div class="row username"><%= user.username %></div>
-            <div class="row location"><%= user.data.location %></div>
-            <div class="row metrics">Total Rides: <%= user.data.cycling_workout_count %></div>
-            </div>
-          </div>
-        </div><!-- user -->
-
-
-        <div class="six columns followers">
-        </div><!-- followers -->
-      </div><!-- info -->
-
-
-
-      <div class="workouts row">
-        <div class="row header"><h2>Workouts</h2></div>
-
-
-        <%- include('partials/_pagination', {
-          username: user.username,
-          prev_page: pagination.data.prev_page,
-          next_page: pagination.data.next_page
-        }); %>
-
-
-        <% workouts.data.forEach(function(workout){ %>
-          <div class="row component workout">
-            <div class="two columns instructor">
-              <img class="u-full-width profile" src="<%= workout.instructor.image_url %>"></img>
-            </div>
-            <div class="four columns ride-info">
-              <div class="row name"><%= workout.ride.title %></div>
-              <div class="row instructor"><%= workout.instructor.name %></div>
-              <div class="row difficulty">Difficulty: <%= Math.round( workout.ride.difficulty_rating_avg * 100) / 100 %> / 10</div>
-              <div class="row peloton"><a class="peloton-link" href="https://members.onepeloton.com/classes/cycling?modal=classDetailsModal&classId=<%= workout.ride.id %>" target="_blank">View Class</a></div>
-            </div>
-
-            <div class="six columns performance">
-              <% if (workout.type == "cycling"){ %>
-                <div class="three columns output">
-                  <div class="row metric-icon"><i class="fas fa-battery-three-quarters"></i></div>
-                  <div class="row"><%= workout.total_output %><mark class="lower">kj</mark></div>
+      <div class="row component users">
+        <% users.data.forEach(function(group){ %>
+          <div class="row">
+            <% group.forEach(function(user){ %>
+              <div class="two columns user-list">
+                <div class="row">
+                  <img class="u-full-width profile-list" src="<%= user.image_url %>"></img>
                 </div>
-
-                <div class="three columns cadence">
-                  <div class="row metric-icon"><i class="fas fa-tachometer-alt"></i></div>
-                  <div class="row"><%= workout.avg_cadence %><mark class="lower">rpm</mark></div>
+                <div class="row">
+                  <a href="/users/<%= user.username %>"><%= user.username %></a>
                 </div>
-
-                <div class="three columns resistance">
-                  <div class="row metric-icon"><i class="fas fa-dumbbell"></i></div>
-                  <div class="row"><%= workout.avg_resistance %><mark class="lower">%</mark></div>
-                </div>
-
-                <div class="three columns speed">
-                  <div class="row metric-icon"><i class="fas fa-running"></i></div>
-                  <div class="row"><%= Math.round(workout.avg_speed) %><mark class="lower">mph</mark></div>
-                </div>
-              <% } else { %>
-                &nbsp;
-              <% }; %>
-            </div>
+              </div><!-- user -->
+            <% }); %>
           </div>
         <% }); %>
-
-
-        <%- include('partials/_pagination', {
-          username: user.username,
-          prev_page: pagination.data.prev_page,
-          next_page: pagination.data.next_page
-        }); %>
-      </div><!-- workouts -->
+      </div><!-- users -->
     </div><!-- main -->
   </div><!-- container -->
 </body>
 
 
-<pre class="hide" data-type="user">
-  <%= user.debug %>
-</pre>
-<pre class="hide" data-type="workouts">
-  <%= workouts.debug %> 
-</pre>
-<pre class="hide" data-type="pagination">
-  <%= pagination.debug %>
+<pre class="hide" data-type="riders">
+  <%= users.debug %>
 </pre>
 
 <script>
@@ -107,4 +44,6 @@
     return result;
   }, {})
 </script>
+
+
 <%- include('partials/_end'); %>

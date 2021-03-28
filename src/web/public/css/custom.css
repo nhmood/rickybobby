@@ -161,7 +161,20 @@ a {
   border-radius: 80px;
 }
 
+.profile-list {
+  width: 5vh;
+  border-radius: 50px;
+}
 
+
+.user-list {
+  margin-top: 20px;
+  font-weight: 700;
+}
+
+.user-list {
+  text-align: center;
+}
 .user_info .userA > * {
   text-align: right;
 }

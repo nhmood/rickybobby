@@ -102,11 +102,11 @@ class Web {
       */
       // For each workout, grab associated ride and instructor
       workouts.forEach(w => {
-        let ride = this.db.Ride.get(w.ride_id);
+        let ride = this.db.Ride.get(w.ride_id) || {};
         w.ride = ride;
 
         let instructor = this.db.Instructor.get(ride.instructor_id);
-        w.instructor = instructor;
+        w.instructor = instructor || { image_url: "/images/peloton.jpg" };
       });
 
 

@@ -91,29 +91,32 @@ class Model {
 
 
   // Query specified model table with provided conditions
-  static where(conditions = {}, limit, page = 0, count = false){
+  static where(options){
+    options.conditions = options.conditions || {}
+
     // Set the selector condition based on whether we want to count or retrieve
     // TODO - probably want to add a fields specifier here
-    let selector = count ? "COUNT(*) as count" : "*";
+    let selector = options.count ? "COUNT(*) as count" : "*";
 
     // Format the initial SQL WHERE statement with the table and field bindings
     let sql = `SELECT ${selector} FROM ${this.tableName}`;
 
     // If there are conditions provided for the query, then properly format
     // the field bindings and apply them to the SQL statement
-    if (Object.keys(conditions).length > 0 ){
+    if (Object.keys(options.conditions).length > 0 ){
       // Grab the fields to be queried by from the conditions and format
       // the named parameters for the SQL statement
-      let fields        = Object.keys(conditions);
-      let fieldBindings = Object.keys(conditions).map(f => { return `${f} = @${f}` });
+      let fields        = Object.keys(options.conditions);
+      let fieldBindings = Object.keys(options.conditions).map(f => { return `${f} = @${f}` });
 
       sql = sql.concat(` WHERE ${fieldBindings.join(" AND")}`);
     }
 
     // If the limit parameter is present and a valid integer, append to the SQL statement
-    let limitInt = parseInt(limit);
+    let limitInt = parseInt(options.limit);
     if (limitInt){
-      sql = sql.concat(` LIMIT ${limitInt} OFFSET ${ limit * page }`);
+      let pageInt = parseInt(options.page) || 0;
+      sql = sql.concat(` LIMIT ${limitInt} OFFSET ${ limitInt * pageInt }`);
     }
 
 
@@ -122,13 +125,13 @@ class Model {
 
     // If we are just counting, no need to format the results
     // into the corresponding model, just return the count
-    if (count){
-      const record = stmt.get(conditions);
+    if (options.count){
+      const record = stmt.get(options.conditions);
       return record.count;
     }
 
     // Get the records and map to the model
-    const records = stmt.all(conditions);
+    const records = stmt.all(options.conditions);
     const models = records.map(r => { return new this(r) });
 
     console.log({models});
@@ -138,15 +141,24 @@ class Model {
 
   // Count specified model table with provided conditions
   static count(conditions = {}){
-    let result = this.where(conditions, 0, 0, true);
+    let result = this.where({
+      conditions: conditions,
+      limit: 0,
+      page: 0,
+      count: true
+    });
+
     return result;
   }
 
 
   // Query the specified model table with provided conditions but
   // return only the first result
-  static first(conditions){
-    return this.where(conditions, 1)[0];
+  static first(conditions = {}){
+    return this.where({
+      conditions: conditions,
+      limit: 1
+    })[0];
   }
 
 

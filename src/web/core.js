@@ -81,8 +81,12 @@ class Web {
 
       // Lookup the associated workouts for the user with proper page/limits
       let workouts = this.db.Workout.where({
-        user_id: user.id
-      }, this.PAGE_LIMIT, page - 1);
+        conditions: {
+          user_id: user.id
+        },
+        limit: this.PAGE_LIMIT,
+        page: page - 1
+      });
 
 
 
@@ -149,7 +153,10 @@ class Web {
       page = Math.min(...[page, Math.ceil(userCount / this.PAGE_LIMIT)]);
 
       // Look users with proper page/limit
-      let users = this.db.User.where({}, this.PAGE_LIMIT, page - 1);
+      let users = this.db.User.where({
+        limit: this.PAGE_LIMIT,
+        page: page -1
+      });
 
       // Generate pagination for workout data
       const pagination = {

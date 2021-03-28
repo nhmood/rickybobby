@@ -105,7 +105,11 @@ class RickyBobby {
 
     // Get all the associated api_data records for the target
     // then walk through and reimport the records to the model
-    let datalogs = this.db.Datalog.where({target: resource});
+    let datalogs = this.db.Datalog.where({
+      conditions: {
+        target: resource
+      }
+    });
     datalogs.forEach(datalog => {
       console.log(`Rebuilding ${resource} from Datalog:${datalog.id}`);
       model.import(datalog.data);
@@ -159,7 +163,11 @@ class RickyBobby {
     let user = await this.getUser(username);
     console.log({user});
 
-    let workouts = this.db.Workout.where({user_id: user.id});
+    let workouts = this.db.Workout.where({
+      conditions: {
+        user_id: user.id
+      }
+    });
     if (workouts == undefined){
       console.warn(`No workouts found for ${username}`);
       process.exit(1);

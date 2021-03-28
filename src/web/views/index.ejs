@@ -1,50 +1,43 @@
 <%- include('partials/_head'); %>
-<body>
+<body class="preload">
   <div class="container">
     <%- include('partials/_header'); %>
 
 
     <div id="main" class="row">
       <div class="row search">
-        <form method="POST" action="/shakeandbake/">
-          <div class="row">
-            <div class="five columns user">
-              <label for="username"></label>
-              <input class="u-full-width" type="text" id="searchUsernameA" name="usernameA" placeholder="USERNAME"></input>
-            </div>
-
-            <div class="two columns vs">
-            VS
-            </div>
-
-            <div class="five columns user">
-              <label for="username"></label>
-              <input type="text" id="searchUsernameB" name="usernameB" placeholder="USERNAME"></input>
-            </div>
+        <h3>Shake and Bake</h3>
+        <div class="row compare">
+          <div class="five columns">
+            <input autofocus class="u-full-width" type="text" id="userA" name="userA" placeholder="Shake"></input>
+          </div>
+          <div class="two columns vs">
+            vs
+          </div>
+          <div class="five columns">
+            <input class="u-full-width" type="text" id="userB" name="userB" placeholder="Bake"></input>
           </div>
 
-          <br>
-          <div class="row">
-            <input class="shake" type="submit" value="🍗 SHAKE AND BAKE 🍗"></input>
-          </div>
-        </form>
-      </div>
 
+          <p>
+            Enter the usernames of the riders you want to compare above<br>
+            Then shake and bake
+          </p>
+        </div><!-- compare -->
+        <div class="row">
+          <a id="searchButton" href="#" class="search-button">Click to Shake and Bake</a>
+        </div>
+      </div><!-- search -->
 
 
       <div class="row recent">
-        <h1>Recent Activity</h1>
+        <h3>Recent Activity</h3>
         <% workouts.data.forEach(function(workout){ %>
           <div class="row">
-            <div class="three columns">&nbsp;</div>
-            <div class="six columns">
-              <div class="one columns user_profile"><img class="u-full-width" src="<%= workout.user.image_url %>"></img></div>
-              <span> <mark class="em"><a href="/users/<%= workout.user.username %>"><%= workout.user.username %></a></mark> / <mark class="i"><%= workout.ride.title %></mark> / <%= workout.avg_output %> watts</span>
-            </div>
-            <div class="three columns">&nbsp;</div>
+            <a href="/users/<%= workout.user.username %>"><%= workout.user.username %></a> took <mark class="em"><%= workout.ride.title %></mark> on <mark class="i"><%= helpers.formatDate(workout.taken_at) %></mark>
           </div>
         <% }); %>
-      </div>
+      </div><!-- recent -->
     </div><!-- main -->
   </div><!-- container -->
 </body>

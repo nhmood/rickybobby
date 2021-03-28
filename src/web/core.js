@@ -35,7 +35,14 @@ class Web {
       // the associated ride, instructor, and performance info
       // TODO - might want to restructure workout model to normalize
       //        required data or join to get all data at once
-      let recentWorkouts = this.db.Workout.recent(10);
+      let recentWorkouts = this.db.Workout.where({
+        orderBy: {
+          field: 'taken_at',
+          direction: 'desc'
+        },
+        limit: 10
+      });
+
       recentWorkouts.forEach(w => {
         let user = this.db.User.get(w.user_id);
         w.user = user;
@@ -83,6 +90,10 @@ class Web {
       let workouts = this.db.Workout.where({
         conditions: {
           user_id: user.id
+        },
+        orderBy: {
+          field: "taken_at",
+          direction: "desc"
         },
         limit: this.PAGE_LIMIT,
         page: page - 1

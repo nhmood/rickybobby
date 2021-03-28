@@ -112,6 +112,16 @@ class Model {
       sql = sql.concat(` WHERE ${fieldBindings.join(" AND")}`);
     }
 
+
+    // Format for order by option
+    if (options.orderBy){
+      // TODO - validate direction against asc/desc and ignore if invalid
+      // TODO - validate that the field provided is a member of the model
+      let direction = options.orderBy.direction || "desc";
+      sql = sql.concat(` ORDER BY ${options.orderBy.field} ${direction}`);
+    }
+
+
     // If the limit parameter is present and a valid integer, append to the SQL statement
     let limitInt = parseInt(options.limit);
     if (limitInt){

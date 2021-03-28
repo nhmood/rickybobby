@@ -55,6 +55,11 @@ a {
   font-size: 10px;
 }
 
+.ride-info .taken {
+  font-size: 12px;
+  font-weight: 300;
+}
+
 .performance {
   font-size: 25px;
   text-align: center;

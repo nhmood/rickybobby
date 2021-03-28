@@ -5,6 +5,8 @@
 
 
     <div id="main" class="row">
+      <h3>Riders</h3>
+
       <%- include('partials/_pagination', {
         base: `/users`,
         prev_page: pagination.data.prev_page,
@@ -30,20 +32,5 @@
     </div><!-- main -->
   </div><!-- container -->
 </body>
-
-
-<pre class="hide" data-type="riders">
-  <%= users.debug %>
-</pre>
-
-<script>
-  let debug = document.getElementsByTagName("pre");
-  let data = Array.from(debug).reduce((result, item) => {
-    let type =item.dataset.type;
-    result[type] = JSON.parse(item.innerHTML);
-    return result;
-  }, {})
-</script>
-
 
 <%- include('partials/_end'); %>

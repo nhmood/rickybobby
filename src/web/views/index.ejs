@@ -49,19 +49,4 @@
   </div><!-- container -->
 </body>
 
-
-<pre class="hide" data-type="workouts">
-  <%= workouts.debug %>
-</pre>
-
-<script>
-  let debug = document.getElementsByTagName("pre");
-  let data = Array.from(debug).reduce((result, item) => {
-    let type =item.dataset.type;
-    result[type] = JSON.parse(item.innerHTML);
-    return result;
-  }, {})
-</script>
-
-
 <%- include('partials/_end'); %>

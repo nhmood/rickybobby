@@ -1,4 +1,6 @@
-<div class="row pagination">
+<% show = (prev_page || next_page) ? "" : "hide" %>
+
+<div class="row pagination <%= show %>">
   <div class="six columns prev">
     <% if (prev_page){ %>
       <a href=<%= base %>?p=<%= prev_page %>">Previous Workouts</a>

@@ -44,6 +44,7 @@ class Web {
       // Render the index template
       res.render('index', {
         title: "if you're not first, you're last",
+        helpers: helpers,
         workouts: {
           data: recentWorkouts,
           debug: JSON.stringify(recentWorkouts, null, 2)
@@ -114,6 +115,7 @@ class Web {
       // Render the users template with the associated data
       res.render('user', {
         title: `${user.username}`,
+        helpers: helpers,
         user: {
           username: username,
           data: user,

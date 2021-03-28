@@ -1,0 +1,18 @@
+<div class="row pagination">
+  <div class="six columns prev">
+    <% if (prev_page){ %>
+     <a href="/users/<%= username %>?p=<%= prev_page %>">Previous Workouts</a>
+    <% } else { %>
+      &nbsp;
+    <% }; %>
+  </div>
+
+
+  <div class="six columns next">
+    <% if (next_page) { %>
+      <a href="/users/<%= username %>?p=<%= next_page %>">Next Workouts</a>
+    <% } else { %>
+      &nbsp;
+    <% }; %>
+  </div>
+</div><!-- pagination -->

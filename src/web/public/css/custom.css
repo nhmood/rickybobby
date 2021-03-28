@@ -9,21 +9,92 @@ html { font-family: 'Inter', sans-serif; }
   --c2: #489FB5;
   --c3: #82C0CC;
   --c4: #990D35;
+  --core: #077E72;
+  --peloton: rgb(223, 28, 47);
 }
 
 body {
-	font-family: 'Inter var', sans-serif;
+  font-family: 'Inter var', sans-serif;
   margin-top: 5%;
+  text-transform: uppercase;
 }
 
 #main h1 {
   font-weight: 100;
 }
 
-#main h2 {
-  font-weight: 500;
+
+.header {
 }
 
+
+a {
+}
+
+.ride-info {
+}
+
+.peloton-link {
+  background: #efefef;
+  border-radius: 20px;
+  color: black;
+  padding: 10px;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 12px;
+}
+
+.ride-info .peloton {
+  margin-top: 20px;
+  text-transform: uppercase;
+}
+
+.ride-info .difficulty {
+  text-transform: uppercase;
+  font-weight: 300;
+  font-size: 10px;
+}
+
+.performance {
+  font-size: 25px;
+  text-align: center;
+  margin-top: 20px;
+}
+
+.ride-info .name {
+  font-size: 20px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.ride-info .instructor {
+  font-weight: 300;
+  text-transform: uppercase;
+}
+
+.metrics {
+  font-size: 10px;
+  font-weight: 300;
+}
+
+.pagination {
+  margin-bottom: 20px;
+}
+
+.workout {
+  margin-bottom: 70px;
+}
+
+.user .username {
+  font-weight: 800;
+  font-size: 30px;
+  border-bottom: 1px solid #efefef;
+}
+
+.user .location {
+  font-weight: 300;
+  text-transform: uppercase;
+}
 
 .score {
   font-size: 50px;
@@ -48,6 +119,9 @@ body {
   width: 32px;
 }
 
+.next {
+  text-align: right;
+}
 
 .ride-name {
   font-size: 20px;
@@ -66,6 +140,8 @@ body {
 }
 
 .ride-link {
+  margin-top: 10px;
+
   text-transform: uppercase;
 }
 
@@ -74,6 +150,7 @@ body {
   padding: 20px;
   border-radius: 15px;
   border: 1px solid #efefef;
+  margin-bottom: 40px;
 }
 
 .comparison {
@@ -84,12 +161,6 @@ body {
   border-radius: 80px;
 }
 
-.user_info .username {
-  font-weight: 700;
-}
-
-.user_info .location {
-}
 
 .user_info .userA > * {
   text-align: right;
@@ -162,9 +233,13 @@ hr {
   margin-top: 0px;
 }
 
+h1, h2, h3, h4, h5 {
+  font-weight: 100;
+}
+
 #header {
   text-align: center;
-  font-weight: 300;
+  font-weight: 100;
   margin-bottom: 40px;
 }
 

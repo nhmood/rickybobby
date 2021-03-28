@@ -5,97 +5,84 @@
 
 
     <div id="main" class="row">
-      <div class="info row">
-        <div class="one column"><img class="u-full-width" src="<%= user.data.image_url %>"></img></div>
-        <div class="user ten columns">
-          <div class="row username"><%= user.username %></div>
-          <div class="row"><%= user.location %></div>
-        </div>
-      </div>
-      <div class="streaks row">
-        <span class="material-icons">
-          event_available
-        </span>
-        Current Weekly: <%= user.data.streaks.current_weekly %>
+      <div class="row component user">
+        <div class="six columns details">
+          <div class="four columns">
+            <img class="u-full-width profile" src="<%= user.data.image_url %>"></img>
+          </div>
+
+          <div class="eight columns">
+            <div class="row username"><%= user.username %></div>
+            <div class="row location"><%= user.data.location %></div>
+            <div class="row metrics">Total Rides: <%= user.data.cycling_workout_count %></div>
+            </div>
+          </div>
+        </div><!-- user -->
 
 
-        <br>
-        <span class="material-icons">
-          emoji_events
-        </span>
-        Best Weekly: <%= user.data.streaks.best_weekly %>
+        <div class="six columns followers">
+        </div><!-- followers -->
+      </div><!-- info -->
 
-        <br>
-        <span class="material-icons">
-          directions_bike
-        </span>
-        Rides: <%= user.data.cycling_workout_count %>
-      </div>
+
 
       <div class="workouts row">
-        <div class="row nav">
-          <div class="six columns prev">
-            <% if (pagination.data.prev_page){ %>
-             <a href="/users/<%= user.username %>?p=<%= pagination.data.prev_page %>">Previous Workouts</a>
-            <% } else{ %>
-              &nbsp;
-            <% }; %>
-          </div>
+        <div class="row header"><h2>Workouts</h2></div>
 
 
-          <div class="six columns next">
-            <% if (pagination.data.next_page) { %>
-              <a href="/users/<%= user.username %>?p=<%= pagination.data.next_page %>">Next Workouts</a>
-            <% } else{ %>
-              &nbsp;
-            <% }; %>
-          </div>
-        </div><!-- nav -->
+        <%- include('partials/_pagination', {
+          username: user.username,
+          prev_page: pagination.data.prev_page,
+          next_page: pagination.data.next_page
+        }); %>
 
 
         <% workouts.data.forEach(function(workout){ %>
-          <% console.log(workout) %>
-          <div class="workout row">
+          <div class="row component workout">
             <div class="two columns instructor">
-              <img class="u-full-width" src="<%= workout.instructor.image_url %>"></img>
+              <img class="u-full-width profile" src="<%= workout.instructor.image_url %>"></img>
             </div>
-            <div class="five columns ride_info">
-              <div class="row name"><%= workout.ride.title %> - <%= workout.instructor.name %></div>
-              <div class="row duration">Duration:<%= workout.ride.duration %></div>
-              <div class="row difficulty">Difficulty: <%= workout.ride.difficulty_rating_avg %> / <%= workout.ride.difficulty_level %></div>
-              <div class="row rating">Rating: <%= workout.ride.overall_rating_avg %></div>
-              <div class="row peloton"><a href="https://members.onepeloton.com/classes/cycling?modal=classDetailsModal&classId=<%= workout.ride.id %>" target="_blank">Peloton Link</a></div>
-              <div class="row"></div>
-              <div class="row"></div>
+            <div class="four columns ride-info">
+              <div class="row name"><%= workout.ride.title %></div>
+              <div class="row instructor"><%= workout.instructor.name %></div>
+              <div class="row difficulty">Difficulty: <%= Math.round( workout.ride.difficulty_rating_avg * 100) / 100 %> / 10</div>
+              <div class="row peloton"><a class="peloton-link" href="https://members.onepeloton.com/classes/cycling?modal=classDetailsModal&classId=<%= workout.ride.id %>" target="_blank">View Class</a></div>
             </div>
-            <div class="five columns performance">
-              <div class="row total_output">Total Output: {{total_output}}</div>
-              <div class="row avg_cadence">Average Cadence: {{avg_cadence}}</div>
-              <div class="row avg_resistance">Average Resistance: {{avg_resistance}}</div>
-              <div class="row avg_speed">Average Speed: {{avg_speed}}</div>
+
+            <div class="six columns performance">
+              <% if (workout.type == "cycling"){ %>
+                <div class="three columns output">
+                  <div class="row metric-icon"><i class="fas fa-battery-three-quarters"></i></div>
+                  <div class="row"><%= workout.total_output %><mark class="lower">kj</mark></div>
+                </div>
+
+                <div class="three columns cadence">
+                  <div class="row metric-icon"><i class="fas fa-tachometer-alt"></i></div>
+                  <div class="row"><%= workout.avg_cadence %><mark class="lower">rpm</mark></div>
+                </div>
+
+                <div class="three columns resistance">
+                  <div class="row metric-icon"><i class="fas fa-dumbbell"></i></div>
+                  <div class="row"><%= workout.avg_resistance %><mark class="lower">%</mark></div>
+                </div>
+
+                <div class="three columns speed">
+                  <div class="row metric-icon"><i class="fas fa-running"></i></div>
+                  <div class="row"><%= Math.round(workout.avg_speed) %><mark class="lower">mph</mark></div>
+                </div>
+              <% } else { %>
+                &nbsp;
+              <% }; %>
             </div>
           </div>
         <% }); %>
 
 
-        <div class="row nav">
-          <div class="six columns prev">
-            <% if (pagination.data.prev_page){ %>
-             <a href="/users/<%= user.username %>?p=<%= pagination.data.prev_page %>">Previous Workouts</a>
-            <% } else { %>
-              &nbsp;
-            <% }; %>
-          </div>
-
-
-          <div class="six columns next">
-            <% if (pagination.data.next_page){ %>
-              <a href="/users/<%= user.username %>?p=<%= pagination.data.next_page %>">Next Workouts</a>
-            <% } else { %>
-              &nbsp;
-            <% }; %>
-          </div>
-        </div><!-- nav -->
+        <%- include('partials/_pagination', {
+          username: user.username,
+          prev_page: pagination.data.prev_page,
+          next_page: pagination.data.next_page
+        }); %>
       </div><!-- workouts -->
     </div><!-- main -->
   </div><!-- container -->

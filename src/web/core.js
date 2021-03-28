@@ -23,6 +23,12 @@ class Web {
     this.app.use(bodyParser.json())
 
 
+    this.app.get('/about', (req, res) => {
+      res.render('about', {
+        title: "about"
+      });
+    });
+
     // Render main page including recent workout summaries
     this.app.get('/', (req, res) => {
       // Grab the latest workouts and map them to pull in

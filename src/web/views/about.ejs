@@ -1,0 +1,90 @@
+<%- include('partials/_head'); %>
+<body class="preload">
+  <div class="container">
+    <%- include('partials/_header'); %>
+
+
+    <div id="main" class="row about">
+      <h3>if you're not first, you're last</h3>
+      <p>
+        This site was created <em>solely</em> to settle <a href="/shakeandbake?users=nhmood,pmlynn8390">this</a> fued.<br>
+        After getting a Peloton, my "friend" <a href="/users/pmlynn8390">Pat</a> would systematically one-up me on every ride I took.<br>
+        I figured a website to help track this would be a good addition to my <a href="/#">list</a> of marginally useful/useless tools.
+      </p>
+
+      <h3>faq</h3>
+      <p>
+        <strong>q: Why can't I find/add myself?</strong><br>
+        - Peloton doesn't have an official api so to make sure I don't slam their servers with requests, rickybobby is currently in a pseudo-invite-only mode.<br>
+        You can have your account tracked if someone already on rickybobby is following you (on Peloton).<br><br>
+
+        rickybobby is also open source so you can run this yourself!<br>
+        All you need is some terminal/Linux knowledge and a $5/mo DigitalOcean box and you can run rickybobby for yourself and your friends.
+        Instructions can be found on the <a href="/#">GitHub</a> page. <br><br>
+
+        If you really want to be added, reach out and we'll see what we can do.
+        <br><br>
+
+        <strong>q: Can you add ___?</strong><br>
+        - Maybe, add an issue on <a href="/#">GitHub</a>, send an email to rickybobby @ goosecode dot com, or ping me some other way.
+        <br><br>
+
+
+        <strong>q: What is ricky bobby?</strong><br>
+        A pretty funny <a href="https://en.wikipedia.org/wiki/Talladega_Nights:_The_Ballad_of_Ricky_Bobby">movie</a><br>
+        The main quote is "if you're not first, you're last", which is very fitting.
+        <br><br>
+      </p>
+
+      <h3>roadmap</h3>
+      <p>
+        <ul>
+          <li>Add dynamic search to front page and riders list</li>
+          <li>Add filter for "rides won by X" on shake and bake page</li>
+          <li>Add "rides taken by X but not Y" on shake and bake page</li>
+          <li>Add "shake and bake" score that takes into account first taken, attempts, streaks, etc</li>
+          <li>Add global "ELO" score with considerations around fair user to user comparisons</li>
+        </ul>
+      </p>
+      <br><br>
+
+      <h3>software</h3>
+      <p>
+        As with many of my new, useless, projects - I took rickybobby as an opportunity to better expore the Javascript/Node ecosystem.
+        You can check out the code on <a href="/#">GitHub</a> - comments on style, conventions, best practices, and design are more than welcome - especially given that I'm a relative rookie in the Javascript space.<br><br>
+
+        The project is broken out into four main segments:
+        <ul>
+          <li><strong>(Peloton) API</strong> - interface to the Peloton API which sources all the data
+            <ul>
+              <li>The API layer is built on top of <a href="/#" target="_blank">node-fetch</a></li>
+            </ul>
+          </li>
+
+          <li><strong>Database</strong> - interface to SQLite3 database that locally stores and structures the API data
+            <ul>
+              <li>The SQLite3 database layer is built on top of <a href="/#" target="_blank">better-sqlite</a></li>
+            </ul>
+          </li>
+
+          <li><strong>"Glue"</strong> - interface that bridges API and Database to provide a consistent, formatted dataset</li>
+
+          <li><strong>Web</strong> - layer to present the rickybobby frontend + data
+            <ul>
+              <li>The web layer is mainly <a href="/#" target="_blank">NodeJS/Express</a></li>
+              <li>Pages are templated using plain <a href="/#" target="_blank">EJS</a></li>
+            </ul>
+          </li>
+        </ul>
+
+        <br><br>
+        The scraper runs multiple times a day, fetching updates for all the users that are currently "active".<br>
+        The raw data is pulled into the SQLite data, then used to build the formatted "view" tables.<br>
+        A <em>light</em>, homebrew, ORM allows for data access and the common interface from all components into the SQLite database.<br>
+        Finally, the ExpressJS web frontend handles routing and rendering of the specific pages.
+        
+      </p>
+    </div><!-- main -->
+  </div><!-- container -->
+</body>
+<%- include('partials/_end'); %>

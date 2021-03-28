@@ -1,0 +1,10 @@
+<div class="row">
+  <a href="/users/<%= username %>">
+    <% if (winner){ %>
+      <span class="winner">✅</span>
+    <% }; %>
+
+    <img class="comparison-profile u-full-width" src="<%= image %>"></img>
+  </a>
+  <span class="workout-output"><%= best.total_output %><mark class="lower">kj</mark></span>
+</div>

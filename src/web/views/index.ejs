@@ -6,24 +6,18 @@
 
     <div id="main" class="row">
       <div class="row search">
-        <h3>Shake and Bake</h3>
         <div class="row compare">
           <div class="five columns">
-            <input autofocus class="u-full-width" type="text" id="userA" name="userA" placeholder="Shake"></input>
+            <input autofocus class="u-full-width" type="text" id="userA" name="userA" placeholder="User 1"></input>
           </div>
           <div class="two columns vs">
             vs
           </div>
           <div class="five columns">
-            <input class="u-full-width" type="text" id="userB" name="userB" placeholder="Bake"></input>
+            <input class="u-full-width" type="text" id="userB" name="userB" placeholder="User 2"></input>
           </div>
-
-
-          <p>
-            Enter the usernames of the riders you want to compare above<br>
-            Then shake and bake
-          </p>
         </div><!-- compare -->
+        <br>
         <div class="row">
           <a id="searchButton" href="#" class="search-button">Click to Shake and Bake</a>
         </div>
@@ -34,7 +28,7 @@
         <h3>Recent Activity</h3>
         <% workouts.data.forEach(function(workout){ %>
           <div class="row">
-            <a href="/users/<%= workout.user.username %>"><%= workout.user.username %></a> took <mark class="em"><%= workout.ride.title %></mark> on <mark class="i"><%= helpers.formatDate(workout.taken_at) %></mark>
+            <a href="/users/<%= workout.user.username %>"><%= workout.user.username %></a> took <mark class="em"><%= workout.ride.title %></mark> on <mark class="i"><%= helpers.formatDate(workout.taken_at, true) %></mark>
           </div>
         <% }); %>
       </div><!-- recent -->

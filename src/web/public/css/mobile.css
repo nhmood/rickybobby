@@ -1,0 +1,51 @@
+.mobile { display: none;  }
+.full   { display: block; }
+@media ( max-width: 950px ){
+  .mobile { display: block; }
+  .full   { display: none;  }
+
+  .vs { width: 100%; }
+  #header { text-align: center; }
+  #header .nav { text-align: center; }
+
+  h1, h2, h3, h4, h5, h6 { text-align: center;  }
+
+  .user-list { font-weight: 500; }
+
+  .user-list a {
+    font-weight: 800;
+    text-decoration: none;
+  }
+
+  .profile-list { width: 15vh; }
+
+  .details { text-align: center; }
+
+  .ride-details { 
+    border-bottom: 1px solid #efefef;
+    margin-bottom: 10px;
+  }
+
+  .winner {
+    position: absolute;
+    margin-top: 50px;
+    vertical-align: bottom;
+  }
+
+  .ride-info { text-align: center; }
+  .ride-link { margin-bottom: 10px;}
+
+  .workout-details { text-align: center; }
+
+
+  .mobile.profile { width: 10vh; }
+  .mobile.details .mobile.columns {
+    width: auto;
+  }
+
+  .mobile.details .mobile.profile {
+    margin-left: 20px;
+    margin-right: 20px;
+  }
+  .mobile > .columns { width: auto };
+}

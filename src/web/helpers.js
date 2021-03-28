@@ -1,10 +1,11 @@
 const dateFormat = require('dateformat');
 
 class Helpers {
-  static formatDate(epoch){
+  static formatDate(epoch, short = false){
     let datetime = new Date(epoch * 1000);
 
-    let formatted = dateFormat(datetime, 'dddd m/d/yy @ h:M TT')
+    let format = short ? 'dddd m/d/yy' :  'dddd m/d/yy @ h:M TT';
+    let formatted = dateFormat(datetime, format);
     return formatted;
   }
 

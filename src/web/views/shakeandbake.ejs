@@ -15,104 +15,13 @@
       </div>
 
 
+      <div class="full">
+        <%- include('partials/shakeandbake/_full'); %>
+      </div><!-- full -->
 
-      <div class="row component user_info">
-        <div class="five columns user userA">
-
-          <div class="row details">
-            <div class="ten columns">
-              <div class="row username"><%= userA.data.username %></div>
-              <div class="row location"><%= userA.data.location %></div>
-            </div>
-            <div class="two columns">
-              <a href="/users/<%= userA.data.username %>">
-                <img class="profile u-full-width" src="<%= userA.data.image_url %>"></img>
-              </a>
-            </div>
-          </div><!-- details -->
-
-          <div class="row score">
-            <%= summary.data.wins[userA.data.id] %>
-            <% if(summary.data.winner[userA.data.id]){ %>
-              🔥
-            <% } %>
-          </div><!-- score -->
-        </div><!-- userA -->
-
-        <div class="two columns vs">VS</div>
-
-
-        <div class="five columns user userB">
-          <div class="row details">
-            <div class="two columns">
-              <a href="/users/<%= userB.data.username %>">
-                <img class="profile u-full-width" src="<%= userB.data.image_url %>"></img>
-              </a>
-            </div>
-            <div class="ten columns">
-              <div class="row username"><%= userB.data.username %></div>
-              <div class="row location"><%= userB.data.location %></div>
-            </div>
-          </div><!-- details -->
-
-          <div class="row score">
-            <%= summary.data.wins[userB.data.id] %>
-            <% if(summary.data.winner[userB.data.id]){ %>
-              🔥
-            <% }; %>
-          </div><!-- score -->
-        </div><!-- details -->
-      </div><!-- user_info -->
-
-
-      <div class="row workouts">
-        <div class="row header">
-          <h2>Workouts</h2>
-        </div>
-
-        <div class="row comparisons">
-          <% rides.data.forEach(function(ride){ %>
-            <div class="row comparison component">
-              <div class="row workout-details">
-
-                <div class="four columns userA">
-                  <% best = ride.users[userA.data.id].workouts[0] %>
-                  <%- include('partials/shakeandbake/_workout_metrics', {
-                    username: userA.data.username,
-                    best: best,
-                    winner: ride.users[userA.data.id].winner,
-                    image: userA.data.image_url,
-                    taken: helpers.formatDate(ride.users[userA.data.id].workouts[0].taken_at)
-                  }); %>
-                </div>
-
-                <div class="four columns ride-details">
-                  <div class="row ride-image">
-                    <img class="u-full-width" src="<%= ride.instructor.image_url %>"></img>
-                  </div><!-- ride-image -->
-
-                  <div class="row ride-name"><%= ride.ride.title %></div>
-                  <div class="row ride-instructor"><%= ride.instructor.name %></div>
-                  <div class="row ride-link"><a class="peloton-link" href="https://members.onepeloton.com/classes/cycling?modal=classDetailsModal&classId=<%= ride.ride.id %>" target="_blank">View Class</a></div>
-
-                </div><!-- ride-details -->
-
-
-                <div class="four columns userB">
-                  <%- include('partials/shakeandbake/_workout_metrics', {
-                    username: userB.data.username,
-                    best: ride.users[userB.data.id].workouts[0],
-                    winner: ride.users[userB.data.id].winner,
-                    image: userB.data.image_url,
-                    taken: helpers.formatDate(ride.users[userB.data.id].workouts[0].taken_at)
-                  }); %>
-                </div>
-              </div><!-- workout-details -->
-            </div><!-- comparison -->
-          <% }); %>
-        </div>
-      </div><!-- workouts -->
-
+      <div class="mobile">
+        <%- include('partials/shakeandbake/_mobile'); %>
+      </div><!-- mobile -->
     </div><!-- main -->
   </div><!-- container -->
 </body>

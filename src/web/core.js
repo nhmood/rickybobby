@@ -159,7 +159,7 @@ class Web {
       }
 
       // Map users into groups of (6) for display purposes
-      users = helpers.chunk(users, 6);
+      users = helpers.chunk(users, 4);
 
       // Render riders template with associated data
       res.render('users', {

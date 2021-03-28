@@ -13,8 +13,8 @@ function searchUsers(){
   let userA = document.getElementById("userA");
   let userB = document.getElementById("userB");
 
-  let usernameA = userA.value;
-  let usernameB = userB.value;
+  let usernameA = userA.value.toLowerCase();
+  let usernameB = userB.value.toLowerCase();
 
   let searchURL = `/shakeandbake?users=${usernameA},${usernameB}`;
   window.location.href = searchURL;

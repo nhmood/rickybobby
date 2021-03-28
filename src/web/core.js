@@ -112,7 +112,7 @@ class Web {
 
 
       // Render the users template with the associated data
-      res.render('users', {
+      res.render('user', {
         title: `${user.username}`,
         user: {
           username: username,
@@ -133,7 +133,7 @@ class Web {
 
 
     // Rider list endpoint
-    this.app.get('/riders', (req, res) => {
+    this.app.get('/users', (req, res) => {
       // Lookup the user count and determine the page bounds
       let userCount = this.db.User.count();
       let page = parseInt(req.query.p) || 1;
@@ -152,9 +152,9 @@ class Web {
 
 
       // Render riders template with associated data
-      res.render('riders', {
-        title: "Rider List",
-        riders: {
+      res.render('users', {
+        title: "Riders",
+        users: {
           data: users,
           debug: JSON.stringify(users, null, 2)
         },

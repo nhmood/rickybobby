@@ -171,6 +171,10 @@ a {
   border-radius: 50px;
 }
 
+.profile-recent {
+  border-radius: 50px;
+}
+
 
 .user-list {
   margin-top: 20px;
@@ -280,6 +284,20 @@ h1, h2, h3, h4, h5 {
 
 #main .search {
   text-align: center;
+  margin-bottom: 200px;
+}
+
+#main .search h3 {
+  font-size: 50px;
+  font-weight: 800;
+}
+
+.compare input {
+  text-align: center;
+  text-transform: uppercase;
+  font-weight: 100;
+  font-size: 35px;
+  padding: 50px;
 }
 
 #header > * input {
@@ -350,9 +368,10 @@ mark.i {
 }
 
 .vs {
+  margin-top: 10px;
   text-align: center;
   font-size: 50px;
-  font-weight: 800;
+  font-weight: 100;
 }
 
 .recent > h1 {
@@ -375,4 +394,74 @@ input.shake {
   border: 0px;
   border-bottom: 1px solid #efefef;
   font-weight: 400;
+}
+
+a {
+  color: rgba(255, 171, 157, 1);
+  font-weight: 400;
+  transition: all 0.2s ease;
+}
+
+a:hover {
+  color: rgba(255, 171, 157, 0.5);
+}
+
+.search-button:hover {
+  color: white;
+}
+
+.search-button {
+  font-weight: 800;
+  color: black;
+  text-decoration: none;
+  position: relative;
+  margin: auto;
+  padding: 19px 22px;
+  transition: all 0.2s ease;
+}
+
+.search-button:before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: block;
+  z-index: -999;
+  border-radius: 28px;
+  background: rgba(255, 171, 157, 0.5);
+  width: 56px;
+  height: 56px;
+  transition: all 0.3s ease;
+}
+
+.search-button:hover:before {
+  width: 100%;
+  background: #ffab9d;
+}
+
+.preload * {
+  -webkit-transition: none !important;
+  -moz-transition: none !important;
+  -ms-transition: none !important;
+  -o-transition: none !important;
+  transition: none !important;
+}
+
+
+.about {
+  text-transform: none;
+}
+
+.about > h1, h2, h3, h4, h5 {
+  text-transform: uppercase;
+}
+
+li, ul {
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+ul > * ul {
+  margin-top: 0px;
+  margin-bottom: 0px;
 }

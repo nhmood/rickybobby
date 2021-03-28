@@ -68,8 +68,6 @@ class Workout extends Model {
     const records = stmt.all(userA.id, userB.id, userA.id, userB.id);
 
     const models = records.map(r => { return new this(r) });
-
-    console.log({models});
     return models;
   }
 
@@ -77,7 +75,7 @@ class Workout extends Model {
   // Get recent workouts
   // TODO - put proper order by syntax into Model.where
   static recent(limit){
-    let sql = `SELECT * FROM workouts ORDER BY created_at asc`;
+    let sql = `SELECT * FROM workouts ORDER BY taken_at desc`;
 
     // If the limit parameter is present and a valid integer, append to the SQL statement
     let limitInt = parseInt(limit);

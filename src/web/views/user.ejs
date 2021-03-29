@@ -32,6 +32,7 @@
 
         <%- include('partials/_pagination', {
           base: `/users/${user.username}`,
+          item: "Workouts",
           username: user.username,
           prev_page: pagination.data.prev_page,
           next_page: pagination.data.next_page
@@ -82,6 +83,7 @@
 
         <%- include('partials/_pagination', {
           base: `/users/${user.username}`,
+          item: "Workouts",
           prev_page: pagination.data.prev_page,
           next_page: pagination.data.next_page
         }); %>

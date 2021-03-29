@@ -9,7 +9,7 @@ class User extends Model {
   static import(data){
     let user = this.upsert({
       id:         data.id,
-      username:   data.username,
+      username:   data.username.toLowerCase(),
 
       location:   data.location,
       image_url:  data.image_url,

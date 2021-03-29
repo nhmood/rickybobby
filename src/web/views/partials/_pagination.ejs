@@ -3,7 +3,7 @@
 <div class="row pagination <%= show %>">
   <div class="six columns prev">
     <% if (prev_page){ %>
-      <a href=<%= base %>?p=<%= prev_page %>>Previous Workouts</a>
+      <a href=<%= base %>?p=<%= prev_page %>>Previous <%= item %></a>
     <% } else { %>
       &nbsp;
     <% }; %>
@@ -12,7 +12,7 @@
 
   <div class="six columns next">
     <% if (next_page) { %>
-      <a href=<%= base %>?p=<%= next_page %>>Next Workouts</a>
+      <a href=<%= base %>?p=<%= next_page %>>Next <%= item %></a>
     <% } else { %>
       &nbsp;
     <% }; %>

@@ -66,6 +66,10 @@ console.log(rb);
       rb.rebuild(process.argv[3]);
       break;
 
+    case 'sync':
+      await rb.sync();
+      break;
+
     case 'get':
       switch(process.argv[3]){
         case 'username':

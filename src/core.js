@@ -252,7 +252,6 @@ class RickyBobby {
     console.log(`Initializing workoutCursor for ${user.id}/${user.username}`);
     let workoutCursor = this.peloton.workoutCursor(user.id);
     while(true){
-      this.sleep(500);
       workoutCursor = await workoutCursor.next();
       console.log({workoutCursor});
 
@@ -262,7 +261,7 @@ class RickyBobby {
       // exists in the database, then we can safely stop processing data
       console.log(`Processing ${workoutCursor.workouts.length} workouts for cursor for ${user.id}/${user.username}`);
       for (let i = 0; i < workoutCursor.workouts.length; i++){
-        this.sleep(500);
+        this.sleep(1000);
         let workout = workoutCursor.workouts[i];
         console.log(`Processing workout:${workout.id} from API for ${user.id}/${user.username}`);
         console.debug({workout});
@@ -331,6 +330,39 @@ class RickyBobby {
     }
   }
 
+
+  async sync(){
+    // Walk through all the tracked users and sync their state
+    let users = this.db.User.tracked();
+    console.log(`Syncing ${users.length} users`);
+    for (let i = 0; i < users.length; i++){
+      let user = users[i];
+
+      console.log(`${user.username}: Sync User`);
+      let syncStart = new Date();
+
+      // Fetch the latest user info
+      console.log(`${user.username}: Fetching User Info`);
+      await this.fetchUser(user.id);
+      await this.sleep(1000);
+
+      // Fetch the latest user following
+      console.log(`${user.username}: Fetching User Following`);
+      await this.fetchFollowing(user.username);
+      await this.sleep(1000);
+
+      // Fetch the latest workouts
+      console.log(`${user.username}: Fetching Workouts`);
+      await this.fetchWorkouts(user.username);
+      await this.sleep(1000);
+
+      user.update({tracked: (new Date()).getTime() });
+
+
+      let syncEnd = new Date();
+      console.log(`Sync User: ${user.username} / total: ${ (syncEnd - syncStart) / 1000}s`);
+    };
+  }
 
   // Handler for common workout finder
   // Grabs common workouts (rides) between two users

@@ -91,3 +91,13 @@ CREATE TABLE IF NOT EXISTS workouts (
   user_id TEXT,
   ride_id TEXT
 );
+
+
+CREATE TABLE IF NOT EXISTS following (
+  id         TEXT PRIMARY KEY,
+  created_at INTEGER,
+  updated_at INTEGER,
+
+  user_id       TEXT,
+  following_id  TEXT
+);

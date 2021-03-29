@@ -11,13 +11,14 @@ class PelotonAPI {
 
   // TODO - move to urls helper file
   pelotonURLS = {
-    auth: () => { return `${this.BASE_URL}/auth/login`; },
-    user: (userID) => { return `${this.BASE_URL}/api/user/${userID}`; },
-    workout: (workoutID) => { return `${this.BASE_URL}/api/workout/${workoutID}`; },
-    workouts: (userID, page = 0) => { return `${this.BASE_URL}/api/user/${userID}/workouts?joins=peloton.ride&page=${page}`;  },
-    ride: (rideID) => { return `${this.BASE_URL}/api/ride/${rideID}`; },
-    instructor: (instructorID) => { return `${this.BASE_URL}/api/instructor/${instructorID}`; },
-    performance: (workoutID) => { return `${this.BASE_URL}/api/workout/${workoutID}/performance_graph`; }
+    auth:         ()                  => { return `${this.BASE_URL}/auth/login`; },
+    user:         (userID)            => { return `${this.BASE_URL}/api/user/${userID}`; },
+    following:    (userID)            => { return `${this.BASE_URL}/api/user/${userID}/following`; },
+    workout:      (workoutID)         => { return `${this.BASE_URL}/api/workout/${workoutID}`; },
+    workouts:     (userID, page = 0)  => { return `${this.BASE_URL}/api/user/${userID}/workouts?joins=peloton.ride&page=${page}`;  },
+    ride:         (rideID)            => { return `${this.BASE_URL}/api/ride/${rideID}`; },
+    instructor:   (instructorID)      => { return `${this.BASE_URL}/api/instructor/${instructorID}`; },
+    performance:  (workoutID)         => { return `${this.BASE_URL}/api/workout/${workoutID}/performance_graph`; }
   }
 
 
@@ -93,6 +94,26 @@ class PelotonAPI {
 
     return userResponse;
   }
+
+
+  async getFollowing(userID){
+    const url = this.pelotonURLS.following(userID);
+    console.log({url});
+
+    const data = await this.get({
+      url: url
+    });
+
+    // Format the following response accordingly
+    // TODO - should probably type this out into its own FollowingResponse class
+    const followingResponse = {
+      following: data.data,
+      raw: data
+    }
+
+    return followingResponse;
+  }
+
 
   async getRide(rideID){
     const url = this.pelotonURLS.ride(rideID);

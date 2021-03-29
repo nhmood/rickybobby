@@ -8,7 +8,8 @@ const models = {
   User:       require('./user.js'),
   Ride:       require('./ride.js'),
   Instructor: require('./instructor.js'),
-  Workout:    require('./workout.js')
+  Workout:    require('./workout.js'),
+  Following:  require('./following.js')
 };
 
 
@@ -77,6 +78,7 @@ class Database {
     this.Ride       = models.Ride.setup(this.#db);
     this.Instructor = models.Instructor.setup(this.#db);
     this.Workout    = models.Workout.setup(this.#db);
+    this.Following  = models.Following.setup(this.#db);
   }
 
   resource(name){

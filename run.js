@@ -36,6 +36,10 @@ console.log(rb);
           rb.fetchUser(process.argv[4]);
           break;
 
+        case 'following':
+          rb.fetchFollowing(process.argv[4]);
+          break;
+
         case 'ride':
           rb.fetchRide(process.argv[4]);
           break;

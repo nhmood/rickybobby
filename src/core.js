@@ -22,6 +22,13 @@ class RickyBobby {
     });
   }
 
+  uuidv4() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+      var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+      return v.toString(16);
+    });
+  }
+
   async authenticate(username, password){
     console.log(`Authenticating Peloton API with ${username}`);
 
@@ -132,6 +139,40 @@ class RickyBobby {
     storage.record.update({tracked: 1});
 
     return storage.record;
+  }
+
+
+  async fetchFollowing(identifier){
+    this.setup();
+
+    let user = this.getUsername(identifier) || this.getUser(identifier);
+
+    // Fetch the data from the Peloton API then pass to the
+    // storeResource helper to store the raw API data + model
+    // NOTE - identifier can be username OR user_id
+    const followingData = await this.peloton.getFollowing(user.id);
+    console.log(followingData.following);
+    followingData.following.data.forEach(follow => {
+
+      // Create a "Following" object that contains the parent user
+      // along with the following user to be stored (for rebuild)
+      let pair = {
+        id:           `${user.id}_${follow.id}`,
+        user_id:      user.id,
+        following_id: follow.id
+      };
+      let following = this.storeResource('following', pair);
+      console.log({following});
+
+
+      // Next, store the raw User record
+      let storage = this.storeResource('user', follow);
+      console.log({storage});
+    });
+
+
+    // Just return the count of followers stored
+    return followingData.following.length;
   }
 
 

@@ -21,6 +21,19 @@ class User extends Model {
 
     return user;
   }
+
+  // Grab all users that have a tracked value of NOT NULL
+  // TODO - update Model.where to support "NOT" conditions
+  //        probably need to update to support NULL too
+  static tracked(){
+    let sql = `SELECT * FROM users WHERE tracked NOT NULL`;
+    const stmt = this.db.prepare(sql);
+    const records = stmt.all();
+
+
+    const models = records.map(r => { return new this(r) });
+    return models;
+  }
 }
 
 module.exports = User;

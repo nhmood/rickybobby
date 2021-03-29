@@ -34,6 +34,23 @@ class User extends Model {
     const models = records.map(r => { return new this(r) });
     return models;
   }
+
+  static search(substr){
+    let sql = `
+      SELECT
+        id, username, image_url
+      FROM
+        users
+      WHERE
+        username LIKE ?;
+    `;
+
+    const stmt = this.db.prepare(sql);
+    const records = stmt.all(`${substr}%`);
+
+    const models = records.map(r => { return new this(r) });
+    return models
+  }
 }
 
 module.exports = User;

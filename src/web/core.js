@@ -69,7 +69,18 @@ class Web {
     // User search handler - mainly for form POST until we move to JS based
     this.app.post('/users/search', (req, res) => {
       let username = req.body.username;
-      return res.redirect(301, `/users/${username}`);
+
+      let users = this.db.User.search(username);
+      users = users.map(user => {
+        return {
+          id: user.id,
+          username: user.username,
+          image_url: user.image_url
+        }
+      });
+
+      res.setHeader('Content-Type', 'application/json');
+      res.json(users);
     });
 
 

@@ -56,4 +56,12 @@
     width: 50px;
     display: inline-block;
   }
+
+  .suggestions {
+    text-align: center;
+  }
+
+  .suggestions .profile {
+    width: 50px;
+  }
 }

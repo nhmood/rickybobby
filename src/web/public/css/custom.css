@@ -487,3 +487,12 @@ ul > * ul {
 .following img {
   border-radius: 50%;
 }
+
+.suggestions {
+  text-align: left;
+}
+
+.suggestions .text {
+  font-weight: 700;
+  margin-top: 15px;
+}

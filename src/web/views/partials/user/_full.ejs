@@ -1,0 +1,28 @@
+<div class="row component user">
+  <div class="six columns details">
+    <div class="four columns">
+      <img class="u-full-width profile" src="<%= user.data.image_url %>"></img>
+    </div>
+
+    <div class="eight columns">
+      <div class="row username"><%= user.username %></div>
+      <div class="row location"><%= user.data.location %></div>
+      <div class="row metrics">Total Rides: <%= user.data.cycling_workout_count %></div>
+    </div>
+  </div><!-- user -->
+
+  <div class="six columns following">
+    <div class="row"><h4>Following</h4></div>
+    <% following.users.forEach(function(group){ %>
+      <div class="row">
+        <% group.forEach(function(follow){ %>
+          <div class="two columns follow">
+            <a title="<%= follow.username %>" href="/shakeandbake?users=<%= user.username %>,<%= follow.username %>">
+              <img class="u-full-width" src="<%= follow.image_url %>"></img>
+            </a>
+          </div>
+        <% }); %>
+      </div>
+    <% }); %>
+  </div><!-- followers -->
+</div><!-- info -->

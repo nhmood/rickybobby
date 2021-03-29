@@ -470,3 +470,20 @@ ul > * ul {
 }
 
 .userA a, .userB a { text-decoration: none }
+
+.tracking * {
+  text-align: center;
+  text-transform: none;
+}
+
+.following {
+  text-align: center;
+}
+
+.following a {
+  text-decoration: none
+}
+
+.following img {
+  border-radius: 50%;
+}

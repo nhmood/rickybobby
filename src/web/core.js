@@ -205,6 +205,12 @@ class Web {
         w.instructor = instructor || { image_url: "/images/peloton.jpg" };
       });
 
+      // Lookup the followers associated with this user, map them to
+      // proper User objects, then chunk them into groups of (6) for display
+      let following = this.db.Following.fromUser(user.id);
+      following.users = following.users.map(user => { return new this.db.User(user) });
+      following.users = helpers.chunk(following.users, 6);
+
 
       // Generate pagination for workout data
       const pagination = {
@@ -218,6 +224,7 @@ class Web {
       res.render('user', {
         title: `${user.username}`,
         helpers: helpers,
+        following: following,
         user: {
           username: username,
           data: user,

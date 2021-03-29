@@ -35,11 +35,14 @@ function searchUser(e){
   let substr = e.target.value;
   clearTimeout(searchTimer);
 
-  if (substr.length != 0){
-    searchTimer = setTimeout(function(e){
-      queryUsername(el, substr);
-    }, 500);
+  if (substr.length == 0){
+    el.parentElement.querySelector(".suggestions").innerHTML = '';
+    return;
   }
+
+  searchTimer = setTimeout(function(e){
+    queryUsername(el, substr);
+  }, 100);
 }
 
 function queryUsername(el, user){
@@ -58,7 +61,10 @@ function queryUsername(el, user){
 function updateSuggestions(el, results){
   let suggestions = el.parentElement.querySelector(".suggestions");
 
-  if (results.length == 0){ return; }
+  if (results.length == 0){
+    suggestions.innerHTML = '';
+    return;
+  }
 
   suggestions.innerHTML = '';
   results.forEach(r => {

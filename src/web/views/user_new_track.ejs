@@ -1,0 +1,33 @@
+<%- include('partials/_head'); %>
+<body class="preload">
+  <div class="container">
+    <%- include('partials/_header'); %>
+
+
+    <div id="main" class="row">
+      <div class="row component user">
+        <div class="six columns details">
+          <div class="four columns">
+            <img class="u-full-width profile" src="<%= user.data.image_url %>"></img>
+          </div>
+
+          <div class="eight columns">
+            <div class="row username"><%= user.username %></div>
+            <div class="row location"><%= user.data.location %></div>
+          </div>
+        </div><!-- user -->
+
+
+        <div class="six columns tracking">
+          <h4>This user isn't tracked yet!</h4>
+          <p>
+            But don't worry, we've added them to the list!<br>
+            Their workout data will be pulled on the next sync, stay tuned!
+          </p>
+        </div><!-- followers -->
+      </div><!-- info -->
+    </div><!-- main -->
+  </div><!-- container -->
+</body>
+
+<%- include('partials/_end'); %>

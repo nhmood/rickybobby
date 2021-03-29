@@ -73,10 +73,91 @@ class Web {
     });
 
 
+    // Rider list endpoint
+    this.app.get('/users', (req, res) => {
+      // Lookup the user count and determine the page bounds
+      let userCount = this.db.User.count();
+      let page = parseInt(req.query.p) || 1;
+      page = Math.max(...[1, page]);
+      page = Math.min(...[page, Math.ceil(userCount / this.PAGE_LIMIT)]);
+
+      // Look users with proper page/limit
+      let userList = {
+        tracked: [],
+        untracked: []
+      };
+
+      let users = this.db.User.where({
+      });
+
+      // Split users out into tracked and nontracked
+      users.forEach(user => {
+        let group = user.tracked ? 'tracked' : 'untracked';
+        userList[group].push( user );
+      });
+
+      // Generate pagination for workout data
+      const pagination = {
+        total: userCount,
+        prev_page: page > 1 ? page - 1 : null,
+        next_page: page < (userCount / this.PAGE_LIMIT) ? page + 1 : null
+      }
+
+      // Map users into groups of (6) for display purposes
+      userList.tracked = helpers.chunk(userList.tracked, 4);
+      userList.untracked = helpers.chunk(userList.untracked, 4);
+
+      // Render riders template with associated data
+      res.render('users', {
+        title: "Riders",
+        users: {
+          data: userList,
+          debug: JSON.stringify(users, null, 2)
+        },
+        pagination: {
+          data: pagination,
+          debug: JSON.stringify(pagination, null, 2)
+        }
+      });
+    });
+
+
+
+
     // User lookup endpoint
     this.app.get('/users/:username', (req, res) => {
       let username = req.params.username;
       let user = this.db.User.first({username: username});
+
+
+      // If the tracked value on the user record is undefined,
+      // then attempt to track the user and return early with the appropriate message
+      if (!user.tracked){
+
+        // To prevent multiple writes to the DB, only update the tracked state
+        // one time if this is the first time viewing this page
+        if (user.tracked == undefined){
+          user.update({tracked: 0});
+        }
+
+        // Render the users template with the associated data
+        return res.render('user_new_track', {
+          title: `${user.username}`,
+          helpers: helpers,
+          not_tracked: true,
+          user: {
+            username: username,
+            data: user
+          },
+          pagination: {
+            data: {prev_page: null, next_page: null}
+          },
+          workouts: {
+            data: []
+          }
+        });
+      }
+
 
       // TODO - ERROR HERE IF NOT FOUND
 
@@ -155,44 +236,6 @@ class Web {
 
 
 
-    // Rider list endpoint
-    this.app.get('/users', (req, res) => {
-      // Lookup the user count and determine the page bounds
-      let userCount = this.db.User.count();
-      let page = parseInt(req.query.p) || 1;
-      page = Math.max(...[1, page]);
-      page = Math.min(...[page, Math.ceil(userCount / this.PAGE_LIMIT)]);
-
-      // Look users with proper page/limit
-      let users = this.db.User.where({
-        limit: this.PAGE_LIMIT,
-        page: page -1
-      });
-
-      // Generate pagination for workout data
-      const pagination = {
-        total: userCount,
-        prev_page: page > 1 ? page - 1 : null,
-        next_page: page < (userCount / this.PAGE_LIMIT) ? page + 1 : null
-      }
-
-      // Map users into groups of (6) for display purposes
-      users = helpers.chunk(users, 4);
-
-      // Render riders template with associated data
-      res.render('users', {
-        title: "Riders",
-        users: {
-          data: users,
-          debug: JSON.stringify(users, null, 2)
-        },
-        pagination: {
-          data: pagination,
-          debug: JSON.stringify(pagination, null, 2)
-        }
-      });
-    });
-
 
 
     // Shake and bake search handler - mainly for form POST until we move to JS based
@@ -221,6 +264,16 @@ class Web {
         console.log(`Could not find users / ${usernameA} / ${usernameB}`);
         res.redirect(301, '/');
         return;
+      }
+
+      if (!userA.tracked){
+        console.log(`${userA.username} not tracked!`);
+        return res.redirect(301, `/users/${userA.username}`);
+      }
+
+      if (!userB.tracked){
+        console.log(`${userB.username} not tracked!`);
+        return res.redirect(301, `/users/${userB.username}`);
       }
 
       // Use the rickybobby "glue" handler to perform the commonWorkouts call

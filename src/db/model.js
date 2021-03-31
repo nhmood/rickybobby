@@ -109,7 +109,7 @@ class Model {
       let fields        = Object.keys(options.conditions);
       let fieldBindings = Object.keys(options.conditions).map(f => { return `${f} = @${f}` });
 
-      sql = sql.concat(` WHERE ${fieldBindings.join(" AND")}`);
+      sql = sql.concat(` WHERE ${fieldBindings.join(" AND ")}`);
     }
 
 
@@ -255,6 +255,17 @@ class Model {
   }
 
 
+  static destroy(id){
+    const stmt = this.db.prepare(`DELETE FROM ${this.tableName} WHERE ${this.primaryKey} = ?;`);
+    const result = stmt.run(id);
+    if (result == undefined){
+      logger.error(`${this.tableName}:${id} failed to delete`);
+      return false;
+    }
+    return true;
+  }
+
+
   // Model record constructor that sets data parameters as object properties
   // and stores model references (self, schema, primaryKey)
   constructor(data){
@@ -326,6 +337,11 @@ class Model {
     this.model.update(entry);
 
     return true;
+  }
+
+
+  destroy(){
+    return this.model.destroy(this.id);
   }
 
 

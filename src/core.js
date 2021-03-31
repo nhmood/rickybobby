@@ -1,19 +1,19 @@
-console.log("rickybobby core");
+global.logger = require("./logger.js");
 
 const db = require("./db/core.js");
 const peloton = require("./peloton/core.js");
 const web = require("./web/core.js");
 
+logger.info("rickybobby core");
 
 class RickyBobby {
   db;
   peloton;
   constructor(config){
-    console.log(config);
-
     this.db       = new db(config.database);
     this.peloton  = new peloton(config.peloton_api);
     this.web      = new web(config.web, this.db, this);
+    this.logger   = logger;
   }
 
   sleep(ms) {
@@ -30,14 +30,14 @@ class RickyBobby {
   }
 
   async authenticate(username, password){
-    console.log(`Authenticating Peloton API with ${username}`);
+    logger.info(`Authenticating Peloton API with ${username}`);
 
-    const loginData = await this.peloton.login(username, password);
-    console.log({loginData});
+    const loginData = await this.peloton.infoin(username, password);
+    logger.debug({loginData});
 
     // TODO - add better error handling
     if (loginData == undefined){
-      console.error(`Failed to login ${username}, existing`);
+      logger.error(`Failed to login ${username}, existing`);
       process.exit(1);
     }
 
@@ -52,16 +52,16 @@ class RickyBobby {
   setup(){
     // Attempt to lookup a session for the currently configured
     // peloton user and if not issue
-    console.log(`Looking up session for ${this.peloton.username}`);
+    logger.info(`Looking up session for ${this.peloton.username}`);
     let session = this.db.Session.get( this.peloton.username );
     if (session == undefined){
-      console.warn(`No session found for ${this.peloton.username} - run authenticate with password in env`);
+      logger.warn(`No session found for ${this.peloton.username} - run authenticate with password in env`);
       process.exit(1);
     }
 
-    console.log({session});
+    logger.debug({session});
     this.peloton.sessionID = session.data.session_id;
-    console.log(this.peloton);
+    logger.debug(this.peloton);
   }
 
 
@@ -74,7 +74,7 @@ class RickyBobby {
     // Attempt to lookup the associated record by ID
     let record = model.get(id);
     if (record == undefined){
-      console.warn(`${resource}:${id} not found`);
+      logger.warn(`${resource}:${id} not found`);
       return false;
     }
 
@@ -98,7 +98,7 @@ class RickyBobby {
   getUsername(username){
     let user = this.db.User.first({username: username});
     if (user == undefined){
-      console.warn(`No user found for ${username}`);
+      logger.warn(`No user found for ${username}`);
       process.exit(1);
     }
 
@@ -118,7 +118,7 @@ class RickyBobby {
       }
     });
     datalogs.forEach(datalog => {
-      console.log(`Rebuilding ${resource} from Datalog:${datalog.id}`);
+      logger.debug(`Rebuilding ${resource} from Datalog:${datalog.id}`);
       model.import(datalog.data);
     });
   }
@@ -126,6 +126,7 @@ class RickyBobby {
 
 
   async fetchUser(identifier){
+    logger.info(`Fetching User for ${identifier}`);
     this.setup();
 
     // Fetch the data from the Peloton API then pass to the
@@ -143,6 +144,7 @@ class RickyBobby {
 
 
   async fetchFollowing(identifier){
+    logger.info(`Fetching Following for ${identifier}`);
     this.setup();
 
     let user = this.getUsername(identifier) || this.getUser(identifier);
@@ -151,7 +153,7 @@ class RickyBobby {
     // storeResource helper to store the raw API data + model
     // NOTE - identifier can be username OR user_id
     const followingData = await this.peloton.getFollowing(user.id);
-    console.log(followingData.following);
+    logger.debug(followingData.following);
     followingData.following.data.forEach(follow => {
 
       // Create a "Following" object that contains the parent user
@@ -162,12 +164,12 @@ class RickyBobby {
         following_id: follow.id
       };
       let following = this.storeResource('following', pair);
-      console.log({following});
+      logger.debug({following});
 
 
       // Next, store the raw User record
       let storage = this.storeResource('user', follow);
-      console.log({storage});
+      logger.debug({storage});
     });
 
 
@@ -202,7 +204,7 @@ class RickyBobby {
 
   async getWorkouts(username){
     let user = await this.getUser(username);
-    console.log({user});
+    logger.debug({user});
 
     let workouts = this.db.Workout.where({
       conditions: {
@@ -210,16 +212,17 @@ class RickyBobby {
       }
     });
     if (workouts == undefined){
-      console.warn(`No workouts found for ${username}`);
+      logger.warn(`No workouts found for ${username}`);
       process.exit(1);
     }
 
-    console.log({workouts});
+    logger.debug({workouts});
     return workouts;
   }
 
 
   async fetchWorkout(workoutID){
+    logger.info(`Fetching Workout:${workoutID}`);
     this.setup();
 
     // Fetch the workout and performance graph data from the Peloton API
@@ -239,32 +242,33 @@ class RickyBobby {
 
   // TODO - determine whether we want to fetch by username or user id
   async fetchWorkouts(username, forceFetch = false){
+    logger.info(`Fetching Workouts for ${username}`);
     this.setup();
 
     // Validate that the user we want to fetch exists
     let user = this.getUsername(username);
     if (!user){
-      console.log(`User:${username} not found`);
+      logger.error(`User:${username} not found`);
       return false;
     }
 
     // Walk through the workoutCursor until we run out of data to process
-    console.log(`Initializing workoutCursor for ${user.id}/${user.username}`);
+    logger.debug(`Initializing workoutCursor for ${user.id}/${user.username}`);
     let workoutCursor = this.peloton.workoutCursor(user.id);
     while(true){
       workoutCursor = await workoutCursor.next();
-      console.log({workoutCursor});
+      logger.debug({workoutCursor});
 
       // Walk through the workout set returned from the API
       // This data is returned by newest first (reverse chronological)
       // While walking through the data, if the matching record already
       // exists in the database, then we can safely stop processing data
-      console.log(`Processing ${workoutCursor.workouts.length} workouts for cursor for ${user.id}/${user.username}`);
+      logger.info(`Processing ${workoutCursor.workouts.length} workouts for cursor for ${user.id}/${user.username}`);
       for (let i = 0; i < workoutCursor.workouts.length; i++){
         this.sleep(1000);
         let workout = workoutCursor.workouts[i];
-        console.log(`Processing workout:${workout.id} from API for ${user.id}/${user.username}`);
-        console.debug({workout});
+        logger.info(`Processing workout:${workout.id} from API for ${user.id}/${user.username}`);
+        logger.debug({workout});
 
         // The workout data is joined with the associated ride information (into .peloton.ride)
         // Pull out the ride to be stored separately, and reinsert the ride object into the workout
@@ -273,8 +277,8 @@ class RickyBobby {
         let joinData = workout.peloton;
         let ride = joinData ? joinData.ride : {};
         workout.ride = ride;
-        console.debug({workout});
-        console.debug({ride});
+        logger.debug({workout});
+        logger.debug({ride});
 
 
         // If we have a valid ride from the join data, use it accordingly to fetch
@@ -284,7 +288,7 @@ class RickyBobby {
           let rideRecord = this.db.Ride.get(ride.id);
           if (rideRecord == undefined){
             rideRecord = this.storeResource('ride', ride);
-            console.debug({rideRecord});
+            logger.debug({rideRecord});
           }
 
 
@@ -293,7 +297,7 @@ class RickyBobby {
           let instructorRecord = this.db.Instructor.get(ride.instructor_id);
           if (instructorRecord == undefined){
             instructorRecord = await this.fetchInstructor(ride.instructor_id)
-            console.debug({instructorRecord});
+            logger.debug({instructorRecord});
           }
         }
 
@@ -302,28 +306,28 @@ class RickyBobby {
         // stop processing since results are returned chronologically
         let workoutRecord = this.db.Workout.get(workout.id);
         if (workoutRecord != undefined){
-          console.log(`${this.db.Workout.tableName}:${workout.id} already exists, workouts up to date for ${user.id}/${user.username}`);
+          logger.info(`${this.db.Workout.tableName}:${workout.id} already exists, workouts up to date for ${user.id}/${user.username}`);
           // TODO - not sure how I feel about storing the earlyExit flag in workoutCursor
           //        break from here seems to apply to the for loop and not the parent while
           workoutCursor.earlyExit = true;
           break;
         }
 
-        console.log(`${this.db.Workout.tableName}:${workout.id} not found, creating`);
+        logger.debug(`${this.db.Workout.tableName}:${workout.id} not found, creating`);
 
         // Fetch the performance graph data and merge it into the workout data
         const performanceData = await this.peloton.getPerformanceGraph(workout.id);
         workout.performance = performanceData.performance;
 
-        console.log({workout});
+        logger.debug({workout});
 
         workoutRecord = this.storeResource('workout', workout);
-        console.log({workoutRecord});
+        logger.debug({workoutRecord});
       }
 
       // Break if there is no more new data available to process
       if (!workoutCursor.moreAvailable || (!forceFetch && workoutCursor.earlyExit)){
-        console.log(`No more data for ${user.id}:${user.username}`);
+        logger.info(`No more data for ${user.id}:${user.username}`);
         break;
       }
       await this.sleep(2000);
@@ -334,7 +338,7 @@ class RickyBobby {
   async sync(){
     // Walk through all the tracked users and sync their state
     let users = this.db.User.tracked();
-    console.log(`Syncing ${users.length} users`);
+    logger.info(`Starting rickybobby sync of ${users.length} users`);
     for (let i = 0; i < users.length; i++){
       let user = users[i];
 
@@ -342,12 +346,10 @@ class RickyBobby {
       let syncStart = new Date();
 
       // Fetch the latest user info
-      console.log(`${user.username}: Fetching User Info`);
       await this.fetchUser(user.id);
       await this.sleep(1000);
 
       // Fetch the latest user following
-      console.log(`${user.username}: Fetching User Following`);
       await this.fetchFollowing(user.username);
       await this.sleep(1000);
 
@@ -492,7 +494,7 @@ class RickyBobby {
     summary.winner[winnerUserID] = true;
 
 
-    console.log(summary)
+    logger.debug(summary)
 
     return {
       summary: summary,

@@ -279,18 +279,18 @@ class Web {
 
 
       if (userA == undefined || userB == undefined){
-        console.log(`Could not find users / ${usernameA} / ${usernameB}`);
+        logger.warn(`Could not find users / ${usernameA} / ${usernameB}`);
         res.redirect(301, '/');
         return;
       }
 
       if (!userA.tracked){
-        console.log(`${userA.username} not tracked!`);
+        logger.warn(`${userA.username} not tracked!`);
         return res.redirect(301, `/users/${userA.username}`);
       }
 
       if (!userB.tracked){
-        console.log(`${userB.username} not tracked!`);
+        logger.warn(`${userB.username} not tracked!`);
         return res.redirect(301, `/users/${userB.username}`);
       }
 
@@ -324,7 +324,7 @@ class Web {
 
   start(){
     this.app.listen(this.port, '0.0.0.0', () => {
-      console.log(`rickybobby webserver listening at http://0.0.0.0:${this.port}`);
+      logger.info(`rickybobby webserver listening at http://0.0.0.0:${this.port}`);
     });
   }
 }

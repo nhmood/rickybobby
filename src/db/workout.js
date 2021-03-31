@@ -87,7 +87,7 @@ class Workout extends Model {
     const records = stmt.all();
 
     const models = records.map(r => { return new this(r) });
-    console.log({models});
+    logger.debug({models});
     return models;
   }
 }

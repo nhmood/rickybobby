@@ -11,8 +11,7 @@ const rb = new RickyBobby({
   peloton_api: {
     username:  process.env.RB_PTON_USER,
   }
-})
-console.log(rb);
+});
 
 
 
@@ -31,35 +30,38 @@ console.log(rb);
       break;
 
     case 'fetch':
+      let resource;
       switch(process.argv[3]){
         case 'user':
-          rb.fetchUser(process.argv[4]);
+          resource = await rb.fetchUser(process.argv[4]);
           break;
 
         case 'following':
-          rb.fetchFollowing(process.argv[4]);
+          resource = await rb.fetchFollowing(process.argv[4]);
           break;
 
         case 'ride':
-          rb.fetchRide(process.argv[4]);
+          resource = await rb.fetchRide(process.argv[4]);
           break;
 
         case 'instructor':
-          rb.fetchInstructor(process.argv[4]);
+          resource = await rb.fetchInstructor(process.argv[4]);
           break;
 
         case 'workout':
-          rb.fetchWorkout(process.argv[4]);
+          resource = await rb.fetchWorkout(process.argv[4]);
           break;
 
         case 'workouts':
-          rb.fetchWorkouts(process.argv[4], process.argv[5]);
+          resource = await rb.fetchWorkouts(process.argv[4], process.argv[5]);
           break;
 
         default:
-          console.warn("Unrecognized fetch target");
+          logger.warn("Unrecognized fetch target");
           process.exit(1);
       }
+
+      logger.info(resource)
       break;
 
     case 'rebuild':
@@ -76,14 +78,14 @@ console.log(rb);
           let user = rb.getUsername(process.argv[4]);
           if (!user){ process.exit(1) };
 
-          console.log(user.json());
+          logger.info(user.json());
           break
 
         default:
           let record = rb.getResource(process.argv[3], process.argv[4]);
           if (!record){ process.exit(1) };
 
-          console.log(record.json());
+          logger.info(record.json());
       };
       break;
 
@@ -96,7 +98,7 @@ console.log(rb);
       break;
 
     default:
-      console.log("Unknown argument");
+      logger.info("Unknown argument");
       process.exit(1);
   }
 })();

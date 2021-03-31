@@ -1,4 +1,4 @@
-console.log("rickybobby database");
+logger.info("rickybobby database");
 
 const fs     = require('fs');
 const sqlite = require('better-sqlite3');
@@ -31,19 +31,19 @@ class Database {
     try {
       migration = fs.readFileSync(migrationPath, 'utf8');
     } catch(err) {
-      console.error(`Failed to open migration @ ${migrationPath} - ${err}`);
+      logger.error(`Failed to open migration @ ${migrationPath} - ${err}`);
       process.exit(1);
     }
 
-    console.log(`Executing Migration - ${migrationPath}`);
-    console.log(migration);
+    logger.info(`Executing Migration - ${migrationPath}`);
+    logger.info(migration);
     let result = this.#db.exec(migration);
   }
 
 
   setup(path){
     if (path == undefined || path.length == 0){
-      console.error("rickybobby db path not specified");
+      logger.error("rickybobby db path not specified");
       process.exit(1);
     }
 
@@ -57,11 +57,11 @@ class Database {
     try {
       db = new sqlite(path);
     } catch(err){
-      console.error(`Failed to open sqlite database @ ${dbPath} - ${err}`);
+      logger.error(`Failed to open sqlite database @ ${dbPath} - ${err}`);
       process.exit(1);
     }
 
-    console.log(`Opened sqlite DB @ ${path}`);
+    logger.info(`Opened sqlite DB @ ${path}`);
     process.on('SIGINT', () => {
       db.close();
       process.exit(1);
@@ -88,7 +88,7 @@ class Database {
 
     // If there is no associated model for this resource, print and error and return
     if (model == undefined){
-      console.warn(`Unrecognized data model ${name}/${modelName}`);
+      logger.warn(`Unrecognized data model ${name}/${modelName}`);
       return false;
     }
 

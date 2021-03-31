@@ -1,4 +1,4 @@
-console.log("rickybobby peloton api");
+logger.info("rickybobby peloton api");
 
 const fetch = require('node-fetch');
 
@@ -50,7 +50,7 @@ class PelotonAPI {
 
 
   async login(username, password){
-    console.log(`PelotonAPI:login(${username}, *******) -> ${this.PELOTON_LOGIN}`);
+    logger.info(`PelotonAPI:login(${username}, *******) -> ${this.PELOTON_LOGIN}`);
     const payload = JSON.stringify({username_or_email: username, password: password});
 
     const data = await this.post({
@@ -78,8 +78,9 @@ class PelotonAPI {
 
 
   async getUser(user){
+    logger.info(`Getting User:${user} from Peloton API`);
     const url = this.pelotonURLS.user(user);
-    console.log({url});
+    logger.debug({url});
 
     const data = await this.get({
       url: url
@@ -97,8 +98,9 @@ class PelotonAPI {
 
 
   async getFollowing(userID){
+    logger.info(`Getting Following for User:${userID} from Peloton API`);
     const url = this.pelotonURLS.following(userID);
-    console.log({url});
+    logger.debug({url});
 
     const data = await this.get({
       url: url
@@ -116,8 +118,9 @@ class PelotonAPI {
 
 
   async getRide(rideID){
+    logger.info(`Getting Ride:${rideID}`);
     const url = this.pelotonURLS.ride(rideID);
-    console.log({url});
+    logger.debug({url});
 
     const data = await this.get({
       url: url
@@ -135,8 +138,9 @@ class PelotonAPI {
 
 
   async getInstructor(instructorID){
+    logger.info(`Getting Instructor:${instructorID}`);
     const url = this.pelotonURLS.instructor(instructorID);
-    console.log({url});
+    logger.debug({url});
 
     const data = await this.get({
       url: url
@@ -152,8 +156,9 @@ class PelotonAPI {
 
 
   async getWorkout(workoutID){
+    logger.info(`Getting Workout:${workoutID}`);
     const url = this.pelotonURLS.workout(workoutID);
-    console.log({url});
+    logger.debug({url});
 
     const data = await this.get({
       url: url
@@ -179,15 +184,16 @@ class PelotonAPI {
 
 
   async getWorkouts(userID, page = 0){
+    logger.info(`Getting Workouts for User:${userID} / page:${page}`);
     const url = this.pelotonURLS.workouts(userID, page);
-    console.log({url});
+    logger.debug({url});
 
     let resp = await this.get({
       url: url
     });
 
     let data = resp.data;
-    console.log({data});
+    logger.debug({data});
 
     return {
       workouts: data.data,
@@ -198,8 +204,9 @@ class PelotonAPI {
 
 
   async getPerformanceGraph(workoutID){
+    logger.info(`Getting PerformanceGraph for Workout:${workoutID}`);
     const url = this.pelotonURLS.performance(workoutID);
-    console.log({url});
+    logger.debug({url});
 
     const data = await this.get({
       url: url
@@ -227,7 +234,7 @@ class PelotonAPI {
   }
 
   async request(request){
-    console.debug({request});
+    logger.debug({request});
     let response;
     let data;
     try {
@@ -236,7 +243,7 @@ class PelotonAPI {
         headers: this.requestHeaders(),
         body: request.data,
       });
-      console.debug(response);
+      logger.debug(response);
 
       data = await response.json();
       return {
@@ -248,11 +255,11 @@ class PelotonAPI {
         }
       }
     } catch(err) {
-      console.error(`Failed to request ${request.url}`);
-      console.error(err)
-      console.debug(request);
-      console.debug(response);
-      console.debug(data);
+      logger.error(`Failed to request ${request.url}`);
+      logger.error(err)
+      logger.debug(request);
+      logger.debug(response);
+      logger.debug(data);
       return;
     }
   }

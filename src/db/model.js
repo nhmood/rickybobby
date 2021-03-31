@@ -42,7 +42,7 @@ class Model {
     // Walk through all columns of the rawSchema and populate
     // the schema container for the table
     rawSchema.forEach(column => {
-      console.debug(`Building ${this.tableName}:${column.name}`);
+      global.logger.debug(`Building ${this.tableName}:${column.name}`);
       schema[column.name] = {
         name: column.name,
         type: column.type,
@@ -63,8 +63,8 @@ class Model {
   static getPK(data){
     const pk = data[this.primaryKey];
     if (pk == undefined){
-      console.error(`${this.tableName} PK:${this.primaryKey} not supplied -> ${data}`);
-      console.error({data});
+      logger.error(`${this.tableName} PK:${this.primaryKey} not supplied -> ${data}`);
+      logger.error({data});
       return false;
     }
 
@@ -78,7 +78,7 @@ class Model {
     const stmt = this.db.prepare(`SELECT * FROM ${this.tableName} WHERE ${this.primaryKey} = ?;`);
     const result = stmt.get(id);
     if (result == undefined){
-      console.info(`${this.tableName}:${id} not found`);
+      logger.info(`${this.tableName}:${id} not found`);
       return;
     }
 
@@ -144,7 +144,7 @@ class Model {
     const records = stmt.all(options.conditions);
     const models = records.map(r => { return new this(r) });
 
-    console.log({models});
+    logger.debug({models});
     return models;
   }
 
@@ -175,7 +175,7 @@ class Model {
   // Create a record of the specified model given the input parameters
   // Handles minor validations as well as created/updated_at timestamp setting
   static create(data){
-    console.log({data});
+    logger.debug({data});
     const pk = this.getPK(data);
     if (!pk){ return false; }
 
@@ -202,7 +202,7 @@ class Model {
 
     const stmt = this.db.prepare(`INSERT INTO ${this.tableName} (${fields.join(", ")}) VALUES (${fieldBindings.join(", ")})`);
     const result = stmt.run(data);
-    console.log(result);
+    logger.debug(result);
 
     const record = this.get(pk);
     return record;
@@ -227,7 +227,7 @@ class Model {
 
     const stmt = this.db.prepare(`UPDATE ${this.tableName} SET ${fieldBindings.join(", ")} WHERE ${this.primaryKey} = @${this.primaryKey}`);
     const result = stmt.run(data);
-    console.log(result);
+    logger.debug(result);
 
     const record = this.get(pk);
     return record;
@@ -243,13 +243,13 @@ class Model {
 
     let record = this.get(pk);
     if (record == undefined){
-      console.log(`${this.tableName}:${pk} not found, creating`);
+      logger.debug(`${this.tableName}:${pk} not found, creating`);
       record = this.create(data);
     } else {
-      console.log(`${this.tableName}:${pk} found, updating`);
+      logger.debug(`${this.tableName}:${pk} found, updating`);
       record.update(data);
     }
-    console.log({record});
+    logger.debug({record});
 
     return record;
   }
@@ -297,7 +297,7 @@ class Model {
 
     // For the provided fields, update the properties of the instance of model
     fields.forEach(f => {
-      console.log(`${this.model.name}->updating ${f}:${data[f]}`);
+      logger.debug(`${this.model.name}->updating ${f}:${data[f]}`);
 
       let value = data[f];
 

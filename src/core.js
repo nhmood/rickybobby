@@ -252,6 +252,9 @@ class RickyBobby {
       return false;
     }
 
+    // Set a counter for the number of workouts added in this fetch
+    let workoutsAdded = 0;
+
     // Walk through the workoutCursor until we run out of data to process
     logger.debug(`Initializing workoutCursor for ${user.id}/${user.username}`);
     let workoutCursor = this.peloton.workoutCursor(user.id);
@@ -314,6 +317,7 @@ class RickyBobby {
         }
 
         logger.debug(`${this.db.Workout.tableName}:${workout.id} not found, creating`);
+        workoutsAdded += 1;
 
         // Fetch the performance graph data and merge it into the workout data
         const performanceData = await this.peloton.getPerformanceGraph(workout.id);
@@ -336,14 +340,19 @@ class RickyBobby {
 
 
   async sync(){
+    let syncStart = new Date();
+
+    // Set counter for total workouts added
+    let workoutsAdded = 0;
+
     // Walk through all the tracked users and sync their state
     let users = this.db.User.tracked();
     logger.info(`Starting rickybobby sync of ${users.length} users`);
     for (let i = 0; i < users.length; i++){
       let user = users[i];
 
-      console.log(`${user.username}: Sync User`);
-      let syncStart = new Date();
+      logger.info(`${user.username}: Sync User`);
+      let userSyncStart = new Date();
 
       // Fetch the latest user info
       await this.fetchUser(user.id);
@@ -354,16 +363,18 @@ class RickyBobby {
       await this.sleep(1000);
 
       // Fetch the latest workouts
-      console.log(`${user.username}: Fetching Workouts`);
-      await this.fetchWorkouts(user.username);
+      let workouts = await this.fetchWorkouts(user.username);
+      workoutsAdded += workouts;
       await this.sleep(1000);
 
       user.update({tracked: (new Date()).getTime() });
 
 
-      let syncEnd = new Date();
-      console.log(`Sync User: ${user.username} / total: ${ (syncEnd - syncStart) / 1000}s`);
+      let userSyncEnd = new Date();
+      logger.info(`Sync User: ${user.username} / total: ${ (userSyncEnd - userSyncStart) / 1000}s / workouts: ${workouts} added`);
     };
+    let syncEnd = new Date();
+    logger.info(`Total rickybobby sync complete / total: ${ (syncEnd - syncStart) / 1000}s / ${users.length} users / workouts added: ${workoutsAdded}`);
   }
 
   // Handler for common workout finder

@@ -86,6 +86,42 @@ class Web {
       res.json(users);
     });
 
+    this.app.get('/api/v1/users', (req, res) => {
+      let userCount = this.db.User.count();
+
+      let page = parseInt(req.query.p) || 1;
+      page = Math.max(...[1, page]);
+      page = Math.min(...[page, Math.ceil(userCount / this.PAGE_LIMIT.users )]);
+
+      let users = this.db.User.where({
+        limit: this.PAGE_LIMIT.users,
+        page: page - 1
+      });
+
+      users = users.map(user => {
+        return {
+          id: user.id,
+          username: user.username,
+          image_url: user.image_url
+        }
+      });
+
+      // Generate pagination for workout data
+      const pagination = {
+        total: userCount,
+        prev_page: page > 1 ? page - 1 : null,
+        next_page: page < (userCount / this.PAGE_LIMIT.users ) ? page + 1 : null
+      }
+
+      let payload = {
+        users: users,
+        pagination: pagination
+      };
+
+      res.setHeader('Content-Type', 'application/json');
+      res.json(payload);
+    });
+
 
     // Rider list endpoint
     this.app.get('/users', (req, res) => {

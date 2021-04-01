@@ -336,6 +336,77 @@ class RickyBobby {
       }
       await this.sleep(2000);
     }
+
+    return workoutsAdded;
+  }
+
+
+  remove(identifier){
+    let user = this.getUsername(identifier) || this.getUser(identifier);
+    if (!user){
+      logger.error(`User:${identifier} not found`);
+      return false;
+    }
+
+    // Clean up all records associated with a User including:
+    // Workout(s), Following(s), User, and Datalog(s)
+    logger.info(`Cleaning up User:${user.id}/${user.username}`);
+
+    let workouts = this.db.Workout.where({
+      conditions: {user_id: user.id}
+    })
+
+    workouts.forEach(workout => {
+      logger.debug(`User:${user.id}/${user.username} - deleting Workout:${workout.id}`);
+      let datalog = this.db.Datalog.where({
+        conditions: {
+          target: 'workout',
+          target_id: workout.id
+        }
+      });
+
+      if (datalog.length == 0){
+        logger.warn(`User:${user.id}/${user.username} no Datalog found for Workout:${workout.id}`);
+      }
+      datalog.forEach(d => d.destroy());
+      workout.destroy();
+    });
+
+    let following = this.db.Following.where({
+      conditions: { user_id: user.id }
+    });
+
+    following.forEach(follow => {
+      logger.debug(`User:${user.id}/${user.username} - deleting Following:${follow.id}`);
+      let datalog = this.db.Datalog.where({
+        conditions: {
+          target: 'following',
+          target_id: follow.id
+        }
+      })
+
+
+      if (datalog.length == 0){
+       logger.warn(`User:${user.id}/${user.username} no Datalog found for Following:${follow.id}`);
+      }
+      datalog.forEach(d => d.destroy());
+      follow.destroy();
+    })
+
+
+    let datalog = this.db.Datalog.where({
+      conditions: {
+        target: 'user',
+        target_id: user.id
+      }
+    });
+    if (datalog.length == 0){
+     logger.warn(`User:${user.id}/${user.username} no Datalog found for user`);
+    }
+    datalog.forEach(d => d.destroy());
+    user.destroy();
+
+    logger.info(`User:${user.id}/${user.username} cleaned from DB`);
   }
 
 

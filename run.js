@@ -68,6 +68,10 @@ const rb = new RickyBobby({
       rb.rebuild(process.argv[3]);
       break;
 
+    case 'remove':
+      rb.remove(process.argv[3]);
+      break;
+
     case 'sync':
       await rb.sync();
       break;

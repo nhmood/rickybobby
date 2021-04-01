@@ -5,7 +5,10 @@ const helpers = require('./helpers');
 
 class Web {
   port = process.env.PORT || 3000;
-  PAGE_LIMIT = 10;
+  PAGE_LIMIT = {
+    users: 16,
+    workouts: 10
+  };
 
   constructor(config, db, glue){
     this.glue = glue;
@@ -90,25 +93,22 @@ class Web {
       let userCount = this.db.User.count();
       let page = parseInt(req.query.p) || 1;
       page = Math.max(...[1, page]);
-      page = Math.min(...[page, Math.ceil(userCount / this.PAGE_LIMIT)]);
+      page = Math.min(...[page, Math.ceil(userCount / this.PAGE_LIMIT.users )]);
 
-      // Look users with proper page/limit
-      let userList = {
-        tracked: [],
-        untracked: []
-      };
-
-      let users = this.db.User.where({});
+      let users = this.db.User.where({
+        limit: this.PAGE_LIMIT.users,
+        page: page - 1
+      });
 
       // Generate pagination for workout data
       const pagination = {
         total: userCount,
         prev_page: page > 1 ? page - 1 : null,
-        next_page: page < (userCount / this.PAGE_LIMIT) ? page + 1 : null
+        next_page: page < (userCount / this.PAGE_LIMIT.users ) ? page + 1 : null
       }
 
       // Map users into groups of (4) for display purposes
-      userList = helpers.chunk(users, 4);
+      let userList = helpers.chunk(users, 4);
 
       // Render riders template with associated data
       res.render('users', {
@@ -167,7 +167,7 @@ class Web {
       let workoutCount = this.db.Workout.count({user_id: user.id});
       let page = parseInt(req.query.p) || 1;
       page = Math.max(...[1, page]);
-      page = Math.min(...[page, Math.ceil(workoutCount / this.PAGE_LIMIT)]);
+      page = Math.min(...[page, Math.ceil(workoutCount / this.PAGE_LIMIT.workouts )]);
 
       // Lookup the associated workouts for the user with proper page/limits
       let workouts = this.db.Workout.where({
@@ -178,7 +178,7 @@ class Web {
           field: "taken_at",
           direction: "desc"
         },
-        limit: this.PAGE_LIMIT,
+        limit: this.PAGE_LIMIT.workouts,
         page: page - 1
       });
 
@@ -218,7 +218,7 @@ class Web {
       const pagination = {
         total: workoutCount,
         prev_page: page > 1 ? page - 1 : null,
-        next_page: page < (workoutCount / this.PAGE_LIMIT) ? page + 1 : null
+        next_page: page < (workoutCount / this.PAGE_LIMIT.workouts ) ? page + 1 : null
       }
 
 

@@ -21,7 +21,7 @@ class Web {
     this.app.set('views', `${__dirname}/views`);
     this.app.disable('view cache');
 
-    this.app.use(express.static(`${__dirname}/public`));
+    this.app.use(express.static(`${__dirname}/public`, {maxage: '2h'}));
     this.app.use(bodyParser.urlencoded({ extended: false }))
     this.app.use(bodyParser.json())
 

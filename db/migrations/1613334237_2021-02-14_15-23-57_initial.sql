@@ -26,6 +26,7 @@ CREATE TABLE IF NOT EXISTS users (
 
   username    TEXT,
   tracked     INTEGER,
+  private     INTEGER,
 
   image_url TEXT,
   location  TEXT,

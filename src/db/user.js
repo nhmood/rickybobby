@@ -15,6 +15,8 @@ class User extends Model {
       image_url:  data.image_url,
       streaks:    data.streaks,
 
+      private:    data.is_profile_private ? 1 : 0,
+
       cycling_workout_count:    data.total_pedaling_metric_workouts,
       noncycling_workout_count: data.total_non_pedaling_metric_workouts
     });
@@ -26,7 +28,7 @@ class User extends Model {
   // TODO - update Model.where to support "NOT" conditions
   //        probably need to update to support NULL too
   static tracked(){
-    let sql = `SELECT * FROM users WHERE tracked NOT NULL`;
+    let sql = `SELECT * FROM users WHERE tracked NOT NULL AND private != 1`;
     const stmt = this.db.prepare(sql);
     const records = stmt.all();
 

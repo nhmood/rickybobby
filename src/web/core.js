@@ -135,8 +135,7 @@ class Web {
 
       // If the tracked value on the user record is undefined,
       // then attempt to track the user and return early with the appropriate message
-      if (!user.tracked){
-
+      if (!user.tracked || user.private){
         // To prevent multiple writes to the DB, only update the tracked state
         // one time if this is the first time viewing this page
         if (user.tracked == undefined){

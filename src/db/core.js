@@ -57,7 +57,7 @@ class Database {
     try {
       db = new sqlite(path);
     } catch(err){
-      logger.error(`Failed to open sqlite database @ ${dbPath} - ${err}`);
+      logger.error(`Failed to open sqlite database @ ${path} - ${err}`);
       process.exit(1);
     }
 

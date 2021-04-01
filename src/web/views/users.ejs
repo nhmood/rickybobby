@@ -15,7 +15,14 @@
       }); %>
 
     <div class="row component users">
-      <div class="row tracked">
+      <div class="row searchRiders">
+        <input autofocus class="u-full-width" type="text" id="userSearch" name="userSearch" placeholder="Search"></input>
+      </div>
+
+      <div class="row searchResults hide">
+      </div>
+
+      <div class="row riders">
         <% users.data.forEach(function(group){ %>
           <div class="row">
             <% group.forEach(function(user){ %>

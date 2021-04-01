@@ -67,7 +67,7 @@ class Web {
 
 
     // User search handler - mainly for form POST until we move to JS based
-    this.app.post('/users/search', (req, res) => {
+    this.app.post('/api/v1/users/search', (req, res) => {
       let username = req.body.username;
 
       let users = this.db.User.search(username);

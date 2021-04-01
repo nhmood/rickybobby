@@ -48,7 +48,7 @@ class User extends Model {
     `;
 
     const stmt = this.db.prepare(sql);
-    const records = stmt.all(`${substr}%`);
+    const records = stmt.all(`%${substr}%`);
 
     const models = records.map(r => { return new this(r) });
     return models

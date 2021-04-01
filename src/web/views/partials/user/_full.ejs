@@ -16,7 +16,7 @@
     <% following.users.forEach(function(group){ %>
       <div class="row">
         <% group.forEach(function(follow){ %>
-          <div class="two columns follow">
+          <div class="two columns follow" data-id="<%= follow.id %>" data-type="user">
             <a title="<%= follow.username %>" href="/shakeandbake?users=<%= user.username %>,<%= follow.username %>">
               <img class="u-full-width" src="<%= follow.image_url %>"></img>
             </a>

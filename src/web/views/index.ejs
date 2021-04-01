@@ -29,7 +29,7 @@
       <div class="row recent">
         <h3>Recent Activity</h3>
         <% workouts.data.forEach(function(workout){ %>
-          <div class="row">
+          <div class="row" data-id="<%= workout.id %>" data-type="workout">
             <a href="/users/<%= workout.user.username %>"><%= workout.user.username %></a> took <mark class="em"><%= workout.ride.title %></mark> on <mark class="i"><%= helpers.formatDate(workout.taken_at, true) %></mark>
           </div>
         <% }); %>

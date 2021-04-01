@@ -1,5 +1,5 @@
 <div class="row component user_info">
-  <div class="five columns user userA">
+  <div class="five columns user userA" data-id="<%= userA.data.id %>" data-type="user">
 
     <div class="row details mobile">
       <div class="ten columns">
@@ -23,7 +23,7 @@
   <div class="two columns vs">VS</div>
 
 
-  <div class="five columns user userB">
+  <div class="five columns user userB" data-id="<%= userB.data.id %>" data-type="user">
     <div class="row details mobile">
       <div class="two columns">
         <a href="/users/<%= userB.data.username %>">

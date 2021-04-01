@@ -112,6 +112,8 @@ function updateSuggestions(el, results){
     `;
 
     let div = document.createElement("div");
+    div.dataset.id = r.id;
+    div.dataset.type = 'user';
     div.classList.add("row");
     div.addEventListener("click", function(){
       el.value = r.username;
@@ -160,6 +162,8 @@ function updateRiders(el, results){
 
     group.forEach(user => {
       let d = document.createElement("div");
+      d.dataset.id = user.id;
+      d.dataset.type = 'user';
       d.classList.add("three");
       d.classList.add("columns");
       d.classList.add("user-list");

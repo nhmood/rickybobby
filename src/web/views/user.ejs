@@ -28,11 +28,11 @@
 
 
         <% workouts.data.forEach(function(workout){ %>
-          <div class="row component workout">
+          <div class="row component workout" data-id="<%= workout.id %>" data-type="workout">
             <div class="two columns instructor">
               <img class="u-full-width profile" src="<%= workout.instructor.image_url %>"></img>
             </div>
-            <div class="four columns ride-info">
+            <div class="four columns ride-info" data.id="<%= workout.ride.id %>" data.type="ride">
               <div class="row name"><%= workout.ride.title %></div>
               <div class="row instructor"><%= workout.instructor.name %></div>
               <div class="row taken"><%= helpers.formatDate(workout.taken_at) %></div>

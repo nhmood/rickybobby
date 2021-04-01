@@ -1,0 +1,4 @@
+0 10 * * *   (. ~/dev/rickybobby/cronjob.env.sh; ~/dev/rickybobby/run.sh sync >> ~/dev/rickybobby/run.log 2>&1; )
+0 3  * * *   (. ~/dev/rickybobby/cronjob.env.sh; ~/dev/rickybobby/run.sh sync >> ~/dev/rickybobby/run.log 2>&1; )
+0 8  * * *   (. ~/dev/rickybobby/cronjob.env.sh; ~/dev/rickybobby/run.sh sync >> ~/dev/rickybobby/run.log 2>&1; )
+0 11 * * *   (. ~/dev/rickybobby/cronjob.env.sh; ~/dev/rickybobby/run.sh sync >> ~/dev/rickybobby/run.log 2>&1; )

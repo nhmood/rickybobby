@@ -12,7 +12,7 @@ class Web {
     this.db = db;
 
     this.app = express();
-    this.app.use(morgan('combined'));
+    this.app.use(morgan('combined', {'stream': logger.stream}));
 
     this.app.set('view engine', 'ejs');
     this.app.set('views', `${__dirname}/views`);
@@ -98,14 +98,7 @@ class Web {
         untracked: []
       };
 
-      let users = this.db.User.where({
-      });
-
-      // Split users out into tracked and nontracked
-      users.forEach(user => {
-        let group = user.tracked ? 'tracked' : 'untracked';
-        userList[group].push( user );
-      });
+      let users = this.db.User.where({});
 
       // Generate pagination for workout data
       const pagination = {
@@ -114,9 +107,8 @@ class Web {
         next_page: page < (userCount / this.PAGE_LIMIT) ? page + 1 : null
       }
 
-      // Map users into groups of (6) for display purposes
-      userList.tracked = helpers.chunk(userList.tracked, 4);
-      userList.untracked = helpers.chunk(userList.untracked, 4);
+      // Map users into groups of (4) for display purposes
+      userList = helpers.chunk(users, 4);
 
       // Render riders template with associated data
       res.render('users', {

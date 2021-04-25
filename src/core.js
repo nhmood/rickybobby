@@ -95,6 +95,10 @@ class RickyBobby {
   }
 
 
+  searchUsername(username){
+    return this.db.User.search(username);
+  }
+
   getUsername(username){
     let user = this.db.User.first({username: username});
     if (user == undefined){

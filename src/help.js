@@ -64,6 +64,9 @@ function printHelp(){
       the Model records without pulling all the API data again
 
 
+    run.js search [USERNAME]
+      search local database for user by username
+
     run.js remove [USER]
       remove all records associated to user from database (includes DataLog)
 

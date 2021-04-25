@@ -26,6 +26,7 @@ class Database {
   }
 
 
+  // TODO - add all unrun migrations functionality
   migrate(migrationPath){
     let migration;
     try {
@@ -43,8 +44,7 @@ class Database {
 
   setup(path){
     if (path == undefined || path.length == 0){
-      logger.error("rickybobby db path not specified");
-      process.exit(1);
+      throw {name: "HelpError", message: "rickybobby db path not specified"}
     }
 
     this.#dbPath = path;

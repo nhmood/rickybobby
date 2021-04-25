@@ -26,16 +26,26 @@ class Workout extends Model {
         data.performance.summaries.length > 0 &&
         data.performance.metrics.length > 0
       ){
+
+      // Occasionally, some records don't have all the metrics
+      // so attempt to read them and default to (0)s otherwise
+      let defaultMetric = { max_value: 0, average_value: 0 };
+
+      let output      = data.performance.metrics[0] || defaultMetric;
+      let cadence     = data.performance.metrics[1] || defaultMetric;
+      let resistance  = data.performance.metrics[2] || defaultMetric;
+      let speed       = data.performance.metrics[3] || defaultMetric;
+
       workoutRecord = Object.assign(workoutRecord, {
         total_output:     data.performance.summaries[0].value,
-        max_output:       data.performance.metrics[0].max_value,
-        avg_output:       data.performance.metrics[0].average_value,
-        max_cadence:      data.performance.metrics[1].max_value,
-        avg_cadence:      data.performance.metrics[1].average_value,
-        max_resistance:   data.performance.metrics[2].max_value,
-        avg_resistance:   data.performance.metrics[2].average_value,
-        max_speed:        data.performance.metrics[3].max_value,
-        avg_speed:        data.performance.metrics[3].average_value,
+        max_output:       output.max_value,
+        avg_output:       output.average_value,
+        max_cadence:      cadence.max_value,
+        avg_cadence:      cadence.average_value,
+        max_resistance:   resistance.max_value,
+        avg_resistance:   resistance.average_value,
+        max_speed:        speed.max_value,
+        avg_speed:        speed.average_value,
       });
     }
 

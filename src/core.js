@@ -241,7 +241,7 @@ class RickyBobby {
 
 
   // TODO - determine whether we want to fetch by username or user id
-  async fetchWorkouts(username, forceFetch = false){
+  async fetchWorkouts(username, forceFetch = false, page = 0){
     logger.info(`Fetching Workouts for ${username}`);
     this.setup();
 
@@ -257,7 +257,7 @@ class RickyBobby {
 
     // Walk through the workoutCursor until we run out of data to process
     logger.debug(`Initializing workoutCursor for ${user.id}/${user.username}`);
-    let workoutCursor = this.peloton.workoutCursor(user.id);
+    let workoutCursor = this.peloton.workoutCursor(user.id, page);
     while(true){
       workoutCursor = await workoutCursor.next();
       logger.debug({workoutCursor});

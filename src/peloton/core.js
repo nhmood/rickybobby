@@ -176,9 +176,9 @@ class PelotonAPI {
 
 
   // Initial cursor to kick off workout walking from page 0
-  workoutCursor(userID){
+  workoutCursor(userID, page = 0){
     return {
-      next: async () => { return this.getWorkouts(userID, 0); }
+      next: async () => { return this.getWorkouts(userID, page); }
     }
   }
 

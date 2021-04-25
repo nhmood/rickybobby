@@ -53,7 +53,7 @@ const rb = new RickyBobby({
           break;
 
         case 'workouts':
-          resource = await rb.fetchWorkouts(process.argv[4], process.argv[5]);
+          resource = await rb.fetchWorkouts(process.argv[4], process.argv[5], process.argv[6]);
           break;
 
         default:

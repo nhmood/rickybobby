@@ -169,6 +169,10 @@ class Web {
       let user = this.db.User.first({username: username});
 
 
+      if (!user){
+        return res.redirect(301, `/users/`);
+      }
+
       // If the tracked value on the user record is undefined,
       // then attempt to track the user and return early with the appropriate message
       if (!user.tracked || user.private){

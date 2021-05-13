@@ -58,24 +58,93 @@ class Workout extends Model {
   static commonWorkouts(userA, userB){
     let sql = `
       SELECT DISTINCT
-        workoutA.*
+        workout.*
       FROM
-        workouts AS workoutA
-      INNER JOIN
-        workouts AS workoutB
+        workouts as workout
+      JOIN
+        users AS u
       ON
-        workoutA.ride_id  = workoutB.ride_id AND
-        workoutA.user_id != workoutB.user_id
+        workout.user_id = u.id
       WHERE
-        workoutA.user_id IN(?, ?) AND
-        workoutB.user_id IN(?, ?) AND
-        workoutA.type = 'cycling';
-    `;
+        workout.user_id IN(?, ?) AND
+        ride_id IN (
+          SELECT DISTINCT
+            ride_id
+          FROM
+            workouts
+          WHERE
+            user_id = ? AND
+            type = 'cycling'
 
+          INTERSECT
+
+          SELECT DISTINCT
+            ride_id
+          FROM
+            workouts
+          WHERE
+            user_id = ? AND
+            type = 'cycling'
+        )
+      ORDER BY
+        workout.ride_id;
+    `;
 
 
     const stmt = this.db.prepare(sql);
     const records = stmt.all(userA.id, userB.id, userA.id, userB.id);
+
+    const models = records.map(r => { return new this(r) });
+    return models;
+  }
+
+
+  static uniqueWorkouts(opts){
+    const takenBy = opts.takenBy;
+    const notTakenBy = opts.notTakenBy;
+
+    // TODO - figure out proper return or exception raising
+    if (!takenBy || !notTakenBy){
+      console.warn(`Invalid parameters provided for uniqueWorkouts -> ${opts}`);
+      return false;
+    }
+
+    let sql = `
+      SELECT DISTINCT
+        workout.*
+      FROM
+        workouts as workout
+      JOIN
+        users AS u
+      ON
+        workout.user_id = u.id
+      WHERE
+        workout.user_id IN(?, ?) AND
+        ride_id IN (
+          SELECT DISTINCT
+            ride_id
+          FROM
+            workouts
+          WHERE
+            user_id = ? AND
+            type = 'cycling'
+
+          EXCEPT
+
+          SELECT DISTINCT
+            ride_id
+          FROM
+            workouts
+          WHERE
+            user_id = ? AND
+            type = 'cycling'
+        )
+      ORDER BY
+        workout.taken_at DESC
+    `;
+
+    const stmt = this.db.prepare(sql);
+    const records = stmt.all(takenBy.id, notTakenBy.id, takenBy.id, notTakenBy.id);
 
     const models = records.map(r => { return new this(r) });
     return models;

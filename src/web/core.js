@@ -53,8 +53,14 @@ class Web {
         let ride = this.db.Ride.get(w.ride_id);
         w.ride = ride;
 
-        let instructor = this.db.Instructor.get(ride.instructor_id);
-        w.instructor = instructor;
+        // If we have a valid ride_id/ride then attempt to grab the
+        // instructor, otherwise just set the title to Free Ride
+        if (ride){
+          let instructor = this.db.Instructor.get(ride.instructor_id);
+          w.instructor = instructor;
+        } else {
+          w.ride = {title: "Free Ride"}
+        }
       });
 
       // Render the index template

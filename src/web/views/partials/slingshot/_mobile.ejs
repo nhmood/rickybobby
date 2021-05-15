@@ -1,0 +1,32 @@
+<div class="row component slingshot">
+  <div class="user userA" data-id="<%= userA.data.id %>" data-type="user">
+    <div class="row">
+      👋 Hey, <%= userA.data.username %>
+    </div>
+    <div class="row">
+      <a href="/users/<%= userA.data.username %>">
+        <img class="profile mobile u-full-width img-center" src="<%= userA.data.image_url %>"></img>
+      </a>
+    </div><!-- user icon -->
+
+  </div><!-- userA -->
+
+  <div class="row slingshot">
+    Here are the rides that <strong><%= userB.data.username %></strong> has taken that you haven't!<br>
+    Compete on these rides to slingshot past them!<br><br>
+    Compare head to head with<br>
+    <a href="/shakeandbake?users=<%= userA.data.username %>,<%= userB.data.username %>">Shake and Bake!</a>
+  </div>
+
+
+  <div class="user userB" data-id="<%= userB.data.id %>" data-type="user">
+    <div class="row">
+      <a href="/users/<%= userB.data.username %>">
+        <img class="profile mobile u-full-width img-center" src="<%= userB.data.image_url %>"></img>
+      </a>
+    </div><!-- user icon -->
+    <div class="row">
+      <%= userB.data.username %>
+    </div>
+  </div><!-- details -->
+</div><!-- user_info -->

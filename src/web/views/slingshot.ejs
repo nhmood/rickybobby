@@ -1,0 +1,75 @@
+<%- include('partials/_head'); %>
+
+<%- userAID = userA.id %>
+<%- userBID = userB.id %>
+
+
+<body class="preload">
+  <div class="container">
+    <%- include('partials/_header'); %>
+
+
+    <div id="main" class="row">
+      <div class="row header">
+        <h1>Slingshot</h1>
+      </div>
+
+
+      <div class="full">
+        <%- include('partials/slingshot/_full'); %>
+      </div><!-- full -->
+
+      <div class="mobile">
+        <%- include('partials/slingshot/_mobile'); %>
+      </div><!-- mobile -->
+
+
+
+        <% workouts.data.forEach(function(workout){ %>
+          <div class="row component workout" data-id="<%= workout.id %>" data-type="workout">
+            <div class="two columns instructor">
+              <img class="u-full-width profile" src="<%= workout.instructor.image_url %>"></img>
+            </div>
+            <div class="four columns ride-info" data.id="<%= workout.ride.id %>" data.type="ride">
+              <div class="row name"><%= workout.ride.title %></div>
+              <div class="row instructor"><%= workout.instructor.name %></div>
+              <div class="row taken"><%= helpers.formatDate(workout.taken_at) %></div>
+              <div class="row difficulty">Difficulty: <%= Math.round( workout.ride.difficulty_rating_avg * 100) / 100 %> / 10</div>
+              <div class="row peloton"><a class="peloton-link" href="https://members.onepeloton.com/classes/cycling?modal=classDetailsModal&classId=<%= workout.ride.id %>" target="_blank">View Class</a></div>
+            </div>
+
+            <div class="six columns performance">
+              <% if (workout.type == "cycling"){ %>
+                <div class="three columns output">
+                  <div class="row metric-icon"><i class="fas fa-battery-three-quarters"></i></div>
+                  <div class="row"><%= workout.total_output %><mark class="lower">kj</mark></div>
+                </div>
+
+                <div class="three columns cadence">
+                  <div class="row metric-icon"><i class="fas fa-tachometer-alt"></i></div>
+                  <div class="row"><%= workout.avg_cadence %><mark class="lower">rpm</mark></div>
+                </div>
+
+                <div class="three columns resistance">
+                  <div class="row metric-icon"><i class="fas fa-dumbbell"></i></div>
+                  <div class="row"><%= workout.avg_resistance %><mark class="lower">%</mark></div>
+                </div>
+
+                <div class="three columns speed">
+                  <div class="row metric-icon"><i class="fas fa-running"></i></div>
+                  <div class="row"><%= Math.round(workout.avg_speed) %><mark class="lower">mph</mark></div>
+                </div>
+              <% } else { %>
+                &nbsp;
+              <% }; %>
+            </div>
+          </div>
+        <% }); %>
+
+
+
+    </div><!-- main -->
+  </div><!-- container -->
+</body>
+
+<%- include('partials/_end'); %>

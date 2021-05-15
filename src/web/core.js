@@ -356,6 +356,65 @@ class Web {
       });
     })
 
+
+    this.app.get('/slingshot', (req, res) => {
+      let takenByUsername    = req.query.takenBy;
+      let notTakenByUsername = req.query.notTakenBy;
+
+      let takenBy    = this.db.User.first({username: takenByUsername});
+      let notTakenBy = this.db.User.first({username: notTakenByUsername});
+
+
+      if (takenBy == undefined || notTakenBy == undefined){
+        logger.warn(`Could not find users / ${takenByUsername} / ${notTakenByUsername}`);
+        res.redirect(301, '/');
+        return;
+      }
+
+      if (!takenBy.tracked){
+        logger.warn(`${takenBy.username} not tracked!`);
+        return res.redirect(301, `/users/${takenBy.username}`);
+      }
+
+      if (!notTakenBy.tracked){
+        logger.warn(`${notTakenBy.username} not tracked!`);
+        return res.redirect(301, `/users/${notTakenBy.username}`);
+      }
+
+      // Find all the rides that are exclusively taken by userA
+      let unique = this.db.Workout.uniqueWorkouts({
+        takenBy: takenBy,
+        notTakenBy: notTakenBy
+      });
+
+      // For each workout, grab associated ride and instructor
+      unique.forEach(w => {
+        let ride = this.db.Ride.get(w.ride_id) || {};
+        w.ride = ride;
+
+        let instructor = this.db.Instructor.get(ride.instructor_id);
+        w.instructor = instructor || { image_url: "/images/peloton.jpg" };
+      });
+
+
+      res.render('slingshot', {
+        helpers: helpers,
+        title: `Rides for ${notTakenBy.username} to beat ${takenBy.username}`,
+        userA: {
+          data: notTakenBy,
+          debug: JSON.stringify(notTakenBy),
+        },
+        userB: {
+          data: takenBy,
+          debug: JSON.stringify(takenBy),
+        },
+        workouts: {
+          data: unique,
+          debug: JSON.stringify(unique),
+        }
+      });
+    })
+
   }
 
 

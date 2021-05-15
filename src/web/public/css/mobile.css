@@ -64,4 +64,21 @@
   .suggestions .profile {
     width: 50px;
   }
+  .slingshot {
+    margin-top: 20px;
+    margin-bottom: 40px;
+    text-align: center;
+  }
+  .slingshot > .user {
+    text-align: center;
+    font-weight: 800;
+    font-size: 30px;
+    border-bottom: 1px solid #efefef;
+  }
+
+  .img-center {
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 10px;
+  }
 }

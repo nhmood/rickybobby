@@ -13,6 +13,11 @@ html { font-family: 'Inter', sans-serif; }
   --peloton: rgb(223, 28, 47);
 }
 
+::selection {
+  background: rgba(255, 171, 157, 1);
+  color: white;
+}
+
 body {
   font-family: 'Inter var', sans-serif;
   margin-top: 5%;
@@ -499,4 +504,10 @@ ul > * ul {
 
 .suggestions > *:hover {
   background: #efefef;
+}
+
+.slingshot {
+  margin-top: 20px;
+  margin-bottom: 40px;
+  text-align: center;
 }

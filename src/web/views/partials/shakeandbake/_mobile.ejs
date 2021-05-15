@@ -18,6 +18,12 @@
         </a>
       </div>
     </div><!-- details -->
+
+    <div class="row compete">
+      <a href="/slingshot?takenBy=<%= userB.data.username %>&notTakenBy=<%= userA.data.username %>">
+        Rides for <%= userA.data.username %> to beat <%= userB.data.username %>
+      </a>
+    </div><!-- compete -->
   </div><!-- userA -->
 
   <div class="two columns vs">VS</div>
@@ -41,6 +47,12 @@
         </div>
       </div>
     </div><!-- details -->
+
+    <div class="row compete">
+      <a href="/slingshot?takenBy=<%= userA.data.username %>&notTakenBy=<%= userB.data.username %>">
+        Rides for <%= userB.data.username %> to beat <%= userA.data.username %>
+      </a>
+    </div><!-- compete -->
 
   </div><!-- details -->
 </div><!-- user_info -->

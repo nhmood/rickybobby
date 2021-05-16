@@ -473,20 +473,6 @@ class RickyBobby {
     });
 
 
-    // Create a summary container for total wins/rides
-    let summary = {
-      wins: {
-        [userA.id]: 0,
-        [userB.id]: 0
-      },
-      winner: {
-        [userA.id]: false,
-        [userB.id]: false
-      },
-      rideCount: 0
-    };
-
-
     // Grab the unique set of Ride IDs for the set of workouts
     // and begin to build the container structure for the comparison
     // TODO - update DB.where to support array -> IN (?,..)
@@ -566,9 +552,6 @@ class RickyBobby {
       // then key into the ride->users->userID to set the winner flat to true
       let winnerUserID = bestUserA.total_output > bestUserB.total_output ? userA.id : userB.id;
       ride.users[winnerUserID].winner = true;
-
-      // Increment the summary for the winning user
-      summary.wins[winnerUserID] += 1;
     })
 
     // The final step is converting the comparison list into an array
@@ -577,13 +560,10 @@ class RickyBobby {
     let rideSorted = rideTaken.sort((a, b) => a[0] - b[0]).reverse();
     let rideList = rideSorted.map(ride => ride[1]);
 
-    // Set the total ride count in the summary and the winner
-    summary.rideCount = rideIDs.length;
-    let winnerUserID = summary.wins[userA.id] > summary.wins[userB.id] ? userA.id : userB.id;
-    summary.winner[winnerUserID] = true;
-
-
-    logger.debug(summary)
+    let summary = this.db.Workout.commonWorkoutSummary({
+      userA: userA,
+      userB: userB
+    });
 
     return {
       summary: summary,

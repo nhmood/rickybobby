@@ -120,6 +120,63 @@ class Workout extends Model {
   }
 
 
+  static commonWorkoutSummary(options){
+    let userA = options.userA;
+    let userB = options.userB;
+
+    if (!userA || !userB){
+      logger.error(`Invalid userA/B passed to compareWorkouts: ${userA}/${userB}`);
+      return false;
+    }
+
+    let rideIDs = this.compareWorkoutRides(options);
+    let rideSQL = rideIDs.map(r => `?`).join(",");
+
+    let sql = `
+      SELECT
+        w.user_id, COUNT(*) as wins
+      FROM (
+        SELECT DISTINCT
+          u.username, workout.ride_id, max(workout.avg_output), workout.user_id
+        FROM
+          workouts as workout
+        JOIN
+          users u
+        ON
+          workout.user_id = u.id
+        WHERE
+          workout.user_id IN (?, ?) AND
+          workout.ride_id IN (${rideSQL})
+          GROUP BY
+            workout.ride_id
+      ) as w
+      GROUP BY
+        w.user_id
+    `;
+
+    const stmt = this.db.prepare(sql);
+    const records = stmt.all(userA.id, userB.id, rideIDs);
+
+    // Format payload as has summary hash with wins, winner (bool), and total
+    // TODO - we can probably move away from this legacy format now that we are
+    //        using EJS instead of mustache
+    let summaryA = records[0];
+    let summaryB = records[1];
+
+    let payload = {
+      wins: {
+        [summaryA.user_id]: summaryA.wins,
+        [summaryB.user_id]: summaryB.wins
+      },
+      winner: {
+        [summaryA.user_id]: summaryA.wins > summaryB.wins,
+        [summaryB.user_id]: summaryA.wins < summaryB.wins
+      },
+      rideCount: rideIDs.length
+    }
+
+    return payload;
+  }
 
   static compareWorkouts(options){
     let userA = options.userA;

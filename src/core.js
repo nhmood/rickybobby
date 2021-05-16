@@ -467,7 +467,10 @@ class RickyBobby {
     // helper method (performs specific SQL for joins)
     // TODO - db.Workout.commonWorkouts should ideally be updated to provide a limited
     //        list back and support pagination
-    let workouts = this.db.Workout.commonWorkouts(userA, userB);
+    let workouts = this.db.Workout.commonWorkouts({
+      userA: userA,
+      userB: userB
+    });
 
 
     // Create a summary container for total wins/rides

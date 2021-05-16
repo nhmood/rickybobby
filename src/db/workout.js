@@ -55,10 +55,91 @@ class Workout extends Model {
   }
 
 
-  static commonWorkouts(userA, userB){
+  // Helper to select the common/unique rides between two users
+  static compareWorkoutRides(options){
+    // Pull the mode from the options and default to INTERSECT
+    let mode = (options.mode || "common").toLowerCase();
+
+    if (mode != "common" && mode != "unique"){
+      logger.error(`Invalid commonRide mode provided: ${mode}`);
+      return false;
+    };
+
+    let modeSQL = (mode == "common") ? "INTERSECT" : "EXCEPT";
     let sql = `
       SELECT DISTINCT
-        workout.*
+        ride_id
+      FROM
+        workouts
+      WHERE
+        user_id = ? AND
+        type = 'cycling'
+
+      ${modeSQL}
+
+      SELECT DISTINCT
+        ride_id
+      FROM
+        workouts
+      WHERE
+        user_id = ? AND
+        type = 'cycling'
+     `
+
+    // Since we are using a union (intersect/except), if we
+    // want to count then we will have to wrap statement
+    if (options.count){
+      sql = `
+        SELECT
+          COUNT(*) as count
+        FROM ( ${sql} )
+      `;
+    }
+
+    // If pagination options are provided, append the necessary
+    // limit/offset
+    let limitInt = parseInt(options.limit);
+    if (limitInt){
+      let pageInt = parseInt(options.page) || 0;
+      sql = sql.concat(` LIMIT ${limitInt} OFFSET ${ limitInt * pageInt}`);
+    }
+
+
+    const stmt = this.db.prepare(sql);
+
+    // If we are just counting, no need to format the results
+    // into the corresponding model, just return the count
+    if (options.count){
+      const record = stmt.get(options.userA.id, options.userB.id);
+      return record.count;
+    }
+
+    const records = stmt.all(options.userA.id, options.userB.id);
+    const rideIDs = records.map( r => { return r.ride_id });
+    return rideIDs;
+  }
+
+
+
+  static compareWorkouts(options){
+    let userA = options.userA;
+    let userB = options.userB;
+
+    if (!userA || !userB){
+      logger.error(`Invalid userA/B passed to compareWorkouts: ${userA}/${userB}`);
+      return false;
+    }
+
+    // If the count option is passed, return the count, otherwise
+    // grab all the fields of the queried workout
+    let selectSQL = options.count ? "COUNT(*)" : "workout.*";
+
+    let rideIDs = this.compareWorkoutRides(options);
+    let rideSQL = rideIDs.map(r => `?`).join(",");
+
+    let sql = `
+      SELECT DISTINCT
+        ${selectSQL}
       FROM
         workouts as workout
       JOIN
@@ -67,86 +148,41 @@ class Workout extends Model {
         workout.user_id = u.id
       WHERE
         workout.user_id IN(?, ?) AND
-        ride_id IN (
-          SELECT DISTINCT
-            ride_id
-          FROM
-            workouts
-          WHERE
-            user_id = ? AND
-            type = 'cycling'
-
-          INTERSECT
-
-          SELECT DISTINCT
-            ride_id
-          FROM
-            workouts
-          WHERE
-            user_id = ? AND
-            type = 'cycling'
-        )
+        ride_id IN (${rideSQL})
       ORDER BY
-        workout.ride_id;
+        workout.ride_id DESC
     `;
 
 
     const stmt = this.db.prepare(sql);
-    const records = stmt.all(userA.id, userB.id, userA.id, userB.id);
+    const records = stmt.all(userA.id, userB.id, rideIDs);
 
     const models = records.map(r => { return new this(r) });
     return models;
   }
 
 
-  static uniqueWorkouts(opts){
-    const takenBy = opts.takenBy;
-    const notTakenBy = opts.notTakenBy;
+  static commonWorkouts(options){
+    let models = this.compareWorkouts({
+      mode: "common",
+      userA: options.userA,
+      userB: options.userB,
+      limit: options.limit,
+      page:  options.page
+    });
 
-    // TODO - figure out proper return or exception raising
-    if (!takenBy || !notTakenBy){
-      console.warn(`Invalid parameters provided for uniqueWorkouts -> ${opts}`);
-      return false;
-    }
+    return models;
+  }
 
-    let sql = `
-      SELECT DISTINCT
-        workout.*
-      FROM
-        workouts as workout
-      JOIN
-        users AS u
-      ON
-        workout.user_id = u.id
-      WHERE
-        workout.user_id IN(?, ?) AND
-        ride_id IN (
-          SELECT DISTINCT
-            ride_id
-          FROM
-            workouts
-          WHERE
-            user_id = ? AND
-            type = 'cycling'
+  static uniqueWorkouts(options){
+    let models = this.compareWorkouts({
+      mode: "unique",
+      userA: options.takenBy,
+      userB: options.notTakenBy,
+      limit: options.limit,
+      page:  options.page
+    });
 
-          EXCEPT
-
-          SELECT DISTINCT
-            ride_id
-          FROM
-            workouts
-          WHERE
-            user_id = ? AND
-            type = 'cycling'
-        )
-      ORDER BY
-        workout.taken_at DESC
-    `;
-
-    const stmt = this.db.prepare(sql);
-    const records = stmt.all(takenBy.id, notTakenBy.id, takenBy.id, notTakenBy.id);
-
-    const models = records.map(r => { return new this(r) });
     return models;
   }
 

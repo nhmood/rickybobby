@@ -18,6 +18,12 @@ class Workout extends Model {
       user_id: data.user_id
     }
 
+    // Some free rides have an ID of all 0s, replace this with null
+    // to keep consistency in dataset
+    if (workoutRecord.ride_id == "00000000000000000000000000000000"){
+      workoutRecord.ride_id = null;
+    }
+
 
     // If the workout is "cycling", conditionally add the necessary
     // performance metrics before upserting
@@ -73,7 +79,8 @@ class Workout extends Model {
         workouts
       WHERE
         user_id = ? AND
-        type = 'cycling'
+        type = 'cycling' AND
+        ride_id NOT NULL
 
       ${modeSQL}
 
@@ -83,7 +90,8 @@ class Workout extends Model {
         workouts
       WHERE
         user_id = ? AND
-        type = 'cycling'
+        type = 'cycling' AND
+        ride_id NOT NULL
      `
 
     // Since we are using a union (intersect/except), if we

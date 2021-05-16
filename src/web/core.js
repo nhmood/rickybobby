@@ -411,11 +411,36 @@ class Web {
         return res.redirect(301, `/users/${notTakenBy.username}`);
       }
 
+
+      // Get total count of unique rides available
+      let uniqueCount = this.db.Workout.compareWorkoutRides({
+        mode: "unique",
+        userA: takenBy,
+        userB: notTakenBy,
+        count: true
+      });
+
+      // Format pagination
+      let page = parseInt(req.query.p) || 1;
+      page = Math.max(...[1, page]);
+      page = Math.min(...[page, Math.ceil(uniqueCount / this.PAGE_LIMIT.compare )]);
+
+      // Generate pagination for workout data
+      const pagination = {
+        total: uniqueCount,
+        prev_page: page > 1 ? page - 1 : null,
+        next_page: page < (uniqueCount / this.PAGE_LIMIT.compare ) ? page + 1 : null
+      }
+
+
       // Find all the rides that are exclusively taken by userA
       let unique = this.db.Workout.uniqueWorkouts({
         takenBy: takenBy,
-        notTakenBy: notTakenBy
-      });
+        notTakenBy: notTakenBy,
+        limit: this.PAGE_LIMIT.compare,
+        page: page - 1,
+      })
+
 
       // For each workout, grab associated ride and instructor
       unique.forEach(w => {
@@ -441,6 +466,10 @@ class Web {
         workouts: {
           data: unique,
           debug: JSON.stringify(unique),
+        },
+        pagination: {
+          data: pagination,
+          debug: JSON.stringify(pagination)
         }
       });
     })

@@ -25,6 +25,20 @@
 
 
 
+      <div class="row workouts">
+        <div class="row header">
+          <h2>Workouts</h2>
+        </div>
+
+
+        <%- include('partials/_pagination', {
+          base: `/slingshot?takenBy=${userB.data.username}&notTakenBy=${userA.data.username}`,
+          item: "Workouts",
+          prev_page: pagination.data.prev_page,
+          next_page: pagination.data.next_page
+        }); %>
+
+
         <% workouts.data.forEach(function(workout){ %>
           <div class="row component workout" data-id="<%= workout.id %>" data-type="workout">
             <div class="two columns instructor">
@@ -66,8 +80,13 @@
           </div>
         <% }); %>
 
-
-
+        <%- include('partials/_pagination', {
+          base: `/slingshot?takenBy=${userB.data.username}&notTakenBy=${userA.data.username}`,
+          item: "Workouts",
+          prev_page: pagination.data.prev_page,
+          next_page: pagination.data.next_page
+        }); %>
+      </div><!-- workouts -->
     </div><!-- main -->
   </div><!-- container -->
 </body>

@@ -64,6 +64,14 @@
     <h2>Workouts</h2>
   </div>
 
+  <%- include('../_pagination', {
+    base: `/shakeandbake?users=${userA.data.username},${userB.data.username}`,
+    item: "Workouts",
+    prev_page: pagination.data.prev_page,
+    next_page: pagination.data.next_page
+  }); %>
+
+
   <div class="row comparisons">
     <% rides.data.forEach(function(ride){ %>
       <div class="row comparison component" data-id="<%= ride.ride.id %>" data-type="ride">
@@ -106,4 +114,11 @@
       </div><!-- comparison -->
     <% }); %>
   </div>
+
+  <%- include('../_pagination', {
+    base: `/shakeandbake?users=${userA.data.username},${userB.data.username}`,
+    item: "Workouts",
+    prev_page: pagination.data.prev_page,
+    next_page: pagination.data.next_page
+  }); %>
 </div><!-- workouts -->

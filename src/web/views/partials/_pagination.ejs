@@ -1,9 +1,10 @@
-<% show = (prev_page || next_page) ? "" : "hide" %>
+<% show   = (prev_page || next_page) ? "" : "hide" %>
+<% append = base.match(/\?/) ? "&" : "?" %>
 
 <div class="row pagination <%= show %>">
   <div class="six columns prev">
     <% if (prev_page){ %>
-      <a href=<%= base %>?p=<%= prev_page %>>Previous <%= item %></a>
+      <a href=<%= base %><%= append %>p=<%= prev_page %>>Previous <%= item %></a>
     <% } else { %>
       &nbsp;
     <% }; %>
@@ -12,7 +13,7 @@
 
   <div class="six columns next">
     <% if (next_page) { %>
-      <a href=<%= base %>?p=<%= next_page %>>Next <%= item %></a>
+      <a href=<%= base %><%= append %>p=<%= next_page %>>Next <%= item %></a>
     <% } else { %>
       &nbsp;
     <% }; %>

@@ -459,9 +459,9 @@ class RickyBobby {
   //        this is mainly because mustache js templating is super rigid
   //        if we move to handlebars or something maybe we can just push the
   //        data and let the view handle pulling data components from various components
-  commonWorkouts(usernameA, usernameB){
-    let userA = this.getUsername(usernameA);
-    let userB = this.getUsername(usernameB);
+  commonWorkouts(options){
+    let userA = this.getUsername(options.usernameA);
+    let userB = this.getUsername(options.usernameB);
 
     // Get all the common workouts between the two users using the workout model
     // helper method (performs specific SQL for joins)
@@ -469,7 +469,9 @@ class RickyBobby {
     //        list back and support pagination
     let workouts = this.db.Workout.commonWorkouts({
       userA: userA,
-      userB: userB
+      userB: userB,
+      limit: options.limit,
+      page:  options.page
     });
 
 
@@ -560,13 +562,7 @@ class RickyBobby {
     let rideSorted = rideTaken.sort((a, b) => a[0] - b[0]).reverse();
     let rideList = rideSorted.map(ride => ride[1]);
 
-    let summary = this.db.Workout.commonWorkoutSummary({
-      userA: userA,
-      userB: userB
-    });
-
     return {
-      summary: summary,
       rides: rideList
     }
   }

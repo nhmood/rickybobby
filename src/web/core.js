@@ -7,7 +7,8 @@ class Web {
   port = process.env.PORT || 3000;
   PAGE_LIMIT = {
     users: 16,
-    workouts: 10
+    workouts: 10,
+    compare: 5,
   };
 
   constructor(config, db, glue){
@@ -331,9 +332,34 @@ class Web {
         return res.redirect(301, `/users/${userB.username}`);
       }
 
+
+      let summary = this.db.Workout.commonWorkoutSummary({
+        userA: userA,
+        userB: userB
+      });
+
+      let page = parseInt(req.query.p) || 1;
+      page = Math.max(...[1, page]);
+      page = Math.min(...[page, Math.ceil(summary.rideCount / this.PAGE_LIMIT.compare )]);
+
       // Use the rickybobby "glue" handler to perform the commonWorkouts call
       // for the two users then render the data
-      let comparison = this.glue.commonWorkouts(usernameA, usernameB);
+      let comparison = this.glue.commonWorkouts({
+        usernameA: usernameA,
+        usernameB: usernameB,
+        limit: this.PAGE_LIMIT.compare,
+        page: page - 1,
+      })
+
+
+      // Generate pagination for workout data
+      const pagination = {
+        total: summary.rideCount,
+        prev_page: page > 1 ? page - 1 : null,
+        next_page: page < (summary.rideCount / this.PAGE_LIMIT.compare ) ? page + 1 : null
+      }
+
+
       res.render('shakeandbake', {
         helpers: helpers,
         title: `${userA.username} vs. ${userB.username}`,
@@ -346,13 +372,17 @@ class Web {
           debug: JSON.stringify(userB),
         },
         summary: {
-          data: comparison.summary,
+          data: summary,
           debug: JSON.stringify(comparison.summary)
         },
         rides: {
           data: comparison.rides,
           debug: JSON.stringify(comparison.rides)
-        }
+        },
+        pagination: {
+          data: pagination,
+          debug: JSON.stringify(pagination, null, 2)
+        },
       });
     })
 

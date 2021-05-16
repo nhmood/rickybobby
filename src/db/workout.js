@@ -195,14 +195,10 @@ class Workout extends Model {
     let rideSQL = rideIDs.map(r => `?`).join(",");
 
     let sql = `
-      SELECT DISTINCT
+      SELECT
         ${selectSQL}
       FROM
         workouts as workout
-      JOIN
-        users AS u
-      ON
-        workout.user_id = u.id
       WHERE
         workout.user_id IN(?, ?) AND
         ride_id IN (${rideSQL})

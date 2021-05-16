@@ -9,7 +9,8 @@ const models = {
   Ride:       require('./ride.js'),
   Instructor: require('./instructor.js'),
   Workout:    require('./workout.js'),
-  Following:  require('./following.js')
+  Following:  require('./following.js'),
+  Rebuild:    require('./rebuild.js')
 };
 
 
@@ -79,6 +80,7 @@ class Database {
     this.Instructor = models.Instructor.setup(this.#db);
     this.Workout    = models.Workout.setup(this.#db);
     this.Following  = models.Following.setup(this.#db);
+    this.Rebuild    = models.Rebuild.setup(this.#db);
   }
 
   resource(name){
@@ -93,6 +95,26 @@ class Database {
     }
 
     return model;
+  }
+
+  rebuild(options){
+    let model = this.resource(options.target);
+    if (!model){
+      logger.warn(`Unrecognized resource:${options.target}`);
+      return false;
+    }
+
+    // If no target_id is passed, the DataLog query will simply return
+    // all the records and we can perform a full table rebuild
+    // Otherwise, only the specified target_id will be used for the rebuild
+    let datalogs = this.Datalog.where({
+      conditions: options
+    });
+
+    datalogs.forEach(datalog => {
+      logger.debug(`Rebuilding ${options.target} from DataLog:${datalog.id}`);
+      model.import(datalog.data);
+    });
   }
 }
 

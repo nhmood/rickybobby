@@ -109,24 +109,58 @@ class RickyBobby {
     return user;
   }
 
-
-  rebuild(resource){
-    let model = this.db.resource(resource);
-    if (!model){ return false; };
-
-    // Get all the associated api_data records for the target
-    // then walk through and reimport the records to the model
-    let datalogs = this.db.Datalog.where({
+  async rebuild(){
+    let rebuilds = this.db.Rebuild.where({
       conditions: {
-        target: resource
+        complete: 0
       }
     });
-    datalogs.forEach(datalog => {
-      logger.debug(`Rebuilding ${resource} from Datalog:${datalog.id}`);
-      model.import(datalog.data);
+
+    if (rebuilds.length == 0){
+      logger.warn("No Rebuilds found, exiting");
+      return false;
+    }
+
+    // Go through all the incomplete rebuild records and call the
+    // Database#rebuild helper to faciliate DataLog lookup + Model import
+    rebuilds.forEach(async (rebuild) => {
+
+      // If the fetch flag is set, then fetch the raw data again from
+      // the Peloton API (and insert into DataLog) before rebuilding
+      if (rebuild.fetch){
+        logger.info(`Fetching ${rebuild.target}/${rebuild.target_id} from API`);
+        let resource = this.db.resource(rebuild.target);
+        let fetchCall = this[`fetch${resource.name}`];
+
+        if (!fetchCall){
+          logger.error(`Fetch Caller for ${target} not found`);
+          return false;
+        }
+
+        // For some reason, storing the dispatch method as a var and
+        // calling it with the parameter messes up the scope and #setup
+        // fails to get called in the fetch function - so the call is made all
+        // at once here
+        await this[`fetch${resource.name}`](rebuild.target_id);
+      }
+
+
+      logger.info(`Rebuilding ${rebuild.target}/${rebuild.target_id}`);
+      this.db.rebuild({
+        target: rebuild.target,
+        target_id: rebuild.target_id
+      });
+
+      rebuild.update({complete: (new Date()).getTime()});
     });
   }
 
+  rebuildResource(resource){
+    logger.info(`Rebuilding ${resource}`);
+    this.db.rebuild({
+      target: resource
+    });
+  }
 
 
   async fetchUser(identifier){

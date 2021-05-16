@@ -1,49 +1,41 @@
 <%- include('partials/_head'); %>
-<body class="preload">
-  <div class="container">
-    <%- include('partials/_header'); %>
+<%- include('partials/_header'); %>
 
 
-    <div id="main" class="row">
-      <h3>Riders</h3>
+<div id="main" class="row">
+  <h3>Riders</h3>
 
-      <%- include('partials/_pagination', {
-        base: `/users`,
-        item: "Users",
-        prev_page: pagination.data.prev_page,
-        next_page: pagination.data.next_page
-      }); %>
+  <%- include('partials/_pagination', {
+    base: `/users`,
+    item: "Users",
+    prev_page: pagination.data.prev_page,
+    next_page: pagination.data.next_page
+  }); %>
 
-    <div class="row component users">
-      <div class="row searchRiders">
-        <input autofocus class="u-full-width" type="text" id="userSearch" name="userSearch" placeholder="Search"></input>
-      </div>
+  <div class="row component users">
+    <div class="row searchRiders">
+      <input autofocus class="u-full-width" type="text" id="userSearch" name="userSearch" placeholder="Search"></input>
+    </div>
 
-      <div class="row searchResults hide">
-      </div>
+    <div class="row searchResults hide">
+    </div>
 
-      <div class="row riders">
-        <% users.data.forEach(function(group){ %>
-          <div class="row">
-            <% group.forEach(function(user){ %>
-              <div class="three columns user-list" data-id="<%= user.id %>" data-type="user">
-                <div class="row">
-                  <img class="u-full-width profile-list" src="<%= user.image_url %>"></img>
-                </div>
-                <div class="row">
-                  <a href="/users/<%= user.username %>"><%= user.username %></a>
-                </div>
-              </div><!-- user -->
-            <% }); %>
-          </div>
-        <% }); %>
-      </div><!-- tracked -->
-    </div><!-- users -->
-
-
-
-    </div><!-- main -->
-  </div><!-- container -->
-</body>
-
+    <div class="row riders">
+      <% users.data.forEach(function(group){ %>
+        <div class="row">
+          <% group.forEach(function(user){ %>
+            <div class="three columns user-list" data-id="<%= user.id %>" data-type="user">
+              <div class="row">
+                <img class="u-full-width profile-list" src="<%= user.image_url %>"></img>
+              </div>
+              <div class="row">
+                <a href="/users/<%= user.username %>"><%= user.username %></a>
+              </div>
+            </div><!-- user -->
+          <% }); %>
+        </div>
+      <% }); %>
+    </div><!-- tracked -->
+  </div><!-- users -->
+</div><!-- main -->
 <%- include('partials/_end'); %>

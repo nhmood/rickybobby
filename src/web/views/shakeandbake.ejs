@@ -1,29 +1,22 @@
 <%- include('partials/_head'); %>
+<%- include('partials/_header'); %>
 
 <%- userAID = userA.id %>
 <%- userBID = userB.id %>
 
-
-<body class="preload">
-  <div class="container">
-    <%- include('partials/_header'); %>
-
-
-    <div id="main" class="row">
-      <div class="row header">
-        <h1>Shake and Bake</h1>
-      </div>
+<div id="main" class="row">
+  <div class="row header">
+    <h1>Shake and Bake</h1>
+  </div>
 
 
-      <div class="full">
-        <%- include('partials/shakeandbake/_full'); %>
-      </div><!-- full -->
+  <div class="full">
+    <%- include('partials/shakeandbake/_full'); %>
+  </div><!-- full -->
 
-      <div class="mobile">
-        <%- include('partials/shakeandbake/_mobile'); %>
-      </div><!-- mobile -->
-    </div><!-- main -->
-  </div><!-- container -->
-</body>
+  <div class="mobile">
+    <%- include('partials/shakeandbake/_mobile'); %>
+  </div><!-- mobile -->
+</div><!-- main -->
 
 <%- include('partials/_end'); %>

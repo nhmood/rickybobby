@@ -1,43 +1,39 @@
 <%- include('partials/_head'); %>
-<body class="preload">
-  <div class="container">
-    <%- include('partials/_header'); %>
+<%- include('partials/_header'); %>
 
 
-    <div id="main" class="row">
-      <div class="row component user" data-id="<%= user.data.id %>" data-type="user">
-        <div class="six columns details">
-          <div class="four columns">
-            <img class="u-full-width profile" src="<%= user.data.image_url %>"></img>
-          </div>
+<div id="main" class="row">
+  <div class="row component user" data-id="<%= user.data.id %>" data-type="user">
+    <div class="six columns details">
+      <div class="four columns">
+        <img class="u-full-width profile" src="<%= user.data.image_url %>"></img>
+      </div>
 
-          <div class="eight columns">
-            <div class="row username"><%= user.username %></div>
-            <div class="row location"><%= user.data.location %></div>
-          </div>
-        </div><!-- user -->
+      <div class="eight columns">
+        <div class="row username"><%= user.username %></div>
+        <div class="row location"><%= user.data.location %></div>
+      </div>
+    </div><!-- user -->
 
 
-        <div class="six columns tracking">
-          <% if (!user.data.tracked){ %>
-            <h4>This user isn't tracked yet!</h4>
-            <p>
-              But don't worry, we've added them to the list!<br>
-              Their workout data will be pulled on the next sync, stay tuned!
-            </p>
-          <% } else if (user.data.private){ %>
-            <h4>This user is private!</h4>
-            <p>
-              rickybobby can't track users that are set to private.<br><br>
-              If you'd like to be tracked but have your profile set to private,
-              you can simply follow <a href="#/" target="_blank">goosecode</a>
-              and the tracker should be able to pick up the account!
-            </p>
-          <% }; %>
-        </div><!-- followers -->
-      </div><!-- info -->
-    </div><!-- main -->
-  </div><!-- container -->
-</body>
+    <div class="six columns tracking">
+      <% if (!user.data.tracked){ %>
+        <h4>This user isn't tracked yet!</h4>
+        <p>
+          But don't worry, we've added them to the list!<br>
+          Their workout data will be pulled on the next sync, stay tuned!
+        </p>
+      <% } else if (user.data.private){ %>
+        <h4>This user is private!</h4>
+        <p>
+          rickybobby can't track users that are set to private.<br><br>
+          If you'd like to be tracked but have your profile set to private,
+          you can simply follow <a href="#/" target="_blank">goosecode</a>
+          and the tracker should be able to pick up the account!
+        </p>
+      <% }; %>
+    </div><!-- followers -->
+  </div><!-- info -->
+</div><!-- main -->
 
 <%- include('partials/_end'); %>

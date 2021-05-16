@@ -452,6 +452,12 @@ class Web {
       });
 
 
+      // Grab the summary so we can show the overall scores
+      let summary = this.db.Workout.commonWorkoutSummary({
+        userA: takenBy,
+        userB: notTakenBy
+      });
+
       res.render('slingshot', {
         helpers: helpers,
         title: `Rides for ${notTakenBy.username} to beat ${takenBy.username}`,
@@ -466,6 +472,10 @@ class Web {
         workouts: {
           data: unique,
           debug: JSON.stringify(unique),
+        },
+        summary: {
+          data: summary,
+          debug: JSON.stringify(summary),
         },
         pagination: {
           data: pagination,

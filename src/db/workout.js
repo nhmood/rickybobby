@@ -171,6 +171,12 @@ class Workout extends Model {
     let summaryA = records[0];
     let summaryB = records[1];
 
+    // If there is no record[1], this means there are no wins for one of the
+    // two users, we need to figure out which one and populate their record
+    if (!summaryB){
+      summaryB = {wins: 0, user_id: summaryA.user_id == userA.id ? userB.id : userA.id};
+    }
+
     let payload = {
       wins: {
         [summaryA.user_id]: summaryA.wins,

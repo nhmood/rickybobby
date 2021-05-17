@@ -171,6 +171,23 @@ class Workout extends Model {
     let summaryA = records[0];
     let summaryB = records[1];
 
+    // Return empty summary payload if no common workouts are found
+    if (!summaryA && !summaryB){
+      let payload = {
+        wins: {
+          [userA.id]: 0,
+          [userB.id]: 0
+        },
+        winner: {
+          [userA.id]: false,
+          [userB.id]: false
+        },
+        rideCount: 0
+      };
+
+      return payload;
+    }
+
     // If there is no record[1], this means there are no wins for one of the
     // two users, we need to figure out which one and populate their record
     if (!summaryB){

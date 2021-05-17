@@ -145,7 +145,7 @@ class Workout extends Model {
         w.user_id, COUNT(*) as wins
       FROM (
         SELECT DISTINCT
-          u.username, workout.ride_id, max(workout.avg_output), workout.user_id
+          u.username, workout.ride_id, max(workout.total_output), workout.user_id
         FROM
           workouts as workout
         JOIN

@@ -217,7 +217,7 @@ class Workout extends Model {
         workout.user_id IN(?, ?) AND
         ride_id IN (${rideSQL})
       ORDER BY
-        workout.ride_id DESC
+        workout.taken_at DESC
     `;
 
 

@@ -81,4 +81,10 @@
     margin-right: auto;
     margin-bottom: 10px;
   }
+
+  .userA {
+    border-bottom: 1px solid #efefef;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+  }
 }

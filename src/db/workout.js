@@ -80,6 +80,7 @@ class Workout extends Model {
       WHERE
         user_id = ? AND
         type = 'cycling' AND
+        competitive = 1 AND
         ride_id NOT NULL
 
       ${modeSQL}
@@ -91,6 +92,7 @@ class Workout extends Model {
       WHERE
         user_id = ? AND
         type = 'cycling' AND
+        competitive = 1 AND
         ride_id NOT NULL
      `
 
@@ -154,7 +156,8 @@ class Workout extends Model {
           workout.user_id = u.id
         WHERE
           workout.user_id IN (?, ?) AND
-          workout.ride_id IN (${rideSQL})
+          workout.ride_id IN (${rideSQL}) AND
+          workout.competitive = 1
           GROUP BY
             workout.ride_id
       ) as w

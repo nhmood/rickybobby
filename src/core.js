@@ -311,6 +311,13 @@ class RickyBobby {
         logger.info(`Processing workout:${workout.id} from API for ${user.id}/${user.username}`);
         logger.debug({workout});
 
+        // If the workout is still in progress, then skip as we won't have the final results
+        if (workout.peloton && workout.peloton.ride && (workout.created_at + workout.peloton.ride.duration) > ((new Date()).getTime() / 1000)){
+          logger.warn(`${workout.id} still in progress, skipping`);
+          continue;
+        }
+
+
         // The workout data is joined with the associated ride information (into .peloton.ride)
         // Pull out the ride to be stored separately, and reinsert the ride object into the workout
         // NOTE - the ride data comes from a join and MAY be empty (free ride, etc)

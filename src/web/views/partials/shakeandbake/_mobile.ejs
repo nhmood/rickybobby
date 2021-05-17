@@ -21,7 +21,7 @@
 
     <div class="row compete">
       <a href="/slingshot?takenBy=<%= userB.data.username %>&notTakenBy=<%= userA.data.username %>">
-        Rides for <%= userA.data.username %> to beat <%= userB.data.username %>
+        Beat <%= userB.data.username %>
       </a>
     </div><!-- compete -->
   </div><!-- userA -->
@@ -50,7 +50,7 @@
 
     <div class="row compete">
       <a href="/slingshot?takenBy=<%= userA.data.username %>&notTakenBy=<%= userB.data.username %>">
-        Rides for <%= userB.data.username %> to beat <%= userA.data.username %>
+        Beat <%= userA.data.username %>
       </a>
     </div><!-- compete -->
 
@@ -72,7 +72,7 @@
 
   <div class="row comparisons">
     <% rides.data.forEach(function(ride){ %>
-      <div class="row comparison component">
+      <div class="row comparison component" data-id="<%= ride.ride.id %>" data-type="ride">
         <div class="row workout-details">
 
           <div class="four columns ride-details">

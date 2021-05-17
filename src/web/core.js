@@ -8,7 +8,7 @@ class Web {
   PAGE_LIMIT = {
     users: 16,
     workouts: 10,
-    compare: 5,
+    compare: 10,
   };
 
   constructor(config, db, glue){

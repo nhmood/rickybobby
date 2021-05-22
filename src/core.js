@@ -339,6 +339,10 @@ class RickyBobby {
             logger.debug({rideRecord});
           }
 
+          // Based on whether the ride is competitive or not, update the workout record
+          // to store this field (used to filter out warmup/cooldown rides in comparisons)
+          if (ride.competitive){ workout.competitive = 1 };
+
 
           // Attempt to lookup the Instructor (by ID) and fetch it if we don't
           // The fetch function will call out to the API and store the data accordingly

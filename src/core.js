@@ -401,6 +401,7 @@ class RickyBobby {
     // Workout(s), Following(s), User, and Datalog(s)
     logger.info(`Cleaning up User:${user.id}/${user.username}`);
 
+    logger.info(`Cleaning up Workouts for User:${user.id}/${user.username}`);
     let workouts = this.db.Workout.where({
       conditions: {user_id: user.id}
     })
@@ -421,6 +422,7 @@ class RickyBobby {
       workout.destroy();
     });
 
+    logger.info(`Cleaning up Following for User:${user.id}/${user.username}`);
     let following = this.db.Following.where({
       conditions: { user_id: user.id }
     });
@@ -443,6 +445,7 @@ class RickyBobby {
     })
 
 
+    logger.info(`Cleaning up DataLog for User:${user.id}/${user.username}`);
     let datalog = this.db.Datalog.where({
       conditions: {
         target: 'user',

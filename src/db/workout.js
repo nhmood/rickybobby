@@ -292,6 +292,37 @@ class Workout extends Model {
     logger.debug({models});
     return models;
   }
+
+
+
+  static recentlyWorkedOut(limit){
+    let sql = `
+      SELECT
+        *, max(taken_at) as latest
+      FROM
+        workouts
+      GROUP BY
+        user_id
+      ORDER BY
+        taken_at DESC
+    `;
+
+
+    // If the limit parameter is present and a valid integer, append to the SQL statement
+    let limitInt = parseInt(limit);
+    if (limitInt){
+      sql = sql.concat(` LIMIT ${limitInt}`);
+    }
+
+    const stmt = this.db.prepare(sql);
+    const records = stmt.all();
+
+    const models = records.map(r => { return new this(r) });
+    logger.debug({models});
+    return models;
+  }
+
+
 }
 
 module.exports = Workout;

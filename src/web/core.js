@@ -33,6 +33,41 @@ class Web {
       });
     });
 
+    this.app.get('/join', (req, res) => {
+      res.render('join', {
+        title: "join"
+      });
+    });
+
+
+    this.app.post('/join', (req, res) => {
+      let username = req.body.waitlistAdd || "";
+      // Validate that the username provided is valid
+      // TODO - could improve/add more validation
+      if (username.length == 0){
+        return res.redirect(301, `/users/`);
+      }
+
+      // If the user is already tracked, just return their profile
+      let user = this.db.User.first({username: username});
+      if (user){
+        return res.redirect(301, `/users/${user.username}/`);
+      };
+
+
+      // Add the username to the waitlist to be added later
+      let waitlist = this.db.Waitlist.upsert({
+        username: username
+      });
+
+
+      // Render the join confirmation page
+      res.render('join_confirm', {
+        title: "join confirmed",
+        username: waitlist.username
+      });
+    });
+
     // Render main page including recent workout summaries
     this.app.get('/', (req, res) => {
       // Grab the latest workouts and map them to pull in

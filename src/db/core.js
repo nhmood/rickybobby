@@ -10,7 +10,8 @@ const models = {
   Instructor: require('./instructor.js'),
   Workout:    require('./workout.js'),
   Following:  require('./following.js'),
-  Rebuild:    require('./rebuild.js')
+  Rebuild:    require('./rebuild.js'),
+  Waitlist:   require('./waitlist.js')
 };
 
 
@@ -81,6 +82,7 @@ class Database {
     this.Workout    = models.Workout.setup(this.#db);
     this.Following  = models.Following.setup(this.#db);
     this.Rebuild    = models.Rebuild.setup(this.#db);
+    this.Waitlist   = models.Waitlist.setup(this.#db);
   }
 
   resource(name){

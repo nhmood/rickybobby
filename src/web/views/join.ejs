@@ -1,0 +1,26 @@
+<%- include('partials/_head'); %>
+<%- include('partials/_header'); %>
+
+
+<div id="main" class="row">
+  <h3>Waitlist</h3>
+  <div class="row info">
+    <p>If you can't find yourself on the Riders list (or in the search) submit your Peloton Username to the waitlist and we'll add you when we can! Learn more about the <a href="/about#join">waitlist</a> here.</p>
+  </div>
+
+  <div class="row waitlist">
+    <div class="four columns">&nbsp</div>
+    <div class="four columns waitlist-add">
+      <form method="POST">
+        <input autofocus class="u-full-width" type="text" id="waitlistAdd" name="waitlistAdd" placeholder="Peloton Username"></input>
+
+        <button id="submitAddWaitlist">Join Waitlist</button>
+      </form>
+    </div>
+    <div class="four columns">&nbsp</div>
+  </div>
+</div><!-- main -->
+
+
+
+<%- include('partials/_end'); %>

@@ -6,12 +6,16 @@ class Workout extends Model {
 
 
   static import(data){
+
+    let competitive = data.competitive || 0;
+
     // Form the base payload that applies to all workouts
     let workoutRecord = {
       id: data.id,
       taken_at: data.created_at,
       type: data.fitness_discipline,
       duration: data.performance.duration,
+      competitive: competitive,
 
 
       ride_id: data.ride.id,

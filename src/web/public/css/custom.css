@@ -525,3 +525,12 @@ footer {
 .waitlist-add {
   text-align: center;
 }
+
+#header > div.row.title > a {
+  text-decoration: none;
+  color: black;
+}
+
+.center {
+  text-align: center;
+}

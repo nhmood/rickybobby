@@ -8,9 +8,27 @@ then remove the (set to 0) the competitive flag
 
 
 UPDATE
+  rides
+SET
+  competitive = 1
+;
+
+
+UPDATE
+  rides
+SET
+  competitive = 0
+WHERE
+  lower(title) LIKE "%cool down%" OR
+  lower(title) LIKE "%warm up%"
+;
+
+
+UPDATE
   workouts
 SET
-  competitive = 1;
+  competitive = 1
+;
 
 UPDATE
   workouts
@@ -23,8 +41,6 @@ WHERE
   FROM
     rides
   WHERE
-    lower(title) LIKE "%cool down%" OR
-    lower(title) LIKE "%warm up%"
+    competitive = 0
   )
 ;
-

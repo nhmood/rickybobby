@@ -16,6 +16,7 @@ class Web {
     this.db = db;
 
     this.app = express();
+    this.app.set('trust proxy', true)
     this.app.use(morgan('combined', {'stream': logger.stream}));
 
     this.app.set('view engine', 'ejs');

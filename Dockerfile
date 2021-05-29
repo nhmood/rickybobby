@@ -25,7 +25,7 @@ RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 
 # Install required tools (nodejs, sqlite, etc)
 RUN curl -fsSL https://deb.nodesource.com/setup_14.x | sudo -E bash -
-RUN apt-get install git nodejs -y
+RUN apt-get install git nodejs build-essential -y
 
 
 USER eugene
@@ -33,4 +33,4 @@ WORKDIR /home/eugene
 RUN mkdir /home/eugene/rickybobby
 
 COPY . /home/eugene/rickybobby
-CMD ["/home/eugene/rickybobby/run.sh"]
+RUN (cd /home/eugene/rickybobby && npm install)

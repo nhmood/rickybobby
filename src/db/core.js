@@ -49,7 +49,7 @@ class Database {
       throw {name: "HelpError", message: "rickybobby db path not specified"}
     }
 
-    this.#dbPath = path;
+    this.#dbPath = global.baseDir + "/" + path;
     this.#db = this.connect(this.#dbPath);
   }
 

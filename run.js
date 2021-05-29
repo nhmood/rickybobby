@@ -1,17 +1,24 @@
 #!/usr/bin/env node
 
-const printHelp  = require('./src/help.js');
-const RickyBobby = require("./src/core.js");
+// TODO - wrap this in a config reader helper
+const fs      = require('fs');
+const YAML    = require('yaml');
+
+var path = require('path');
+global.baseDir = path.dirname(require.main.filename);
+
+// TODO - grab from environment parameter
+const file    = fs.readFileSync(global.baseDir + "/rickybobby.yml", 'utf8')
+const config  = YAML.parse(file);
+
+
+global.logger     = require("./src/logger.js").configure(config);
+const printHelp   = require('./src/help.js');
+const RickyBobby  = require("./src/core.js");
+
 
 function startup(){
-  const rb = new RickyBobby({
-    database: {
-      path: process.env.RB_DB,
-    },
-    peloton_api: {
-      username:  process.env.RB_PTON_USER,
-    }
-  });
+  const rb = new RickyBobby(config);
 
   // TODO - replace with proper optparser
   (async () => {
@@ -21,7 +28,7 @@ function startup(){
         break;
 
       case 'authenticate':
-        await rb.authenticate(process.env.RB_PTON_USER, process.env.RB_PTON_PASS);
+        await rb.authenticate(config.peloton.username, config.peloton.password);
         break;
 
       case 'test':

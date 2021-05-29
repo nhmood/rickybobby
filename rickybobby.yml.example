@@ -1,0 +1,9 @@
+server:
+  port: 3001
+logger:
+  level: 'info'
+database:
+  path: "db/rb.sqlite"
+peloton:
+  username: "USERNAMEHERE"
+  password: "PASSWORDHERE"

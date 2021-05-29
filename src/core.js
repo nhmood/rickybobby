@@ -1,8 +1,6 @@
-global.logger = require("./logger.js");
-
-const db = require("./db/core.js");
+const db      = require("./db/core.js");
 const peloton = require("./peloton/core.js");
-const web = require("./web/core.js");
+const web     = require("./web/core.js");
 
 logger.info("rickybobby core");
 
@@ -11,8 +9,8 @@ class RickyBobby {
   peloton;
   constructor(config){
     this.db       = new db(config.database);
-    this.peloton  = new peloton(config.peloton_api);
-    this.web      = new web(config.web, this.db, this);
+    this.peloton  = new peloton(config.peloton);
+    this.web      = new web(config.server, this.db, this);
     this.logger   = logger;
   }
 

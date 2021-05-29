@@ -4,7 +4,6 @@ const morgan  = require('morgan');
 const helpers = require('./helpers');
 
 class Web {
-  port = process.env.PORT || 3000;
   PAGE_LIMIT = {
     users: 16,
     workouts: 10,
@@ -12,6 +11,7 @@ class Web {
   };
 
   constructor(config, db, glue){
+    this.port = config.port || 3000;
     this.glue = glue;
     this.db = db;
 

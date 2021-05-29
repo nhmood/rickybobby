@@ -3,3 +3,4 @@ SECRETS
 scratch/*
 logs/*
 db/*.sqlite
+rickybobby.yml

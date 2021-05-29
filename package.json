@@ -1,4 +1,10 @@
 {
+  "name": "rickybobby",
+  "version": "1.0.0",
+  "description": "app to compete head to head with peloton friends",
+  "author": "Nima H. Mood <nhmood@goosecode.com> (https://goosecode.com)",
+  "repository": "github:nhmood/rickybobby",
+  "license": "MIT",
   "dependencies": {
     "better-sqlite3": "^7.1.2",
     "dateformat": "^4.5.1",

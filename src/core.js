@@ -332,13 +332,19 @@ class RickyBobby {
           // Attempt to lookup the Ride (by ID) and store it if we don't
           let rideRecord = this.db.Ride.get(ride.id);
           if (rideRecord == undefined){
-            rideRecord = this.storeResource('ride', ride);
-            logger.debug({rideRecord});
+            logger.info(`Ride:${ride.id}/${ride.title} not found, storing`);
+            let storage = this.storeResource('ride', ride);
+            logger.debug({storage});
+
+            // Store resource returns an object with both the datalog and record
+            // Pull the record out and set it back to rideRecord
+            rideRecord = storage.record;
           }
 
           // Based on whether the ride is competitive or not, update the workout record
           // to store this field (used to filter out warmup/cooldown rides in comparisons)
-          if (ride.competitive){ workout.competitive = 1 };
+          logger.info(`Ride:${rideRecord.id}/${rideRecord.title} competitive -> ${rideRecord.competitive}`)
+          if (rideRecord.competitive){ workout.competitive = 1 };
 
 
           // Attempt to lookup the Instructor (by ID) and fetch it if we don't

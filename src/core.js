@@ -101,7 +101,6 @@ class RickyBobby {
     let user = this.db.User.first({username: username});
     if (user == undefined){
       logger.warn(`No user found for ${username}`);
-      process.exit(1);
     }
 
     return user;

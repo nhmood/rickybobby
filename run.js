@@ -130,6 +130,7 @@ function startup(){
 try {
   startup();
 } catch(e){
+  console.log(e);
   console.log(e.name);
   switch(e.name){
     case "HelpError":

@@ -12,15 +12,9 @@ case $1 in
 
 
   sync)
-    cp $CURRENT_DIRECTORY/db/rb.sqlite $CURRENT_DIRECTORY/artifacts
-    docker run -it \
-      -v $CURRENT_DIRECTORY/artifacts:/home/eugene/rickybobby/db \
-      rickybobby /home/eugene/rickybobby/run.js sync
-    ;;
-
-  cron_sync)
+    cp $CURRENT_DIRECTORY/db/rb.sqlite $CURRENT_DIRECTORY/db/backups/$(date %Y-%m-%d).sqlite
     docker run \
-      -v $CURRENT_DIRECTORY:/home/eugene/rickybobby \
+      -v $CURRENT_DIRECTORY/db:/home/eugene/rickybobby/db \
       rickybobby /home/eugene/rickybobby/run.js sync
     ;;
 

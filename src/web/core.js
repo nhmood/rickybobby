@@ -216,7 +216,7 @@ class Web {
         // To prevent multiple writes to the DB, only update the tracked state
         // one time if this is the first time viewing this page
         if (user.tracked == undefined){
-          user.update({tracked: 0});
+          user.update({tracked: 1});
         }
 
         // Render the users template with the associated data

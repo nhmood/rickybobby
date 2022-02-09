@@ -5,30 +5,31 @@
 <div id="main" class="row about">
   <h3>if you're not first, you're last</h3>
   <p>
-    This site was created <em>solely</em> to settle <a href="/shakeandbake?users=nhmood,pmlynn8390">this</a> fued.<br>
+    This site was created <em>solely</em> to settle <a href="/shakeandbake?users=nhmood,pmlynn8390">this</a> feud.<br>
     After getting a Peloton, my "friend" <a href="/users/pmlynn8390">Pat</a> would systematically one-up me on every ride I took.<br>
-    I figured a website to help track this would be a good addition to my <a href="/#">list</a> of marginally useful/useless tools.
+    I figured a website to help track this would be a good addition to my list of marginally useful/useless tools.
   </p>
 
   <h3>faq</h3>
   <p>
     <strong id="join">q: Why can't I find/add myself?</strong><br>
-    - Peloton doesn't have an official api so to make sure I don't slam their servers with requests, rickybobby is currently in a pseudo-invite-only mode.<br>
+    Peloton doesn't have an official api so to make sure I don't slam their servers with requests, rickybobby is currently in a pseudo-invite-only mode.<br>
     You can have your account tracked if someone already on rickybobby is following you (on Peloton).<br><br>
 
 
     You can also add yourself to the <a href="/join">waitlist</a> and we will add new users gradually.
     <br><br>
 
-    rickybobby is also open source so you can run this yourself!<br>
-    All you need is some terminal/Linux knowledge and a $5/mo DigitalOcean box and you can run rickybobby for yourself and your friends.
-    Instructions can be found on the <a href="/#">GitHub</a> page. <br><br>
-
     If you really want to be added asap, reach out and we'll see what we can do.
+
+    I plan on open sourcing rickybobby at some point, so you can eventually run it yourself!<br>
+    All you'll need is some terminal/Linux knowledge and a $5/mo DigitalOcean box and you'll be able to run rickybobby for yourself and your friends.
+
+
     <br><br>
 
     <strong>q: Can you add ___?</strong><br>
-    - Maybe, add an issue on <a href="/#">GitHub</a>, send an email to rickybobby @ goosecode dot com, or ping me some other way.
+    Maybe - send an email to rickybobby @ goosecode dot com, or ping me some other way.
     <br><br>
 
 
@@ -38,34 +39,47 @@
     <br><br>
   </p>
 
-  <h3>todo</h3>
+  <h3>roadmap</h3>
   <p>
     <ul>
-      <li>Add dynamic search to front page and riders list</li>
-      <li>Add filter for "rides won by X" on shake and bake page</li>
-      <li>Add "rides taken by X but not Y" on shake and bake page</li>
-      <li>Add "shake and bake" score that takes into account first taken, attempts, streaks, etc</li>
-      <li>Add global "ELO" score with considerations around fair user to user comparisons</li>
+      <li>Workout performance graph comparisons</li>
+      <li>Individual Workout Comparison page + share link</li>
+      <li>"Shake and Bake" score that takes into account first taken, attempts, streaks, etc</li>
+      <li>Global "ELO" score with considerations around fair user to user comparisons</li>
     </ul>
   </p>
   <br><br>
 
   <h3>software</h3>
   <p>
-    As with many of my new, useless, projects - I took rickybobby as an opportunity to better explore the Javascript/Node ecosystem.
-    You can check out the code on <a href="/#">GitHub</a> - comments on style, conventions, best practices, and design are more than welcome - especially given that I'm a relative rookie in the Javascript space.<br><br>
+    As with many of my new, marginally useful, projects - I took rickybobby as an opportunity to not only scratch an itch,
+    but to better explore a programming language and play around with some ideas I've read about or seen.
+
+    <br><br>
+
+    As a SQLite superfan, the <a href="https://simonwillison.net/2021/Jul/28/baked-data/" target="_blank">Baked Data Architecture</a> is something I've unknowingly used in the past and wanted to dig a little deeper into with in this project.
+    I was hoping to find an elegant way to handle write routing to a single node while maintaining the
+    isolated/distributed read properties but haven't landed on the right implementation just yet.
+
+    <br><br>
+
+    On the language front, while I've dabbled with Javascript (mostly on the frontend), this was my first major dive into the Javascript/Node ecosystem.
+
+    <br><br>
+
+
 
     The project is broken out into four main segments:
     <ul>
       <li><strong>(Peloton) API</strong> - interface to the Peloton API which sources all the data
         <ul>
-          <li>The API layer is built on top of <a href="/#" target="_blank">node-fetch</a></li>
+          <li>The API layer is built on top of <a href="https://github.com/node-fetch/node-fetch" target="_blank">node-fetch</a></li>
         </ul>
       </li>
 
       <li><strong>Database</strong> - interface to SQLite3 database that locally stores and structures the API data
         <ul>
-          <li>The SQLite3 database layer is built on top of <a href="/#" target="_blank">better-sqlite</a></li>
+          <li>The SQLite3 database layer is built on top of <a href="https://github.com/JoshuaWise/better-sqlite3" target="_blank">better-sqlite3</a></li>
         </ul>
       </li>
 
@@ -73,8 +87,8 @@
 
       <li><strong>Web</strong> - layer to present the rickybobby frontend + data
         <ul>
-          <li>The web layer is mainly <a href="/#" target="_blank">NodeJS/Express</a></li>
-          <li>Pages are templated using plain <a href="/#" target="_blank">EJS</a></li>
+          <li>The web layer is mainly <a href="https://github.com/expressjs/express" target="_blank">NodeJS/Express</a></li>
+          <li>Pages are templated using plain <a href="https://github.com/mde/ejs" target="_blank">EJS</a></li>
         </ul>
       </li>
     </ul>

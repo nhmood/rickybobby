@@ -1,4 +1,6 @@
 FROM ubuntu:latest
+ENV TZ="EST"
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 SHELL ["/bin/bash", "-c"]
 
 # Set the default UID/GID, these will be overwritten to match

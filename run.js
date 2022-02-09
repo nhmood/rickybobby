@@ -71,7 +71,11 @@ function startup(){
         break;
 
       case 'rebuild':
-        rb.rebuild(process.argv[3]);
+        if (process.argv[3]){
+          rb.rebuildResource(process.argv[3]);
+        } else {
+          let data = await rb.rebuild();
+        };
         break;
 
       case 'remove':
@@ -106,6 +110,9 @@ function startup(){
       case 'common':
         rb.commonWorkouts(process.argv[3], process.argv[4]);
         break;
+
+      case 'unique':
+        rb.uniqueWorkouts(process.argv[3], process.argv[4]);
 
       case 'web':
         rb.web.start();

@@ -1,0 +1,22 @@
+<div class="four columns ride-details">
+  <div class="row ride-image">
+    <img class="u-full-width" src="<%= ride.instructor ? ride.instructor.image_url : '' %>"></img>
+  </div><!-- ride-image -->
+
+  <div class="row ride-name"><%= ride.ride.title %></div>
+  <div class="row ride-instructor"><%= ride.instructor ? ride.instructor.name : '' %></div>
+  <div class="row ride-link">
+    <a class="peloton-link" href="https://members.onepeloton.com/classes/cycling?modal=classDetailsModal&classId=<%= ride.ride.id %>" target="_blank">View Class</a>
+  </div>
+
+  <div class="row share-link hide">
+    <a class="peloton-link"
+      href="javascript:void(0)"
+      data-url="/shakeandbake/<%= ride.ride.id %>?users=<%= userA.data.username %>,<%= userB.data.username %>"
+      data-title="rickybobby - shake and bake"
+      data-text="If you're not first, you're last - check out <%= userA.data.username %> vs. <%= userB.data.username %> on <%= ride.ride.title %> with <%= ride.instructor.name %>"
+    >
+      Share
+    </a>
+  </div>
+</div><!-- ride-details -->

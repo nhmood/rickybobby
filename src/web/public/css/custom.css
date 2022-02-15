@@ -151,8 +151,11 @@ a {
 
 .ride-link {
   margin-top: 10px;
-
   text-transform: uppercase;
+}
+
+.share-link {
+  margin-top: 20px;
 }
 
 .component {

@@ -27,6 +27,8 @@ class Web {
     this.app.use(bodyParser.urlencoded({ extended: false }))
     this.app.use(bodyParser.json())
 
+    this.app.locals.baseURL = process.env.RB_BASE_URL;
+
 
     this.app.get('/about', (req, res) => {
       res.render('about', {
@@ -345,7 +347,6 @@ class Web {
       let userA = this.db.User.first({username: usernameA});
       let userB = this.db.User.first({username: usernameB});
 
-
       if (userA == undefined || userB == undefined){
         logger.warn(`Could not find users / ${usernameA} / ${usernameB}`);
         res.redirect(301, '/');
@@ -380,6 +381,7 @@ class Web {
         limit: this.PAGE_LIMIT.compare,
         page: page - 1,
       })
+
 
 
       // Generate pagination for workout data

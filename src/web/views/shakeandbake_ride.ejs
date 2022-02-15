@@ -1,0 +1,22 @@
+<%- include('partials/_head'); %>
+<%- include('partials/_header'); %>
+
+<%- userAID = userA.id %>
+<%- userBID = userB.id %>
+
+<div id="main" class="row">
+  <div class="row header">
+    <h1>Shake and Bake</h1>
+  </div>
+
+
+  <div class="full">
+    <%- include('partials/shakeandbake/_ride_full'); %>
+  </div><!-- full -->
+
+  <div class="mobile">
+    <%- include('partials/shakeandbake/_ride_mobile'); %>
+  </div><!-- mobile -->
+</div><!-- main -->
+
+<%- include('partials/_end'); %>

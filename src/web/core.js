@@ -414,7 +414,85 @@ class Web {
         pagination: {
           data: pagination,
           debug: JSON.stringify(pagination, null, 2)
+        }
+      });
+    })
+
+
+    // User comparison endpoint
+    // TODO - once await is removed from getResource calls, we can remove the
+    //        async prefix and await usage in this endpoint
+    this.app.get('/shakeandbake/:rideID', (req, res) => {
+      let rideID = req.params.rideID;
+
+      let usersParam = req.query.users;
+      let usernames = usersParam.split(",");
+
+      let usernameA = usernames[0];
+      let usernameB = usernames[1];
+
+      let userA = this.db.User.first({username: usernameA});
+      let userB = this.db.User.first({username: usernameB});
+
+      if (userA == undefined || userB == undefined){
+        logger.warn(`Could not find users / ${usernameA} / ${usernameB}`);
+        res.redirect(301, '/');
+        return;
+      }
+
+      if (!userA.tracked){
+        logger.warn(`${userA.username} not tracked!`);
+        return res.redirect(301, `/users/${userA.username}`);
+      }
+
+      if (!userB.tracked){
+        logger.warn(`${userB.username} not tracked!`);
+        return res.redirect(301, `/users/${userB.username}`);
+      }
+
+
+      let summary = this.db.Workout.commonWorkoutSummary({
+        userA: userA,
+        userB: userB
+      });
+
+      // Use the rickybobby "glue" handler to perform the commonWorkouts call
+      // for the two users then render the data
+      let comparison = this.glue.commonWorkouts({
+        usernameA: usernameA,
+        usernameB: usernameB,
+        rideID: rideID,
+        limit: this.PAGE_LIMIT.compare
+      })
+
+      let ride = comparison.rides[0];
+
+      let ogDescription = `
+        If you're not first, you're last -
+        check out ${userA.username} vs. ${userB.username}
+        on ${ride.ride.title} with ${ride.instructor.name}
+      `;
+
+      res.render('shakeandbake_ride', {
+        helpers: helpers,
+        title: `${userA.username} vs. ${userB.username}`,
+        userA: {
+          data: userA,
+          debug: JSON.stringify(userA),
         },
+        userB: {
+          data: userB,
+          debug: JSON.stringify(userB),
+        },
+        summary: {
+          data: summary,
+          debug: JSON.stringify(comparison.summary)
+        },
+        rides: {
+          data: comparison.rides,
+          debug: JSON.stringify(comparison.rides)
+        },
+        ogDescription: ogDescription
       });
     })
 

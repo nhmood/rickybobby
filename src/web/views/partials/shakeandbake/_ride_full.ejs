@@ -1,0 +1,61 @@
+<div class="row workouts">
+
+  <div class="header">
+    <a href="/shakeandbake?users=<%= userA.data.username %>,<%= userB.data.username %>">
+      Compare All Rides
+    </a>
+  </div>
+
+
+  <div class="row comparisons">
+    <% rides.data.forEach(function(ride){ %>
+      <div class="row comparison component" data-id="<%= ride.ride.id %>" data-type="ride">
+        <div class="row workout-details">
+
+          <% best = ride.users[userA.data.id].workouts[0] %>
+          <div class="four columns userA" data-id="<%= best.id %>" data-type="workout">
+            <%- include('_workout_metrics', {
+              username: userA.data.username,
+              best: best,
+              winner: ride.users[userA.data.id].winner,
+              image: userA.data.image_url,
+              taken: helpers.formatDate(ride.users[userA.data.id].workouts[0].taken_at)
+            }); %>
+
+            <div class="row score">
+              <%= summary.data.wins[userA.data.id] %>
+              <% if(summary.data.winner[userA.data.id]){ %>
+                🔥
+              <% } %>
+            </div><!-- score -->
+          </div>
+
+          <%- include('_ride_details', {
+            ride: ride,
+            userA: userA,
+            userB: userB
+          }); %>
+
+          <% best = ride.users[userB.data.id].workouts[0] %>
+          <div class="four columns userB" data-id="<%= best.id %>" data-type="workout">
+            <%- include('_workout_metrics', {
+              username: userB.data.username,
+              best: best,
+              winner: ride.users[userB.data.id].winner,
+              image: userB.data.image_url,
+              taken: helpers.formatDate(ride.users[userB.data.id].workouts[0].taken_at)
+            }); %>
+
+            <div class="row score">
+              <%= summary.data.wins[userB.data.id] %>
+              <% if(summary.data.winner[userB.data.id]){ %>
+                🔥
+              <% }; %>
+            </div><!-- score -->
+
+          </div>
+        </div><!-- workout-details -->
+      </div><!-- comparison -->
+    <% }); %>
+  </div>
+</div><!-- workouts -->

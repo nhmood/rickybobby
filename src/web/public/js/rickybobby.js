@@ -184,3 +184,29 @@ function updateRiders(el, results){
     riders.appendChild(r);
   });
 }
+
+
+
+let shares = document.querySelectorAll(".share-link");
+Array.from(shares).forEach(e => {
+  if (navigator.share){
+    // Show clickable link if navigator is available
+    e.classList.remove("hide");
+
+    e.addEventListener('click', () => {
+
+      // Pull data components out of link for navigator parameters
+      let link = e.querySelector("a");
+      navigator.share({
+        title: link.dataset.title,
+        text: link.dataset.text,
+        url: link.dataset.url
+      })
+      .then(() => {
+      })
+      .catch((error) => {
+        console.error(error)
+      });
+    });
+  }
+});

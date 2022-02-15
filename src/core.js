@@ -521,6 +521,7 @@ class RickyBobby {
     let workouts = this.db.Workout.commonWorkouts({
       userA: userA,
       userB: userB,
+      rideID: options.rideID,
       limit: options.limit,
       page:  options.page
     });

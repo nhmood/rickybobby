@@ -75,6 +75,8 @@ class Workout extends Model {
       return false;
     };
 
+
+    let rideSQL = (options.rideID) ? "= ?" : "NOT NULL";
     let modeSQL = (mode == "common") ? "INTERSECT" : "EXCEPT";
     let sql = `
       SELECT DISTINCT
@@ -85,7 +87,7 @@ class Workout extends Model {
         user_id = ? AND
         type = 'cycling' AND
         competitive = 1 AND
-        ride_id NOT NULL
+        ride_id ${rideSQL}
 
       ${modeSQL}
 
@@ -97,7 +99,7 @@ class Workout extends Model {
         user_id = ? AND
         type = 'cycling' AND
         competitive = 1 AND
-        ride_id NOT NULL
+        ride_id ${rideSQL}
      `
 
     // Since we are using a union (intersect/except), if we
@@ -118,7 +120,6 @@ class Workout extends Model {
       sql = sql.concat(` LIMIT ${limitInt} OFFSET ${ limitInt * pageInt}`);
     }
 
-
     const stmt = this.db.prepare(sql);
 
     // If we are just counting, no need to format the results
@@ -128,7 +129,14 @@ class Workout extends Model {
       return record.count;
     }
 
-    const records = stmt.all(options.userA.id, options.userB.id);
+    let sqlArguments = [];
+    if (options.rideID){
+      sqlArguments = [options.userA.id, options.rideID, options.userB.id, options.rideID];
+    } else {
+      sqlArguments = [options.userA.id, options.userB.id];
+    }
+
+    const records = stmt.all(...sqlArguments)
     const rideIDs = records.map( r => { return r.ride_id });
     return rideIDs;
   }
@@ -259,7 +267,8 @@ class Workout extends Model {
       userA: options.userA,
       userB: options.userB,
       limit: options.limit,
-      page:  options.page
+      page:  options.page,
+      rideID: options.rideID
     });
 
     return models;

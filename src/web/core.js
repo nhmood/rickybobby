@@ -419,6 +419,11 @@ class Web {
     })
 
 
+    this.app.get('/perftest', (req,res) => {
+      res.render('perftest')
+    })
+
+
     // User comparison endpoint
     // TODO - once await is removed from getResource calls, we can remove the
     //        async prefix and await usage in this endpoint
@@ -594,6 +599,12 @@ class Web {
       });
     })
 
+    this.app.get('/api/v1/performance_graph/:workout_id', (req, res) => {
+      let workout_id = req.params.workout_id;
+      let user = this.db.User.first({username: username});
+      res.setHeader('Content-Type', 'application/json');
+      res.json(payload);
+    })
   }
 
 

@@ -3,15 +3,16 @@ logger.info("rickybobby database");
 const fs     = require('fs');
 const sqlite = require('better-sqlite3');
 const models = {
-  Session:    require('./session.js'),
-  Datalog:    require('./datalog.js'),
-  User:       require('./user.js'),
-  Ride:       require('./ride.js'),
-  Instructor: require('./instructor.js'),
-  Workout:    require('./workout.js'),
-  Following:  require('./following.js'),
-  Rebuild:    require('./rebuild.js'),
-  Waitlist:   require('./waitlist.js')
+  Session:          require('./session.js'),
+  Datalog:          require('./datalog.js'),
+  User:             require('./user.js'),
+  Ride:             require('./ride.js'),
+  Instructor:       require('./instructor.js'),
+  Workout:          require('./workout.js'),
+  Following:        require('./following.js'),
+  Rebuild:          require('./rebuild.js'),
+  Waitlist:         require('./waitlist.js'),
+  PerformanceGraph: require('./performance_graph.js')
 };
 
 
@@ -74,15 +75,16 @@ class Database {
 
 
   setupModels(){
-    this.Session    = models.Session.setup(this.#db);
-    this.Datalog    = models.Datalog.setup(this.#db);
-    this.User       = models.User.setup(this.#db);
-    this.Ride       = models.Ride.setup(this.#db);
-    this.Instructor = models.Instructor.setup(this.#db);
-    this.Workout    = models.Workout.setup(this.#db);
-    this.Following  = models.Following.setup(this.#db);
-    this.Rebuild    = models.Rebuild.setup(this.#db);
-    this.Waitlist   = models.Waitlist.setup(this.#db);
+    this.Session          = models.Session.setup(this.#db);
+    this.Datalog          = models.Datalog.setup(this.#db);
+    this.User             = models.User.setup(this.#db);
+    this.Ride             = models.Ride.setup(this.#db);
+    this.Instructor       = models.Instructor.setup(this.#db);
+    this.Workout          = models.Workout.setup(this.#db);
+    this.Following        = models.Following.setup(this.#db);
+    this.Rebuild          = models.Rebuild.setup(this.#db);
+    this.Waitlist         = models.Waitlist.setup(this.#db);
+    this.PerformanceGraph = models.PerformanceGraph.setup(this.#db);
   }
 
   resource(name){

@@ -1,0 +1,173 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.js" integrity="sha512-QSkVNOCYLtj73J4hbmVoOV6KVZuMluZlioC+trLpewV8qMjsWqlIQvkn1KGX2StWvPMdWGBqim1xlC8krl1EKQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<style>
+.chart {
+  margin: auto;
+  height: 400px !important;
+}
+
+canvas {
+}
+</style>
+<div class="chart">
+  <canvas id="myChart" width="400" height="400"></canvas>
+</div>
+
+
+<script>
+  const ctx = document.getElementById('myChart').getContext('2d');
+  var nima;
+  var pat;
+  async function getData(){
+    let data = await fetch('/nima.json');
+    nima = await data.json();
+
+    data = await fetch('/pat.json');
+    pat = await data.json();
+    console.log(data);
+    console.log(nima);
+    console.log(pat);
+  }
+
+
+
+  async function plot(){
+    await getData();
+
+
+    plotCadence();
+  }
+
+  async function plotCadence(){
+    let labels = nima.performance.seconds_since_pedaling_start.map(e => Math.round((e-1)/60) );
+
+    let targets = nima.performance.target_performance_metrics.target_graph_metrics[0].graph_data;
+    Object.entries(targets).forEach(target => {
+      targets[target[0]].push( target[1][ target[1].length - 1])
+    })
+    let nimaCadenceData = nima.performance.metrics[1].values;
+    let patCadenceData = pat.performance.metrics[1].values;
+    patCadenceData[patCadenceData.length - 1] = patCadenceData[patCadenceData.length - 2];
+
+    let segmentColors = ["#D2E2EE", "#FAC6C6", "#FDE9C4"];
+
+    let segmentLabel = nima.performance.segment_list.map(e => e.name);
+    let segmentData = pat.performance.segment_list.map(e => Math.round(e.start_time_offset / 60));
+    console.log(segmentData);
+
+    let segments = segmentData.map((e, index) => {
+      let data = Array.from( targets.lower )
+
+      let offset = index > 0 ? -1 : 0;
+      let lowerBound = segmentData[ index ] + offset;
+      console.log(index + 1);
+      let upperBound = segmentData[ index + 1] || data.length;
+
+      data.fill(null, 0, lowerBound);
+      data.fill(null, upperBound, data.length);
+
+      console.log({lowerBound});
+      console.log({upperBound});
+
+      console.log(data);
+      let a = {
+        label: segmentLabel[index],
+        data: data,
+        fill: {
+          target: 'origin',
+          below: segmentColors[index],
+          above: segmentColors[index]
+        },
+        lineTension: 0.4
+      }
+      return a;
+    })
+    segments = segments.slice(0, segmentLabel.length)
+
+    console.log(segments)
+
+
+
+    let datasets = [
+      {
+        label: 'Lower Target Cadence',
+        data: targets.lower,
+        borderColor: "#439775",
+        lineTension: 0.4,
+        fill: {
+          target: 1,
+          above: '#43977536',
+          below: '#43977536'
+        }
+      },
+      {
+        label: 'Upper Target Cadence',
+        data: targets.upper,
+        borderColor: "#439775",
+        lineTension: 0.4
+      },
+      {
+        label: 'Nima Cadence',
+        data: nimaCadenceData,
+        lineTension: 0.4,
+        borderColor: '#F6AE2D'
+      },
+      {
+        label: 'Pat Cadence',
+        data: patCadenceData,
+        lineTension: 0.4,
+        borderColor: '#1E555C'
+      }
+    ];
+    datasets = datasets.concat(segments);
+    console.log(datasets);
+
+
+
+
+    var myChart = new Chart(ctx, {
+      type: 'line',
+      options: {
+        interaction: {
+          mode: 'x'
+        },
+        responsive: true,
+        maintainAspectRatio: false,
+      },
+      data: {
+        labels: labels,
+        datasets: datasets
+      },
+    })
+  }
+
+  async function plotOutput(){
+    let labels = perf.performance.seconds_since_pedaling_start.map(e => Math.round((e-1)/60) );
+
+    let segmentLabel = perf.performance.segment_list.map(e => e.name);
+    let segmentData = perf.performance.segment_list.map(e => e.start_time_offset);
+    //console.log({segmentData})
+
+
+    let outputData = perf.performance.metrics[0].values;
+
+    var myChart = new Chart(ctx, {
+      type: 'line',
+      responsive: true,
+      data: {
+        labels: labels,
+        datasets: [{
+          label: 'User A',
+          data: outputData,
+                  borderColor: "#3cba9f",
+          fill: false,
+          lineTension: 0.4
+        }]
+      },
+    })
+
+  }
+
+
+  plot();
+</script>

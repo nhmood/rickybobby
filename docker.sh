@@ -28,7 +28,7 @@ case $1 in
 
     docker run -t \
       --name rickybobby-rest-api \
-      -p 3001:3001 \
+      -p 3002:3001 \
       rickybobby /home/eugene/rickybobby/run.js web
     ;;
 

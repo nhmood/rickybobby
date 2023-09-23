@@ -1,6 +1,8 @@
-node_modules/
-SECRETS
-scratch/*
-logs/*
+node_modules
+scratch/
+logs
 db/*.sqlite
+db/backups
 rickybobby.yml
+SECRETS
+run.log

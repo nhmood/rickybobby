@@ -1,0 +1,117 @@
+https://api.onepeloton.com/api/workout/0f8a9ba053cf4e78a84485eaf49ad73d/performance_graph?every_n=1
+ADD n=1 (or whatever interval we want)
+https://rickybobby.goosecode.com/perftest
+
+
+
+////
+
+https://github.com/jsdoc/jsdoc
+https://www.typescriptlang.org/docs/handbook/
+https://medium.com/peloton-engineering/using-real-time-messaging-at-peloton-933e18867867
+https://emilymalecbrown.com/posts/playing-around-with-peloton-api
+https://jobs.lever.co/Hydrow/90c0dbb6-ad16-413b-8b06-235ec4e2b176
+https://app.swaggerhub.com/apis/DovOps/peloton-unofficial-api/0.2.9#/workouts/get_api_workout__workoutId__performance_graph
+
+202030,39304a,635c51,7d7461,b0a990
+
+
+# Shake and Bake
+- less points if you took the ride second
+- average output over all rides
+  - average of (output vs avg output)
+- streaks of workouts
+- streak of workout wins against person
+- is shake and bake score independent to other rider?
+- does the shake and bake score
+- independent to rank against everyone (against self, not head2head)
+
+
+TODO
+- redirect from POST shake and bake to static user compare
+- add user search
+- user imports need to add user ride for created at, not import date
+- add who else rode for a given ride
+- ride info page
+- proper pagination
+- update getResource methods to remove async since its not needed
+- add data-id to everything
+- add try catch + failed request processing table
+- https://chartscss.org/
+- fix _ user search query (LIKE comparison
+- clean up docker story, writing for tracked users, etc
+- https://github.com/JoshuaWise/better-sqlite3/issues/405 < LIKE syntax cleanup
+- https://gist.github.com/basharovV/e25989cc918f0b21ded26c8bf3be8400 nginx + letsencrypt
+- https://expressjs.com/en/guide/error-handling.html error handling page for 500s
+- Soundex + Levenshtein
+- https://stackoverflow.com/questions/13410754/i-want-to-display-the-file-name-in-the-log-statement
+- https://mochajs.org/
+
+body {
+    background-color: black;
+    filter: hue-rotate(180deg) invert(90%);
+  }
+
+
+              <a href="https://members.onepeloton.com/members/{{userB.data.username}}/overview" target="_blank">
+                <img class="profile u-full-width" src="{{userB.data.image_url}}"></img>
+              </a>
+
+       *
+       * let rideIDs = workouts.reduce((result, workout) => { result[workout.ride_id] = true; return result }, {});
+       * let rides = Object.keys(rideIDs).forEach((result, rideID) => {
+       *   let ride = this.db.Ride.where({id: rideID});
+       *   workout.ride = ride;
+       * })
+
+
+
+https://medium.com/@paul_irish/debugging-node-js-nightlies-with-chrome-devtools-7c4a1b95ae27
+
+
+https://github.com/pinojs/pino
+https://zellwk.com/blog/async-await-express/
+https://github.com/vol4ok/hogan-express
+
+
+ SELECT DISTINCT w1.ride_id FROM workouts as w1 INNER JOIN workouts as w2 ON w1.ride_id = w2.ride_id AND w1.user_id != w2.user_id WHERE w1.user_id IN ("b5a692b93df84a2c97162f5564c9568b", "1d663a3db7c746aabc9aba135ab1c6c9");
+
+    // TODO - figure out how to get the individual workout data returned
+    //        grouped with the distinct ride_id
+    let sql = `
+      SELECT
+        user.username, workoutA.id, workoutA.ride_id, ride.data as ride_description
+      FROM
+        workouts as workoutA
+      INNER JOIN
+        workouts as workoutB
+      ON
+        workoutA.ride_id  = workoutB.ride_id AND
+        workoutA.user_id != workoutB.user_id AND
+        workoutA.id      != workoutB.id
+      INNER JOIN
+        users as user
+      ON
+        workoutA.user_id = user.id
+
+      INNER JOIN
+        rides as ride
+      ON
+        workoutA.ride_id = ride.id
+      WHERE
+        workoutA.user_id IN (?, ?);
+--      GROUP BY workoutA.ride_id
+ `;
+
+
+  // TODO - make this a bit more flexible in terms of the querying support
+  //        probably want something along the lines of:
+  //        {
+  //          conditions: {
+  //            field: condition,
+  //          },
+  //          limit: INTEGER,
+  //          order_by: ASC/DESC
+  //        }
+
+https://www.npmjs.com/package/redis

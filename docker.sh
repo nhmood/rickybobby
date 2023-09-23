@@ -6,6 +6,7 @@ case $1 in
   build)
     docker build \
       -t rickybobby . \
+      --network=host \
       --build-arg UID=$(id -u ${USER}) \
       --build-arg GID=$(id -g ${USER})
     ;;

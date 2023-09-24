@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# TODO: look into sourcing port from rickybobby.yml
+
 CURRENT_DIRECTORY=$(realpath $(dirname $0))
 
 case $1 in
@@ -12,8 +14,8 @@ case $1 in
     ;;
 
 
+  # TODO: look into litestream for s3 backup
   sync)
-    cp $CURRENT_DIRECTORY/db/rb.sqlite $CURRENT_DIRECTORY/db/backups/$(date %Y-%m-%d).sqlite
     docker run \
       -v $CURRENT_DIRECTORY/db:/home/eugene/rickybobby/db \
       rickybobby /home/eugene/rickybobby/run.js sync
@@ -26,16 +28,20 @@ case $1 in
       docker stop rickybobby-rest-api && \
       docker rm -fv rickybobby-rest-api
 
-    docker run -t \
+    docker run -t -d \
       --name rickybobby-rest-api \
       -p 3002:3001 \
+      -v $CURRENT_DIRECTORY/db:/home/eugene/rickybobby/db \
+      -v $CURRENT_DIRECTORY/rickybobby.yml:/home/eugene/rickybobby/rickybobby.yml \
       rickybobby /home/eugene/rickybobby/run.js web
     ;;
 
 
   shell)
     docker run -it \
-      -p 3001:3001 \
+      -p 3002:3001 \
+      -v $CURRENT_DIRECTORY/db:/home/eugene/rickybobby/db \
+      -v $CURRENT_DIRECTORY/rickybobby.yml:/home/eugene/rickybobby/rickybobby.yml \
       rickybobby /bin/bash
 
     ;;

@@ -34,5 +34,9 @@ USER eugene
 WORKDIR /home/eugene
 RUN mkdir /home/eugene/rickybobby
 
-COPY . /home/eugene/rickybobby
+COPY ./src /home/eugene/rickybobby/src
+COPY ./run.js /home/eugene/rickybobby/
+COPY ./package.json /home/eugene/rickybobby/
+COPY ./package-lock.json /home/eugene/rickybobby/
+
 RUN (cd /home/eugene/rickybobby && npm install)
